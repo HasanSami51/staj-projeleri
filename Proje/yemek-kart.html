@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menü Kartı</title>
+    <link rel="stylesheet" href="yemek-kart.css">
+     <script src="yemek-kart.js" defer></script>
+
+
+</head>
+<body>
+     <h2>Menü</h2>
+<form id="menu-form" >
+      <input type="text" id="input1" placeholder="Önce Kategori Seçmeniz Gerekiyor!" disabled required>
+    <select  id="kategoriler" required>
+    <option value="" disabled selected>Kategori Seçiniz... </option>
+        <option value="Corba">Çorba</option>
+        <option value="Ana Yemek">Ana Yemek</option>
+        <option value="Tatli">Tatlı</option>
+        <option value="İçecek">İçecek</option>
+    </select>
+     <button type="submit" id="buton1">Karta Ekle</button>
+ </form>
+ <div class="butonlar">
+<button class="buton" data-kategori="Tumu">Tümü</button>
+<button class="buton" data-kategori="Corba">Çorbalar</button>
+<button class="buton" data-kategori="Ana Yemek">Ana Yemekler</button>
+<button class="buton" data-kategori="Tatli">Tatlılar</button>
+<button class="buton" data-kategori="İçecek">İçecekler</button>
+ </div>
+
+<div id="menu-div1">
+
+</div> 
+
+</body>
+</html>

@@ -1,0 +1,33 @@
+.kart-izgarasi{
+display: grid;
+grid-template-columns:repeat(1,1fr);
+gap: 20px; 
+padding: 20px;
+width: 100%;
+box-sizing: border-box;
+}
+@media(min-width:600px){
+.kart-izgarasi{
+grid-template-columns: repeat(2,1fr);
+ }
+}
+@media(min-width:992px){
+.kart-izgarasi{      
+grid-template-columns:repeat(3,1fr);
+ }
+}
+.kart{
+background-color: #ffffff;
+border: 1px solid #e0e0e0;
+border-radius: 8px;
+padding: 25px; 
+text-align: center;
+font-size: 1.76em;
+box-shadow: 0 4px 6px rgba(0,0,0,0.05); 
+}
+html,body{
+width:100%;
+margin: 0;
+padding:0;
+box-sizing: border-box;
+}

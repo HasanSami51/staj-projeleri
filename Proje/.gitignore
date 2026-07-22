@@ -1,0 +1,10 @@
+# OS tarafından oluşturulan sistem dosyaları
+.DS_Store
+Thumbs.db
+
+#Editör ayarları
+.vscode/
+.idea/
+
+#ileNode.js/paket yöneticisi kullanırsan:
+node_modules/

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Üye Kayıt Formu</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body id="kayitgövde" style="flex-direction: column;">
+<h1 class="form1">Üye Kayıt Formu</h1>
+<p class="kayit1" style="margin: top 40px;;">Lütfen Aşağıdaki bilgileri doğru ve eksiksiz bir şekilde doldurunuz.</p>
+<br>
+<form action="#" method="POST">
+<fieldset style="margin-top:-33px;">
+<legend>Kişisel Bilgiler</legend>
+<p class="kayit1">
+        <label for="ad">Adınız:</label>
+        <input type="text" id="ad" name="ad" required placeholder="Ahmet">
+</p>
+<p class="kayit1">
+    <label for="Soyad">Soyadınız:</label>
+    <input type="text" id="soyad" name="soyad" required placeholder="Yücel">
+</p>
+<p class="kayit1">
+    <label for="dogum">Doğum Tarihiniz:</label>
+    <input type="date" id="dogum" name="dogum" >
+</p> 
+
+</fieldset>
+<br>
+<fieldset style="margin-top:-20px;">
+    <legend>Hesap Bilgileri</legend>
+<p class="kayit1">
+    <label for="eposta">E-Posta Adresi:</label>
+    <input type="email" id="eposta" name="eposta"  repuired placeholder="ornek@mail.com">
+</p>
+<p class="kayit1">
+    <label for="sifre">Şifre:</label>
+    <input type="password" id="sifre" name="sifre" repuired>
+</p>
+<p class="kayit1">
+
+<label for="sehir">Yaşadığınız Şehir:</label>
+<select name="sehir" id="sehir">
+<option value="">Seçiniz</option>
+<option value="İstanbuk">İstanbul</option>
+<option value="Ankara">Ankara</option>
+<option value="Bursa">Bursa</option>
+<option value="Adana">Adana</option>
+<option value="Niğde">Niğde</option>
+<option value="İzmir">İzmir</option>
+</select> 
+</p>
+</fieldset>
+<p class="kayit1" style="margin-top:-5px;">
+<label for="biyografi">Biraz Kendinizden Bahsedin</label>
+<textarea name="biyografi" id="biyografi"  rows="5" cols="200" placeholder="Hobileriniz,İlgi Alanlarınız..." style="resize: vertical; width: 50%;"></textarea>
+</p>
+<p class="kayit1" style="display: inline-flex;align-items:center;min-width: auto; margin-top:-10px;">
+    <input type="checkbox" name="sozlesme" id="sozlesme" required style="flex-direction: row;margin-left: 10px;" class="kayit2"> 
+    <label for="sozlesme" style="font-size: large;margin-left:-10px; "class="kayit2"  >Kullanım Şartlarını ve Üyelik sözleşmesini okudum,kabul ediyorum</label>
+    
+</p>
+
+<details class="detay1" style="margin-top:-10px;">
+     
+            <summary style="display: inline-block; padding: 5px 10px; background: #e0e0e0; border: 1px solid #cccccc; cursor: pointer; font-size: large; gap: 10px;">
+                Kaydet
+                  <button type="reset" style="padding: 5px 10px !important;font-size: medium; background-color: #e0e0e0 !important;  font-weight: bold !important; border: 1px solid #cccccc !important; border-radius: 4px !important; cursor: pointer !important; height: 41px !important;">
+        Temizle
+    </button>
+            </summary>
+
+            <p style="color: green; font-weight: bold;">
+                ✓ Kayıt işlemi başarıyla tamamlandı!
+            </p>
+        
+         
+ </details>
+
+
+</form>
+
+</body>
+</html>
