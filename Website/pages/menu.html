@@ -1,14 +1,107 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
-    <title>Document</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../public/css/style.css">
+    <title>Menü | Lezzet Mührü</title>
 </head>
 <body>
     
+    <header class="main-header">
+        <div class="container header-container">
+ <div class="logo">
+   <a href="index.html"><img src="../public/images/logo.png" class="logo-img" alt="Lezzet Mührü Logo"></a>
+ </div>
+     <nav class="main-navbar">
+        <ul>
+            <li><a href="index.html">Anasayfa</a></li>
+            <li><a href="menu.html" class="active">Menü</a></li>
+            <li><a href="hakkimizda.html">Hakkımızda</a></li>
+            <li><a href="galeri.html">Galeri</a></li>
+            <li><a href="iletisim.html">İletişim</a></li>
+        </ul>
+            </nav>
+        </div>
+    </header>
+
+    
+    <main class="main-content">
+        <section class="menu-hero" style="text-align: center; padding: 40px 0 20px 0;">
+            <div class="container">
+                <h1 style="color: var(--primary-kiremit); margin-bottom: 10px;">Lezzet Mührü Menü</h1>
+                <p style="color: var(--color-text-muted); font-size: 1.2rem;">1932'den beri değişmeyen tarifler, usta ellerden sofranıza</p>
+            </div>
+        </section>
+
+      
+<section class="menu-section" style="padding-bottom: 60px;">
+    <div class="container">
+    <div class="filter-buttons">
+        <button class="filter-btn active" data-kategori="tumu">Tüm Lezzetler</button>
+        <button class="filter-btn" data-kategori="kebap">Kebaplar</button>
+        <button class="filter-btn" data-kategori="pide">Pideler</button>
+        <button class="filter-btn" data-kategori="sis">Şişler</button>
+        <button class="filter-btn" data-kategori="lahmacun">Lahmacunlar</button>
+        <button class="filter-btn" data-kategori="salata">Salatalar</button>
+        <button class="filter-btn" data-kategori="tatli">Tatlılar</button>
+        <button class="filter-btn" data-kategori="icecek">İçecekler</button>
+    </div>
+
+                
+<div class="dishes-grid" id="menu-grid">
+                   
+</div>
+    </div>
+</section>
+</main>
+
+    
+    <footer class="main-footer">
+        <div class="container footer-container">
+        <div class="footer-col">
+            <a href="index.html"><img src="../public/images/logo.png" alt="Lezzet Mührü Logo" class="logo footer-logo-img"></a>
+            <p class="footer-text">Geleneksel tarifler, asırlık lezzet ve ızgara ustalığıyla 1932'den beri sofralarınıza mühür vuruyoruz.</p>
+        </div>
+            
+        <div class="footer-col">
+            <h3>İletişim</h3>
+            <ul class="footer-contact-list">
+             <li><span class="icon">📍</span><span>Akkent Mahallesi, Kemalpaşa Caddesi, No:77, Şahinbey / Gaziantep</span></li>
+             <li><span class="icon">📞</span><a href="tel:02325137567">0 232 513 75 67</a></li>
+             <li><span class="icon">✉️</span><a href="mailto:info@lezzetmuhru.com">info@lezzetmuhru.com</a></li>
+            </ul>
+            </div>
+
+    <div class="footer-col">
+        <h3>Çalışma Saatleri</h3>
+         <div class="working-hours">
+            <p><strong>Pazartesi - Cuma</strong><br> 10:00 - 22:00</p>
+            <p><strong>Cumartesi - Pazar</strong><br>12:00 - 23:00</p>
+         </div>
+            </div>
+
+        <div class="footer-col">
+         <h3>Bizi Takip Edin</h3>
+        <div class="social-links">
+            <a href="https://www.instagram.com" target="_blank" aria-label="İnstagram"><i class="fa-brands fa-instagram"></i></a>
+            <a href="https://www.facebook.com" target="_blank" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+            <a href="https://twitter.com" target="_blank" aria-label="X / Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+        </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+        <div class="container">
+            <p>&copy; 1932 - 2026 Lezzet Mührü. Tüm hakları saklıdır.</p>
+        </div>
+        </div>
+    </footer>
+
+    
+    <script src="../public/js/main.js"></script>
 </body>
 </html>
