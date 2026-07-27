@@ -70,7 +70,7 @@ const yemekler=[
     kategori: "pide",
     fiyat: 310,
     aciklama: "Geleneksel dana kavurma ve uzayan kaşar peynirinin muazzam uyumu",
-    resim: "../public/images/kavurmali-pide.png",
+    resim: "../public/images/kavurmali-pide.jpg",
     oneCikan: false
   },
   {
@@ -140,7 +140,7 @@ const yemekler=[
     oneCikan: true
   },
   {
-    id: 17,
+    id: 16,
     ad: "Fındık Lahmacun (3'lü) ",
     kategori: "lahmacun",
     fiyat: 180,
@@ -149,7 +149,7 @@ const yemekler=[
     oneCikan: false
   },
   {
-    id: 29,
+    id: 28,
     ad: "Antep Usulü Sarımsaklı Lahmacun",
     kategori: "lahmacun",
     fiyat: 170,
@@ -160,7 +160,7 @@ const yemekler=[
 
   
   {
-    id: 30,
+    id: 29,
     ad: "Gavurdağı Salatası",
     kategori: "salata",
     fiyat: 140,
@@ -169,7 +169,7 @@ const yemekler=[
     oneCikan: false
   },
   {
-    id: 31,
+    id: 30,
     ad: "Acılı Ezme Salata",
     kategori: "salata",
     fiyat: 120,
@@ -178,7 +178,7 @@ const yemekler=[
     oneCikan: false
   },
   {
-    id: 32,
+    id: 31,
     ad: "Klasik Çoban Salatası",
     kategori: "salata",
     fiyat: 110,
@@ -187,7 +187,7 @@ const yemekler=[
     oneCikan: false
   },
   {
-    id: 33,
+    id: 32,
     ad: "Tulum Peynirli Roka Salatası",
     kategori: "salata",
     fiyat: 150,
@@ -196,7 +196,7 @@ const yemekler=[
     oneCikan: false
   },
   {
-    id: 34,
+    id: 33,
     ad: "Urfa Usulü Bostana",
     kategori: "salata",
     fiyat: 130,
@@ -206,7 +206,7 @@ const yemekler=[
   },
 
   {
-    id: 18,
+    id: 17,
     ad: "Fıstıklı Künefe",
     kategori: "tatli",
     fiyat: 160,
@@ -215,7 +215,7 @@ const yemekler=[
     oneCikan: false
   },
   {
-    id: 19,
+    id: 18,
     ad: "Havuç Dilim Baklava",
     kategori: "tatli",
     fiyat: 180,
@@ -224,7 +224,7 @@ const yemekler=[
     oneCikan: false
   },
   {
-    id: 20,
+    id: 19,
     ad: "Geleneksel Katmer",
     kategori: "tatli",
     fiyat: 190,
@@ -233,7 +233,7 @@ const yemekler=[
     oneCikan: false
   },
   {
-    id: 21,
+    id: 20,
     ad: "Fırın Sütlaç",
     kategori: "tatli",
     fiyat: 110,
@@ -242,7 +242,7 @@ const yemekler=[
     oneCikan: false
   },
   {
-    id: 22,
+    id: 21,
     ad: "Dondurmalı İrmik Helvası",
     kategori: "tatli",
     fiyat: 120,
@@ -253,7 +253,7 @@ const yemekler=[
 
  
   {
-    id: 23,
+    id: 22,
     ad: "Köpüklü Yayık Ayranı",
     kategori: "icecek",
     fiyat: 50,
@@ -262,7 +262,7 @@ const yemekler=[
     oneCikan: false
   },
   {
-    id: 24,
+    id: 23,
     ad: "Acılı / Acısız Şalgam",
     kategori: "icecek",
     fiyat: 45,
@@ -271,7 +271,7 @@ const yemekler=[
     oneCikan: false
   },
   {
-    id: 25,
+    id: 24,
     ad: "Ev Yapımı Limonata",
     kategori: "icecek",
     fiyat: 60,
@@ -280,7 +280,7 @@ const yemekler=[
     oneCikan: false
   },
   {
-    id: 26,
+    id: 25,
     ad: "Niğde Gazozu",
     kategori: "icecek",
     fiyat: 45,
@@ -289,7 +289,7 @@ const yemekler=[
     oneCikan: false
   },
   {
-    id: 27,
+    id: 26,
     ad: "Türk Kahvesi",
     kategori: "icecek",
     fiyat: 60,
@@ -298,7 +298,7 @@ const yemekler=[
     oneCikan: false
   },
   {
-    id: 28,
+    id: 27,
     ad: "Taze Demleme Çay",
     kategori: "icecek",
     fiyat: 25,
