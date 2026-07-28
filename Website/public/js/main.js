@@ -53,7 +53,7 @@ const yemekler = [
     resim: "../public/images/dugun-corbasi.jpg",
     oneCikan: false,
     sefinOnerisi: false,
-    vejetaryen: true
+    vejetaryen: false
   },
 
 
@@ -367,7 +367,7 @@ const yemekler = [
     ad: "Havuç Dilim Baklava",
     kategori: "tatli",
     fiyat: 180,
-    aciklama: "İncecik yufkalar, bol fıstık ve yanında kesme Maraş dondurması ile",
+    aciklama: "İncecik yufkalar, bol fıstık ile karşınızda",
     resim: "../public/images/havuc-dilim.jpg",
     oneCikan: false,
     sefinOnerisi: false,
@@ -389,7 +389,7 @@ const yemekler = [
     ad: "Fırın Sütlaç",
     kategori: "tatli",
     fiyat: 110,
-    aciklama: "Toprak güveçte nar gibi kızarmış, bol fındık kırığı eşliğinde",
+    aciklama: "Toprak güveçte nar gibi kızarmış geleneksel lezzet",
     resim: "../public/images/sutlac.jpg",
     oneCikan: false,
     sefinOnerisi: false,
@@ -400,7 +400,7 @@ const yemekler = [
     ad: "Dondurmalı İrmik Helvası",
     kategori: "tatli",
     fiyat: 120,
-    aciklama: "Tereyağında kavrulmuş sıcak irmik helvası içinde saklı keçi sütlü dondurma",
+    aciklama: "Tereyağında kavrulmuş sıcak irmik helvası ortasında keçi sütlü dondurma ile",
     resim: "../public/images/irmik.jpg",
     oneCikan: false,
     sefinOnerisi: false,
@@ -447,7 +447,7 @@ const yemekler = [
     kategori: "icecek",
     fiyat: 45,
     aciklama: "Ahududu aromalı, geleneksel Türk gazozu lezzeti",
-    resim: "../public/images/gazoz.jpg",
+    resim: "../public/images/gazoz.png",
     oneCikan: false,
     sefinOnerisi: false,
     vejetaryen: true
@@ -499,7 +499,7 @@ document.addEventListener("DOMContentLoaded", () => {
               ${vejetaryenHTML}
             </div>
             <div class="dish-img-container">
-              <img src="${yemek.resim}" alt="${yemek.ad}" class="dish-img" loading="lazy">
+             <img src="${yemek.resim}" alt="${yemek.ad}" class="dish-img" loading="lazy" decoding="async">
             </div>
             <div class="dish-info">
               <h3>${yemek.ad}</h3>
@@ -533,6 +533,26 @@ document.addEventListener("DOMContentLoaded", () => {
           );
           yemekleriListele(filtrelenmis);
         }
+      });
+    });
+  }
+});
+document.addEventListener("DOMContentLoaded", () => {
+  const backToTopBtn = document.getElementById("backToTop");
+
+  if (backToTopBtn) {
+    window.addEventListener("scroll", () => {
+      if (window.scrollY > 300) {
+        backToTopBtn.classList.add("show");
+      } else {
+        backToTopBtn.classList.remove("show");
+      }
+    });
+
+    backToTopBtn.addEventListener("click", () => {
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
       });
     });
   }
