@@ -6,6 +6,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="../public/css/style.css">
     <title>Document</title>
 </head>
@@ -17,25 +18,76 @@
             </div>
             <nav class="main-navbar">
                 <ul>
-                    <li><a href="index.html" class="active">Anasayfa</a></li>
+                    <li><a href="index.html" >Anasayfa</a></li>
                     <li><a href="menu.html">Menü</a></li>
                     <li><a href="hakkimizda.html">Hakkımızda</a></li>
-                    <li><a href="galeri.html">Galeri</a></li>
-                    <li><a href="iletisim.html">İletişim</a></li>
+                    <li><a href="galeri.html" class="active">Galeri</a></li>
+                    <li><a href="iletisim.html" class="nav-btn">İletişim</a></li>
                     
                 </ul>
             </nav>
 </div>
 </header>
 
+ <main class="main-content">
+    <section class="gallery-section section-padding">
+        <div class="container">
+            <div class="section-title text-center">
+                <h2>Lezzet & Mekan Galerisi</h2>
+                <p>Geleneksel Lezzetlerimizden ve mekanımızdan kareler</p>
+            </div>
+
+             <div class="gallery-grid" id="galleryGrid">
+             <div class="gallery-item">
+                <img src="../public/images/gallery-1.jpg" alt="Gaziantep usulü odun ateşinde pişen zırh kıyması adana kebap" loading="lazy" decoding="async">
+                <div class="gallery-overlay"><span>Odun Ateşinde Kebap</span></div>
+             </div>
+              <div class="gallery-item">
+                <img src="../public/images/gallery-2.jpg" alt="Geleneksel Taş Fırınından yeni çıkmış çıtır kıymalı Pide" loading="lazy" decoding="async">
+                <div class="gallery-overlay"><span>Taş Fırın Pide</span></div>
+             </div>
+              <div class="gallery-item">
+                <img src="../public/images/gallery-3.webp" alt="Antep fıstıklı el açması taze şerbetli ev Baklavası" loading="lazy" decoding="async">
+                <div class="gallery-overlay"><span>Geleneksel Baklava</span></div>
+             </div>
+              <div class="gallery-item">
+                <img src="../public/images/gallery-4.png" alt="Lezzet Mührü restoran otantik taş mimari iç mekan atmosferi" loading="lazy" decoding="async">
+                <div class="gallery-overlay"><span>Restoran İç Mekan</span></div>
+             </div>
+              <div class="gallery-item">
+                <img src="../public/images/gallery-5.jpg" alt="Kömür ateşinde nar gibi pişmiş karışık Izgara Çeşitleri" loading="lazy" decoding="async">
+                <div class="gallery-overlay"><span>Izgara Çeşitleri</span></div>
+             </div>
+              <div class="gallery-item">
+                <img src="../public/images/gallery-6.jpg" alt="Sıcak şerbetli çıtır künefe" loading="lazy" decoding="async">
+                <div class="gallery-overlay"><span>Çıtır Künefe</span></div>
+             </div>
+              <div class="gallery-item">
+                <img src="../public/images/gallery-7.jpg" alt="Açık havada yemek keyfi sunan Ferah restoran Bahçesi" loading="lazy" decoding="async">
+                <div class="gallery-overlay"><span>Ferah Bahçe Alanımız</span></div>
+             </div>
+              <div class="gallery-item">
+                <img src="../public/images/gallery-8.jpg" alt="İncecik hamurlu taş fırında pişen Gaziantep lahmacunu" loading="lazy" decoding="async">
+                <div class="gallery-overlay"><span>Gaziantep Lahmacunu</span></div>
+             </div> 
+               <div class="gallery-item">
+                <img src="../public/images/gallery-9.jpg" alt="Bol Zeytinyağıyla karışan mükemmel mezelerimiz" loading="lazy" decoding="async">
+                <div class="gallery-overlay"><span>Mezeler</span></div>
+             </div> 
+             </div>
+        </div>
+    </section>
+ </main>
 
 
 
 
 
-
-
-
+    <button id="backToTop" class="back-to-top" title="Yukarı Çık">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 15l-6-6-6 6"/>
+        </svg>
+    </button>
 
 
       <footer class="main-footer ">
@@ -79,5 +131,14 @@
         </div>
 
    </footer>
+   <div id="imageModal" class="image-modal">
+    <div class="modal-wrapper">
+      <span class="modal-close">&times;</span>
+      <img class="modal-content" id="modalImg" alt="Büyük Görsel">
+      <div id="modalCaption" class="modal-caption-text"></div>
+    </div>
+  </div>
+
+   <script src="../public/js/main.js"></script>
 </body>
 </html>

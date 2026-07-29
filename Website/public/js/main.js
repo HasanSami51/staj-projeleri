@@ -538,6 +538,9 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 document.addEventListener("DOMContentLoaded", () => {
+  
+
+
   const backToTopBtn = document.getElementById("backToTop");
 
   if (backToTopBtn) {
@@ -556,4 +559,54 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     });
   }
+  const modal = document.getElementById("imageModal");
+  const modalImg = document.getElementById("modalImg");
+  const modalCaption = document.getElementById("modalCaption");
+  const closeBtn = document.querySelector(".modal-close");
+  const galleryItems = document.querySelectorAll(".gallery-item");
+
+  if (modal && galleryItems.length > 0) {
+    galleryItems.forEach(item => {
+      item.addEventListener("click", () => {
+        const img = item.querySelector("img");
+        const caption = item.querySelector(".gallery-caption");
+
+        if (img && img.src) {
+          modal.classList.add("active");
+          modalImg.src = img.src;
+          modalImg.alt = img.alt;
+          modalCaption.textContent = caption ? caption.textContent : img.alt;
+          document.body.style.overflow = "hidden"; 
+        }
+      });
+    });
+
+    
+    if (closeBtn) {
+      closeBtn.addEventListener("click", closeModal);
+    }
+
+    
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) {
+        closeModal();
+      }
+    });
+
+    
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && modal.classList.contains("active")) {
+        closeModal();
+      }
+    });
+  }
+
+  function closeModal() {
+    if (modal) {
+      modal.classList.remove("active");
+      document.body.style.overflow = "auto"; 
+    }
+  }
+
 });
+
