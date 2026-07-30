@@ -1,14 +1,158 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
-    <title>Document</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Masa Rezervasyonu | Lezzet Mührü</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="../public/css/style.css">
 </head>
 <body>
+     <header class="main-header">
+    <div class="container header-container">
+      <div class="logo">
+        <a href="index.html"><img src="../public/images/logo.png" class="logo-img" alt="Lezzet Mührü Logo"></a>
+      </div>
+      <nav class="main-navbar">
+        <ul>
+          <li><a href="index.html">Anasayfa</a></li>
+          <li><a href="menu.html">Menü</a></li>
+          <li><a href="hakkimizda.html">Hakkımızda</a></li>
+          <li><a href="galeri.html">Galeri</a></li>
+          <li><a href="iletisim.html" class="active nav-btn">İletişim</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+    <main class="main-content">
+        <section class="reservation-section section-padding">
+            <div class="container">
+                <div class="section-title text-center">
+                    <h2>Masa Rezervasyonu</h2>
+                    <p>Asırlık lezzetlerimizi yerinde deneyimlemek için masanızı şimdiden ayırtın</p>
+                </div>
+                <div class="reservation-form-container">
+                   <form id="reservationForm" class="reservation-form" novalidate>
+  <div id="resFormAlert" class="form-alert" style="display: none;">
+    <i class="fa-solid fa-circle-check"></i>
+    <span>Rezervasyon talebiniz alındı! Teyit için en kısa sürede sizi arayacağız.</span>
+  </div>
+
+  <div class="form-grid">
+  
+    <div class="form-group">
+      <label for="resName">Adınız Soyadınız <span class="required-star">*</span></label>
+      <input type="text" id="resName" name="name" placeholder="Örn: Mehmet Ünal" required minlength="3" maxlength="50" title="Lütfen en az 3 karakterden oluşan adınızı giriniz.">
+    </div>
+
     
+    <div class="form-group">
+      <label for="resPhone">Telefon Numaranız <span class="required-star">*</span></label>
+      <input type="tel" id="resPhone" name="phone" placeholder="05XXXXXXXXX" required pattern="05[0-9]{9}" title="Lütfen 05 ile başlayan 11 haneli cep telefonunuzu giriniz.">
+    </div>
+
+  
+    <div class="form-group">
+      <label for="resDate">Rezervasyon Tarihi <span class="required-star">*</span></label>
+      <div class="input-picker-wrapper">
+        <input type="text" id="resDate" name="date" placeholder="Tarih Seçiniz" readonly required>
+        <input type="date" id="hiddenNativeDate" min="2026-07-30" tabindex="-1" class="hidden-picker-element">
+      </div>
+    </div>
+
+    
+    <div class="form-group">
+      <label for="resTime">Saat <span class="required-star">*</span></label>
+      <div class="input-picker-wrapper">
+        <input type="text" id="resTime" name="time" placeholder="Saat Seçiniz" readonly required>
+        <input type="time" id="hiddenNativeTime" min="10:00" max="22:00" step="900" tabindex="-1" class="hidden-picker-element">
+      </div>
+    </div>
+
+    
+    <div class="form-group full-width">
+      <label for="resGuests">Kişi Sayısı <span class="required-star">*</span></label>
+      <input type="number" id="resGuests" name="guests" placeholder="Örn: 4" required min="1" max="20" title="Tek seferde en fazla 20 kişilik rezervasyon yapılabilir.">
+    </div>
+
+    
+    <div class="form-group full-width">
+      <label for="resNotes">Özel İstekler / Notlar</label>
+      <textarea id="resNotes" name="notes" rows="4" placeholder="Alerjen durumları, özel gün (doğum günü vb.) veya masa tercihinizi belirtebilirsiniz..." maxlength="300"></textarea>
+    </div>
+  </div>
+
+  <div class="form-submit-btn text-center">
+    <button type="submit" class="btn-primary">
+      <i class="fa-solid fa-calendar-check"></i> Rezervasyon Yap
+    </button>
+  </div>
+</form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+
+
+
+    
+
+     <button id="backToTop" class="back-to-top" title="Yukarı Çık">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M18 15l-6-6-6 6"/>
+    </svg>
+  </button>
+
+  
+  <footer class="main-footer">
+    <div class="container footer-container">
+      
+      <div class="footer-col">
+        <a href="index.html"><img src="../public/images/logo.png" alt="Lezzet Mührü Logo" class="logo footer-logo-img"></a>
+        <p class="footer-text">Geleneksel tarifler, asırlık lezzet ve ızgara ustalığıyla 1932'den beri sofralarınıza mühür vuruyoruz.</p>
+      </div>
+
+      <div class="footer-col">
+        <h3>İletişim</h3>
+        <ul class="footer-contact-list">
+          <li><span class="icon">📍</span><span>Akkent Mahallesi, Kemalpaşa Caddesi, No:77, Şahinbey / Gaziantep</span></li>
+          <li><span class="icon">📞</span><a href="tel:02325137567">0 232 513 75 67</a></li>
+          <li><span class="icon">✉️</span><a href="mailto:info@lezzetmuhru.com">info@lezzetmuhru.com</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h3>Çalışma Saatleri</h3>
+       <div class="working-hours">
+        <p><strong>Pazartesi - Perşembe:</strong> 10:00 - 22:00</p>
+        <p><strong>Cuma - Cumartesi:</strong> 10:00 - 23:00</p>
+        <p><strong>Pazar:</strong> <span class="status-badge closed">Kapalı</span></p>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h3>Bizi Takip Edin</h3>
+        <div class="social-links">
+          <a href="https://www.instagram.com" target="_blank" aria-label="İnstagram"><i class="fa-brands fa-instagram"></i></a>
+          <a href="https://www.facebook.com" target="_blank" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+          <a href="https://twitter.com" target="_blank" aria-label="X / Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="footer-bottom">
+      <div class="container">
+        <p>&copy; 1932 - 2026 Lezzet Mührü. Tüm hakları saklıdır.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../public/js/main.js"></script>
 </body>
 </html>

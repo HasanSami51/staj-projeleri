@@ -1,14 +1,230 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
-    <title>Document</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>İletişim | Lezzet Mührü</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="../public/css/style.css">
 </head>
 <body>
-    
+
+  <!-- Header -->
+  <header class="main-header">
+    <div class="container header-container">
+      <div class="logo">
+        <a href="index.html"><img src="../public/images/logo.png" class="logo-img" alt="Lezzet Mührü Logo"></a>
+      </div>
+      <nav class="main-navbar">
+        <ul>
+          <li><a href="index.html">Anasayfa</a></li>
+          <li><a href="menu.html">Menü</a></li>
+          <li><a href="hakkimizda.html">Hakkımızda</a></li>
+          <li><a href="galeri.html">Galeri</a></li>
+          <li><a href="iletisim.html" class="active nav-btn">İletişim</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  
+  <main class="main-content">
+    <section class="contact-section section-padding">
+      <div class="container">
+        
+        <div class="section-title text-center">
+          <h2>Bizimle İletişime Geçin</h2>
+          <p>Geleneksel lezzetlerimizi tatmak ve sorularınız için bize ulaşın</p>
+        </div>
+
+        <div class="contact-wrapper">
+          
+          
+          <div class="contact-info-card">
+            <h3>İletişim Bilgilerimiz</h3>
+            <p class="info-desc">Asırlık lezzet mirasımızı yerinde deneyimlemek veya rezervasyon yaptırmak için iletişim kanallarımızdan bize ulaşabilirsiniz.</p>
+
+            <ul class="contact-detail-list">
+              <li>
+                <div class="icon-box"><i class="fa-solid fa-location-dot"></i></div>
+                <div class="text-box">
+                  <strong>Adres</strong>
+                  <span>Akkent Mahallesi, Kemalpaşa Caddesi, No:77, Şahinbey / Gaziantep</span>
+                </div>
+              </li>
+              <li>
+                <div class="icon-box"><i class="fa-solid fa-phone"></i></div>
+                <div class="text-box">
+                  <strong>Telefon</strong>
+                  <a href="tel:02325137567">0 232 513 75 67</a>
+                </div>
+              </li>
+              <li>
+                <div class="icon-box"><i class="fa-solid fa-envelope"></i></div>
+                <div class="text-box">
+                  <strong>E-Posta</strong>
+                  <a href="mailto:info@lezzetmuhru.com">info@lezzetmuhru.com</a>
+                </div>
+              </li>
+              <li>
+                <div class="icon-box"><i class="fa-solid fa-clock"></i></div>
+                <div class="text-box">
+                  <strong>Çalışma Saatleri</strong>
+                  <span>Pazartesi - Perşembe: 10:00 - 22:00</span>
+                  <span>Cuma - Cumartesi: 11:00 - 23:00 (Pazar Kapalı)</span>
+                </div>
+              </li>
+            </ul>
+           <div class="location-features">
+            <span class="feature-badge"><i class="fa-solid fa-square-parking"></i>Ücretsiz Otopark & Vale</span>
+            <span class="feature-badge"><i class="fa-solid fa-bus"></i>Otobüs Durağına 50m</span>
+            <span class="feature-badge"><i class="fa-solid fa-wifi"></i>Ücretsiz Wi-Fi</span>
+           </div>
+          </div>
+
+          <div class="map-container">
+            <iframe 
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d12732.183182873832!2d37.3315!3d37.0350!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1531e13460df6495%3A0x6b4904bc36209ef7!2sGaziantep%2C%20%C5%9Eahinbey!5e0!3m2!1str!2str!4v1700000000000!5m2!1str!2str" 
+              width="100%" 
+              height="100%" 
+              style="border:0;" 
+              allowfullscreen="" 
+              loading="lazy" 
+              referrerpolicy="no-referrer-when-downgrade"
+              title="Lezzet Mührü Harita Konumu">
+            </iframe>
+          </div>
+        </div>
+         <div class="contact-form-container">
+            
+            <div class="form-header text-center">
+                <h3>Bize Mesaj Gönderin</h3>
+                <p>Görüşleriniz,önerileriniz veya sorularınız için aşağıdaki formu doldurabilirsiniz.</p>
+            </div>
+            <form id="contactForm" class="contact-form" novalidate>
+                <div id="formAlert" class="form-alert" style="display: none;">
+                    <i class="fa-solid fa-circle-check"></i>
+                    <span>Mesajınız başarıyla iletildi! En kısa sürede sizinle iletişime geçeceğiz.</span>
+                </div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="contactName">Adınız Soyadınız <span class="required-star">*</span></label>
+                        <input 
+                        type="text"
+                        id="contactName"
+                        name="name"
+                        placeholder="Örn:Ahmet Demir"
+                        required
+                        minlength="3"
+                        maxlength="50"
+                        title="lütfen en az 3 karakterden oluşan adınızı ve soaydınızı giriniz.">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="contactEmail">E-Posta Adresiniz <span class="required-star">*</span></label>
+                         <input 
+                        type="email"
+                        id="contactEmail"
+                        name="email"
+                        placeholder="Örn:Ahmet@example.com"
+                        required
+                        title="lütfen geçerli bir e-posta giriniz.">
+                    </div>
+                    <div class="form-group  full-width">
+                        <label for="contactSubject">Mesaj Konusu<span class="required-star">*</span></label>
+                         <input 
+                        type="text"
+                        id="contactSubject"
+                        name="subject"
+                        placeholder="Örn:Rezervasyon / Özel Etkinlik / Öneri"
+                        required
+                        minlength="3"
+                        maxlength="100"
+                        title="lütfen mesaj konusunu belirtiniz.">
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="contactMessage">Mesajınız <span class="required-star">*</span></label>
+                         <textarea
+                        id="contactMessage"
+                        name="message"
+                        rows="5"
+                        placeholder="Notunuzu veya sorunuzu buraya yazabilirsiniz..."
+                        required
+                        minlength="10"
+                        maxlength="500"
+                        title="lütfen en az 10 karakterli bir mesaj yazınız.">
+                         </textarea>
+                    </div>
+                </div>
+
+                <div class="form-submit-btn text-center">
+                    <button type="submit" class="btn-primary">
+                        <i class="fa-solid fa-paper-plane"></i>Mesajı Gönder
+                    </button>
+                </div>
+            </form>
+         </div>
+
+      </div>
+    </section>
+  </main>
+
+  
+  <button id="backToTop" class="back-to-top" title="Yukarı Çık">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M18 15l-6-6-6 6"/>
+    </svg>
+  </button>
+
+  
+  <footer class="main-footer">
+    <div class="container footer-container">
+      
+      <div class="footer-col">
+        <a href="index.html"><img src="../public/images/logo.png" alt="Lezzet Mührü Logo" class="logo footer-logo-img"></a>
+        <p class="footer-text">Geleneksel tarifler, asırlık lezzet ve ızgara ustalığıyla 1932'den beri sofralarınıza mühür vuruyoruz.</p>
+      </div>
+
+      <div class="footer-col">
+        <h3>İletişim</h3>
+        <ul class="footer-contact-list">
+          <li><span class="icon">📍</span><span>Akkent Mahallesi, Kemalpaşa Caddesi, No:77, Şahinbey / Gaziantep</span></li>
+          <li><span class="icon">📞</span><a href="tel:02325137567">0 232 513 75 67</a></li>
+          <li><span class="icon">✉️</span><a href="mailto:info@lezzetmuhru.com">info@lezzetmuhru.com</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h3>Çalışma Saatleri</h3>
+       <div class="working-hours">
+        <p><strong>Pazartesi - Perşembe:</strong> 10:00 - 22:00</p>
+        <p><strong>Cuma - Cumartesi:</strong> 10:00 - 23:00</p>
+        <p><strong>Pazar:</strong> <span class="status-badge closed">Kapalı</span></p>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h3>Bizi Takip Edin</h3>
+        <div class="social-links">
+          <a href="https://www.instagram.com" target="_blank" aria-label="İnstagram"><i class="fa-brands fa-instagram"></i></a>
+          <a href="https://www.facebook.com" target="_blank" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+          <a href="https://twitter.com" target="_blank" aria-label="X / Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="footer-bottom">
+      <div class="container">
+        <p>&copy; 1932 - 2026 Lezzet Mührü. Tüm hakları saklıdır.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../public/js/main.js"></script>
 </body>
 </html>
