@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,10 +16,14 @@
       <div class="logo">
         <a href="index.html"><img src="../public/images/logo.png" class="logo-img" alt="Lezzet Mührü Logo"></a>
       </div>
-      <nav class="main-navbar">
+       <button class="hamburger-btn" id="hamburgerBtn" aria-label="Menüyü Aç/Kapat">
+              <i class="fa-solid fa-bars"></i>
+            </button>
+      <nav class="main-navbar" id="mainNavbar">
         <ul>
           <li><a href="index.html">Anasayfa</a></li>
           <li><a href="menu.html">Menü</a></li>
+          <li><a href="rezervasyon.html" class="active">Rezervasyon</a></li>
           <li><a href="hakkimizda.html">Hakkımızda</a></li>
           <li><a href="galeri.html">Galeri</a></li>
           <li><a href="iletisim.html" class="active nav-btn">İletişim</a></li>
@@ -76,7 +80,7 @@
     
     <div class="form-group full-width">
       <label for="resGuests">Kişi Sayısı <span class="required-star">*</span></label>
-      <input type="number" id="resGuests" name="guests" placeholder="Örn: 4" required min="1" max="20" title="Tek seferde en fazla 20 kişilik rezervasyon yapılabilir.">
+      <input type="number" id="resGuests" name="guests" placeholder="Örn: 4" required min="1" max="10" title="Tek seferde en fazla 10 kişilik rezervasyon yapılabilir.">
     </div>
 
     

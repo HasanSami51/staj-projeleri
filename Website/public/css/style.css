@@ -44,7 +44,12 @@
   --shadow-sm: 0 2px 4px rgba(0,0,0,0.1);
   --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
 }
-
+body.no-scroll {
+  overflow: hidden;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+}
 * {
   margin: 0;
   padding: 0;
@@ -84,9 +89,13 @@ h3 { font-size: var(--fs-h3); }
 h4 { font-size: var(--fs-h4); }
 
 .container {
-  width: 90%;
+  width: 100%;
   max-width: 1200px;
-  margin: 0 auto;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  padding-left:20px ;
+  padding-right: 20px;
+  box-sizing: border-box;
 }
 header .main-navbar ul li a.nav-btn,
 header .main-navbar ul li a.nav-btn.active {
@@ -397,7 +406,23 @@ header nav a.active {
   margin-bottom: 1.25rem;
   text-shadow: 0 2px 10px rgba(49, 48, 48, 0.5);
 }
+.hero-section {
+  min-height: auto !important;     
+  padding-top: 100px !important;    
+  padding-bottom: 100px !important; 
+  margin-bottom: 0 !important;      
+}
 
+
+.hero-content {
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+
+.hero-content .btn-primary {
+  margin-bottom: 0 !important;
+}
 .hero-subtitle {
   font-size: var(--fs-body-lg);
   color: var(--color-text-light);
@@ -486,6 +511,19 @@ header nav a.active {
 .dish-img-container {
   overflow: hidden;
   width: 100%;
+  height: 200px;
+  border-radius: 8px 8px 0 0;
+}
+.dish-img-container img{
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  display: block;
+}
+#menu-grid{
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px,1fr));
+  gap:20px;
 }
 
 .dish-info {
@@ -697,6 +735,12 @@ header nav a.active {
     flex-shrink: 0 !important;
     white-space: nowrap !important;
   }
+  .dish-card img,
+  .dish-img{
+    width: 100;
+    height: 200px;
+    object-fit: cover;
+  }
 }
 
 @media(max-width: 600px) {
@@ -867,6 +911,45 @@ header nav a.active {
   background-color: var(--accent-baharat);
   transform: translateY(-5px);
 }
+.featured-dishes {
+  text-align: center !important;
+  padding: 40px 0 !important;
+}
+
+.featured-dishes .container,
+.featured-dishes .about-container {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+}
+
+
+.featured-dishes .section-title {
+  text-align: center !important;
+  font-size: 2.2rem !important;
+  margin: 0 0 8px 0 !important;  
+  padding: 0 !important;
+  width: 100% !important;
+  color: #1a1a1a;
+}
+
+
+.featured-dishes .section-subtitle {
+  text-align: center !important;
+  font-size: 1rem !important;
+  margin: 0 0 35px 0 !important;  
+  padding: 0 !important;
+  color: #6b7280;
+  width: 100% !important;
+}
+
+
+.featured-dishes .dishes-grid {
+  width: 100% !important;
+  margin-top: 0 !important;
+}
 .section-padding{
   padding: 60px 0;
 }
@@ -960,7 +1043,7 @@ header nav a.active {
 }
 .team-card{
   background: var(--color-white);
-  border-radius: 16px;
+  border-radius: 12px;
   overflow: hidden;
   box-shadow: var(--shadow-sm);
   transition: transform 0.3s ease,box-shadow 0.3s ease;
@@ -973,7 +1056,7 @@ header nav a.active {
 }
 .team-img-wrapper{
   width: 100%;
-  height: 260px;
+  height: 300px;
   overflow: hidden;
 }
 .team-img-wrapper img{
@@ -984,6 +1067,10 @@ header nav a.active {
 }
 .team-card:hover .team-img-wrapper img{
   transform: scale(1.05);
+}
+.team-info{
+  padding: 20px;
+  text-align: center;
 }
 .team-info h3{
   font-size:1.2rem;
@@ -1737,4 +1824,100 @@ to{
     opacity: 1;
     transform: translateY(0);
   }
+}
+.main-header {
+  position: relative !important;
+}
+/* Masaüstünde Hamburger Butonunu Gizle */
+.hamburger-btn {
+  display: none;
+}
+
+/* Mobil ve Tablet (768px ve Altı) */
+@media (max-width: 768px) {
+  .header-container {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+  }
+
+  .hamburger-btn {
+   display: flex !important;
+    position: absolute !important;
+    right: 20px !important;
+    top: 44px !important;
+    transform: none !important;
+    margin: 0 !important;
+    padding: 5px !important;
+    background: transparent !important;
+    border: none !important;
+    font-size: 2rem !important;
+    color: #ffffff !important;
+    cursor: pointer !important;
+    z-index: 1002 !important;
+    -webkit-tap-highlight-color: transparent !important;
+  }
+  /* Mobil Menü - SAĞ VE SOLU %100 DOLDURAN SIFIR HATA YAPISI */
+  .main-navbar {
+    position: absolute !important;
+    top: 100% !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important; /* Ekranın veya Header'ın tam genişliği */
+    background-color: #1f2937 !important;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4) !important;
+    z-index: 1000 !important;
+    /* Akıcı Açılış / Kapanış (Senin Mantığın) */
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 0.3s ease-in-out, opacity 0.25s ease-in-out;
+  }
+
+  .main-navbar.active {
+    max-height: 400px;
+    opacity: 1;
+  }
+  .main-navbar ul {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    width: 100% !important;
+    padding: 15px 0 !important;
+    margin: 0 !important;
+    list-style: none !important;
+  }
+  .main-navbar li {
+    width: 100% !important;
+    text-align: center !important;
+    margin: 8px 0 !important;
+  }
+
+  .main-navbar a,
+  .main-navbar a:visited {
+    color: #ffffff !important;
+    font-size: 1.1rem !important;
+    display: block !important;
+    width: 100% !important;
+    text-decoration: none !important;
+    -webkit-tap-highlight-color: transparent !important;
+  }
+  .main-navbar a.active {
+    color: #ff4d4d !important;
+  }
+  .main-navbar .nav-btn {
+    background-color: #8b0000 !important;
+    color: #ffffff !important;
+    display: inline-block !important;
+    width: auto !important;
+    padding: 8px 20px !important;
+    border-radius: 6px !important;
+  }
+}
+button,
+.menu-btn {
+touch-action: manipulation !important;
+-webkit-touch-callout: none !important;
+-webkit-user-select: none !important;
+user-select: none !important;
 }
