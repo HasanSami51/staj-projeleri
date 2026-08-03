@@ -4,109 +4,202 @@
 
 // --- YEMEK VERİLERİ (MENU) ---
 const yemekler = [
-  { id: 35, ad: "Geleneksel Süzme Mercimek Çorbası", kategori: "corba", fiyat: 200, aciklama: "Taş değirmen mercimeği, taze tereyağı ve özel baharatlı kıtır ekmekler ile.", resim: "../public/images/mercimek-corbasi.webp",loading:"eager", oneCikan: false, sefinOnerisi: false, vejetaryen: true },
-  { id: 36, ad: "Köz Patlıcanlı Süt Çorbası", kategori: "corba", fiyat: 220, aciklama: "Odun ateşinde közlenmiş patlıcanların süt ve taze otlarla pişirilmesiyle hazırlanan 1930'lar klasiği.", resim: "../public/images/patlican-corbasi.webp",loading:"eager", oneCikan: false, sefinOnerisi: true, vejetaryen: true },
-  { id: 37, ad: "Mahluta Çorbası", kategori: "corba", fiyat: 210, aciklama: "Kırmızı mercimek, kişniş, kimyon ve zeytinyağında sotelenmiş soğan sosuyla Güneydoğu'nun kadim çorbası.", resim: "../public/images/mahluta.webp",loading:"eager", oneCikan: false, sefinOnerisi: false, vejetaryen: true },
-  { id: 38, ad: "Süzme Ezogelin Çorbası", kategori: "corba", fiyat: 200, aciklama: "İnce bulgur, pirinç ve domates salçasıyla harmanlanmış, nane yağlı geleneksel lezzet.", resim: "../public/images/ezogelin.webp",loading:"lazy", oneCikan: false, sefinOnerisi: false, vejetaryen: true },
-  { id: 39, ad: "Düğün Çorbası ", kategori: "corba", fiyat: 230, aciklama: "Yoğurt, yumurta sarısı ve un meyhanesiyle bağlanan, üzeri pul biberli kızgın tereyağlı süzme çorba.", resim: "../public/images/dugun-corbasi.jpg",loading:"lazy", oneCikan: false, sefinOnerisi: false, vejetaryen: false },
-  { id: 1, ad: "Meşhur Adana Kebap", kategori: "kebap", fiyat: 350, aciklama: "İnce ince zırhlanmış kıyma ve leziz baharatlarla önünüzde", resim: "../public/images/Adana-Kebab.jpg",loading:"lazy", oneCikan: true, sefinOnerisi: true, vejetaryen: false },
-  { id: 4, ad: "Geleneksel Urfa Kebap", kategori: "kebap", fiyat: 340, aciklama: "Zırh kıymasından acısız lezzet, közlenmiş domates ve biber eşliğinde", resim: "../public/images/urfa-kebap.jpg",loading:"lazy", oneCikan: false, sefinOnerisi: false, vejetaryen: false },
-  { id: 5, ad: "Sarma Beyti Kebap", kategori: "kebap", fiyat: 380, aciklama: "Özel lavaşa sarılı zırh kıyması, süzme yoğurt ve tereyağlı domates sosuyla", resim: "../public/images/beyti.jpg",loading:"lazy", oneCikan: false, sefinOnerisi: false, vejetaryen: false },
-  { id: 6, ad: "Ali Nazik Kebabı", kategori: "kebap", fiyat: 400, aciklama: "Közlenmiş patlıcanlı süzme yoğurt yatağında lokum gibi zırh kebabı", resim: "../public/images/alinazik.jpg",loading:"lazy", oneCikan: false, sefinOnerisi: false, vejetaryen: false },
-  { id: 7, ad: "Antep Fıstıklı Kebap", kategori: "kebap", fiyat: 390, aciklama: "Özel kıyma harcına harmanlanmış bol taze Antep fıstığı ile", resim: "../public/images/fistikli-kebap.jpg",loading:"lazy", oneCikan: false, sefinOnerisi: false, vejetaryen: false },
-  { id: 3, ad: "Kuşbaşılı Kaşarlı Pide", kategori: "pide", fiyat: 280, aciklama: "Ağızda sünen eti yumuşacık, güzel mi güzel kuşbaşılı kaşarlı pidemiz", resim: "../public/images/pide.jpg",loading:"lazy", oneCikan: true, sefinOnerisi: false, vejetaryen: false },
-  { id: 8, ad: "Çıtır Kıymalı Pide", kategori: "pide", fiyat: 250, aciklama: "Özel kavrulmuş kıymalı harç, domates, biber ve çıtır kenarlar", resim: "../public/images/kiymali-pide.jpg",loading:"lazy", oneCikan: false, sefinOnerisi: false, vejetaryen: false },
-  { id: 9, ad: "Kavurmalı Kaşarlı Pide", kategori: "pide", fiyat: 310, aciklama: "Geleneksel dana kavurma ve uzayan kaşar peynirinin muazzam uyumu", resim: "../public/images/kavurmali-pide.jpg",loading:"lazy", oneCikan: false, sefinOnerisi: true, vejetaryen: false },
-  { id: 10, ad: "Taş Fırında Peynirli & Otlu Ege Pidesi", kategori: "pide", fiyat: 310, aciklama: "Lor peyniri, ısırgan otu, maydanoz ve zeytinyağı harcıyla odun fırınından çıkan geleneksel kıtır pide.", resim: "../public/images/ege-pidesi.jpg",loading:"lazy", oneCikan: false, sefinOnerisi: true, vejetaryen: true },
-  { id: 11, ad: "Kasap Sucuklu Pide", kategori: "pide", fiyat: 270, aciklama: "%100 dana kasap sucuğu ve bol kaşar peyniriyle", resim: "../public/images/sucuklu-pide.jpg",loading:"lazy", oneCikan: false, sefinOnerisi: false, vejetaryen: false },
-  { id: 12, ad: "Trabzon Yağlı Pidesi", kategori: "pide", fiyat: 290, aciklama: "Yerel kolot peyniri, ortasına köy yumurtası ve has tereyağı ile", resim: "../public/images/trabzon-pide.jpg",loading:"lazy", oneCikan: false, sefinOnerisi: false, vejetaryen: true },
-  { id: 13, ad: "Terbiye Kuzu Şiş", kategori: "kebap", fiyat: 390, aciklama: "Süt kuzusundan özel marine edilmiş, meşe kömüründe pişen lokum etler", resim: "../public/images/kuzu-sis.jpeg",loading:"lazy", oneCikan: false, sefinOnerisi: false, vejetaryen: false },
-  { id: 14, ad: "Meşhur Çöp Şiş", kategori: "kebap", fiyat: 370, aciklama: "Küçük kesim kuzu etleri ve kuyruk yağının kekiğe doyduğu lezzet", resim: "../public/images/cop-sis.webp",loading:"lazy", oneCikan: false, sefinOnerisi: false, vejetaryen: false },
-  { id: 15, ad: "Lokum Tavuk Şiş", kategori: "kebap", fiyat: 260, aciklama: "Süt ve özel baharatlarla marine edilmiş yumuşacık tavuk eti", resim: "../public/images/tavuk-sis.webp",loading:"lazy", oneCikan: false, sefinOnerisi: false, vejetaryen: false },
-  { id: 16, ad: "Antep Usulü Ciğer Şiş", kategori: "kebap", fiyat: 340, aciklama: "Taze kuzu ciğeri ve kuyruk yağı, kimyon ve sumaklı soğan eşliğinde", resim: "../public/images/ciger-sis.jpg",loading:"lazy", oneCikan: false, sefinOnerisi: true, vejetaryen: false },
-  { id: 2, ad: "Çıtır Lahmacun", kategori: "pide", fiyat: 150, aciklama: "Kıymayı, domatesi, soğanı mükemmel derecede pişen ağızda dağılan mükemmel bir lezzet", resim: "../public/images/lahmacun.jpg",loading:"lazy", oneCikan: true, sefinOnerisi: false, vejetaryen: false },
-  { id: 17, ad: "Fındık Lahmacun (3'lü)", kategori: "pide", fiyat: 180, aciklama: "Özel baharatlı harcı ve çıtır hamuruyla geleneksel mini atıştırmalık", resim: "../public/images/findik-lahmacun.jpg",loading:"lazy", oneCikan: false, sefinOnerisi: false, vejetaryen: false },
-  { id: 18, ad: "Antep Usulü Sarımsaklı Lahmacun", kategori: "pide", fiyat: 170, aciklama: "Zırh kıyması, bol taze sarımsak, maydanoz ve nar ekşisinin çıtır hamurla buluşması", resim: "../public/images/sarimsakli-lahmacun.jpg",loading:"lazy", oneCikan: false, sefinOnerisi: true, vejetaryen: false },
-  { id: 40, ad: "Zeytinyağlı Enginar Dolması", kategori: "zeytinyagli", fiyat: 340, aciklama: "Osmanlı saray mutfağından günümüze; dereotu, dolmalık fıstık ve kuş üzümlü iç pilavla doldurulmuş Ege enginarı.", resim: "../public/images/enginar.jpg",loading:"lazy", oneCikan: false, sefinOnerisi: true, vejetaryen: true },
-  { id: 41, ad: "Kuru Patlıcan ve Biber Dolması", kategori: "zeytinyagli", fiyat: 320, aciklama: "Antep usulü yazdan kurutulmuş sebzelerin nar ekşili, sumaklı ve bol baharatlı pirinç harcıyla demlenmesi.", resim: "../public/images/kuru-dolma.jpg",loading:"lazy", oneCikan: false, sefinOnerisi: false, vejetaryen: true },
-  { id: 42, ad: "Müceddere Pilavı & Süzme Yoğurt", kategori: "zeytinyagli", fiyat: 290, aciklama: "Orta Doğu ve Doğu Anadolu mutfağının asırlık lezzeti; yeşil mercimek, karamelize soğan ve baharatlı bulgur.", resim: "../public/images/muceddere.jpg",loading:"lazy", oneCikan: false, sefinOnerisi: false, vejetaryen: true },
-  { id: 19, ad: "Gavurdağı Salatası", kategori: "zeytinyagli", fiyat: 140, aciklama: "İnce kıyılmış domates, salatalık, bol ceviz, nar ekşisi ve sızma zeytinyağı ile", resim: "../public/images/gavurdagi.webp",loading:"lazy", oneCikan: false, sefinOnerisi: true, vejetaryen: true },
-  { id: 20, ad: "Acılı Ezme Salata", kategori: "zeytinyagli", fiyat: 120, aciklama: "Taze domates, biber, sarımsak, maydanoz ve özel baharatlarla harmanlanmış acı lezzet", resim: "../public/images/acili-ezme.jpg",loading:"lazy", oneCikan: false, sefinOnerisi: false, vejetaryen: true },
-  { id: 21, ad: "Klasik Çoban Salatası", kategori: "zeytinyagli", fiyat: 110, aciklama: "Küp doğranmış domates, salatalık, sivri biber, kuru soğan, limon ve zeytinyağı sosuyla", resim: "../public/images/coban-salata.jpg",loading:"lazy", oneCikan: false, sefinOnerisi: false, vejetaryen: true },
-  { id: 22, ad: "Tulum Peynirli Roka Salatası", kategori: "zeytinyagli", fiyat: 150, aciklama: "Taze körpe roka yaprakları, Erzincan tulum peyniri, ceviz ve nar ekşisi eşliğinde", resim: "../public/images/roka-salata.jpg",loading:"lazy", oneCikan: false, sefinOnerisi: false, vejetaryen: true },
-  { id: 23, ad: "Urfa Usulü Bostana", kategori: "zeytinyagli", fiyat: 130, aciklama: "Zar gibi incecik kıyılmış sebzeler, buzlu soğuk sunumu ve bol sumak ekşisiyle", resim: "../public/images/bostana.webp",loading:"lazy", oneCikan: false, sefinOnerisi: false, vejetaryen: true },
-  { id: 24, ad: "Fıstıklı Künefe", kategori: "tatli", fiyat: 160, aciklama: "Özel Hatay peyniri, çıtır kadayıf ve bol Antep fıstığı ile sıcacık", resim: "../public/images/kunefe.png",loading:"lazy", oneCikan: false, sefinOnerisi: true, vejetaryen: true },
-  { id: 25, ad: "Havuç Dilim Baklava", kategori: "tatli", fiyat: 180, aciklama: "İncecik yufkalar, bol fıstık ile karşınızda", resim: "../public/images/havuc-dilim.jpg",loading:"lazy", oneCikan: false, sefinOnerisi: false, vejetaryen: true },
-  { id: 26, ad: "Geleneksel Katmer", kategori: "tatli", fiyat: 190, aciklama: "Zar gibi açılmış hamur içerisinde kaymak ve taze çekilmiş Antep fıstığı", resim: "../public/images/katmer.webp",loading:"lazy", oneCikan: false, sefinOnerisi: false, vejetaryen: true },
-  { id: 27, ad: "Fırın Sütlaç", kategori: "tatli", fiyat: 110, aciklama: "Toprak güveçte nar gibi kızarmış geleneksel lezzet", resim: "../public/images/sutlac.jpg",loading:"lazy", oneCikan: false, sefinOnerisi: false, vejetaryen: true },
-  { id: 28, ad: "Dondurmalı İrmik Helvası", kategori: "tatli", fiyat: 120, aciklama: "Tereyağında kavrulmuş sıcak irmik helvası ortasında keçi sütlü dondurma ile", resim: "../public/images/irmik.jpg",loading:"lazy", oneCikan: false, sefinOnerisi: false, vejetaryen: true },
-  { id: 29, ad: "Köpüklü Yayık Ayranı", kategori: "icecek", fiyat: 50, aciklama: "Bakır maşrapada servis edilen, köy yoğurdundan ev yapımı ayran", resim: "../public/images/ayran.jpg",loading:"lazy", oneCikan: false, sefinOnerisi: false, vejetaryen: true },
-  { id: 30, ad: "Acılı / Acısız Şalgam", kategori: "icecek", fiyat: 45, aciklama: "Geleneksel Adana usulü, havuç taneleriyle servis edilen şalgam suyu", resim: "../public/images/salgam.jpeg",loading:"lazy", oneCikan: false, sefinOnerisi: false, vejetaryen: true },
-  { id: 31, ad: "Ev Yapımı Limonata", kategori: "icecek", fiyat: 60, aciklama: "Taze sıkılmış limon, nane yaprakları ve az şekerli serinletici lezzet", resim: "../public/images/limonata.webp",loading:"lazy", oneCikan: false, sefinOnerisi: false, vejetaryen: true },
-  { id: 32, ad: "Niğde Gazozu", kategori: "icecek", fiyat: 45, aciklama: "Ahududu aromalı, geleneksel Türk gazozu lezzeti", resim: "../public/images/gazoz.png",loading:"lazy", oneCikan: false, sefinOnerisi: false, vejetaryen: true },
-  { id: 33, ad: "Türk Kahvesi", kategori: "icecek", fiyat: 60, aciklama: "Çifte kavrulmuş kahve çekirdeklerinden, lokum ve su ikramıyla", resim: "../public/images/kahve.jpg",loading:"lazy", oneCikan: false, sefinOnerisi: false, vejetaryen: true },
-  { id: 34, ad: "Taze Demleme Çay", kategori: "icecek", fiyat: 25, aciklama: "İnce belli bardakta, Karadeniz'in en seçkin yapraklarından taze demleme", resim: "../public/images/cay.jpg",loading:"lazy", oneCikan: false, sefinOnerisi: false, vejetaryen: true }
+  { id: 35, ad: "Geleneksel Süzme Mercimek Çorbası", kategori: "corba", fiyat: 200, aciklama: "Taş değirmen mercimeği, taze tereyağı ve özel baharatlı kıtır ekmekler ile.", resim: "../public/images/mercimek-corbasi.webp", loading: "eager", oneCikan: false, sefinOnerisi: false, vejetaryen: true },
+  { id: 36, ad: "Köz Patlıcanlı Süt Çorbası", kategori: "corba", fiyat: 220, aciklama: "Odun ateşinde közlenmiş patlıcanların süt ve taze otlarla pişirilmesiyle hazırlanan 1930'lar klasiği.", resim: "../public/images/patlican-corbasi.webp", loading: "eager", oneCikan: false, sefinOnerisi: true, vejetaryen: true },
+  { id: 37, ad: "Mahluta Çorbası", kategori: "corba", fiyat: 210, aciklama: "Kırmızı mercimek, kişniş, kimyon ve zeytinyağında sotelenmiş soğan sosuyla Güneydoğu'nun kadim çorbası.", resim: "../public/images/mahluta.webp", loading: "eager", oneCikan: false, sefinOnerisi: false, vejetaryen: true },
+  { id: 38, ad: "Süzme Ezogelin Çorbası", kategori: "corba", fiyat: 200, aciklama: "İnce bulgur, pirinç ve domates salçasıyla harmanlanmış, nane yağlı geleneksel lezzet.", resim: "../public/images/ezogelin.webp", loading: "lazy", oneCikan: false, sefinOnerisi: false, vejetaryen: true },
+  { id: 39, ad: "Düğün Çorbası ", kategori: "corba", fiyat: 230, aciklama: "Yoğurt, yumurta sarısı ve un meyhanesiyle bağlanan, üzeri pul biberli kızgın tereyağlı süzme çorba.", resim: "../public/images/dugun-corbasi.jpg", loading: "lazy", oneCikan: false, sefinOnerisi: false, vejetaryen: false },
+  { id: 1, ad: "Meşhur Adana Kebap", kategori: "kebap", fiyat: 350, aciklama: "İnce ince zırhlanmış kıyma ve meşe kömürü ızgarasında leziz baharatlarla önünüzde", resim: "../public/images/Adana-Kebab.jpg", loading: "eager", oneCikan: true, sefinOnerisi: true, vejetaryen: false },
+  { id: 4, ad: "Geleneksel Urfa Kebap", kategori: "kebap", fiyat: 340, aciklama: "Zırh kıymasından acısız ızgara lezzet, közlenmiş domates ve biber eşliğinde", resim: "../public/images/urfa-kebap.jpg", loading: "lazy", oneCikan: false, sefinOnerisi: false, vejetaryen: false },
+  { id: 5, ad: "Sarma Beyti Kebap", kategori: "kebap", fiyat: 380, aciklama: "Özel lavaşa sarılı ızgara zırh kıyması, süzme yoğurt ve tereyağlı domates sosuyla", resim: "../public/images/beyti.jpg", loading: "lazy", oneCikan: false, sefinOnerisi: false, vejetaryen: false },
+  { id: 6, ad: "Ali Nazik Kebabı", kategori: "kebap", fiyat: 400, aciklama: "Közlenmiş patlıcanlı süzme yoğurt yatağında lokum gibi ızgara zırh kebabı", resim: "../public/images/alinazik.jpg", loading: "lazy", oneCikan: false, sefinOnerisi: false, vejetaryen: false },
+  { id: 7, ad: "Antep Fıstıklı Kebap", kategori: "kebap", fiyat: 390, aciklama: "Özel kıyma harcına harmanlanmış bol taze Antep fıstıklı ızgara kebap", resim: "../public/images/fistikli-kebap.jpg", loading: "lazy", oneCikan: false, sefinOnerisi: false, vejetaryen: false },
+  { id: 3, ad: "Kuşbaşılı Kaşarlı Pide", kategori: "pide", fiyat: 280, aciklama: "Ağızda sünen eti yumuşacık, güzel mi güzel kuşbaşılı kaşarlı pidemiz", resim: "../public/images/pide.jpg", loading: "lazy", oneCikan: true, sefinOnerisi: false, vejetaryen: false },
+  { id: 8, ad: "Çıtır Kıymalı Pide", kategori: "pide", fiyat: 250, aciklama: "Özel kavrulmuş kıymalı harç, domates, biber ve çıtır kenarlar", resim: "../public/images/kiymali-pide.jpg", loading: "lazy", oneCikan: false, sefinOnerisi: false, vejetaryen: false },
+  { id: 9, ad: "Kavurmalı Kaşarlı Pide", kategori: "pide", fiyat: 310, aciklama: "Geleneksel dana kavurma ve uzayan kaşar peynirinin muazzam uyumu", resim: "../public/images/kavurmali-pide.jpg", loading: "eager", oneCikan: false, sefinOnerisi: true, vejetaryen: false },
+  { id: 10, ad: "Taş Fırında Peynirli & Otlu Ege Pidesi", kategori: "pide", fiyat: 310, aciklama: "Lor peyniri, ısırgan otu, maydanoz ve zeytinyağı harcıyla odun fırınından çıkan geleneksel kıtır pide.", resim: "../public/images/ege-pidesi.jpg", loading: "eager", oneCikan: false, sefinOnerisi: true, vejetaryen: true },
+  { id: 11, ad: "Kasap Sucuklu Pide", kategori: "pide", fiyat: 270, aciklama: "%100 dana kasap sucuğu ve bol kaşar peyniriyle", resim: "../public/images/sucuklu-pide.jpg", loading: "lazy", oneCikan: false, sefinOnerisi: false, vejetaryen: false },
+  { id: 12, ad: "Trabzon Yağlı Pidesi", kategori: "pide", fiyat: 290, aciklama: "Yerel kolot peyniri, ortasına köy yumurtası ve has tereyağı ile", resim: "../public/images/trabzon-pide.jpg", loading: "lazy", oneCikan: false, sefinOnerisi: false, vejetaryen: true },
+  { id: 13, ad: "Terbiye Kuzu Şiş", kategori: "kebap", fiyat: 390, aciklama: "Süt kuzusundan özel marine edilmiş, meşe kömürü ızgarasında pişen lokum etler", resim: "../public/images/kuzu-sis.jpeg", loading: "lazy", oneCikan: false, sefinOnerisi: false, vejetaryen: false },
+  { id: 14, ad: "Meşhur Çöp Şiş", kategori: "kebap", fiyat: 370, aciklama: "Küçük kesim kuzu etleri ve kuyruk yağının ızgarada kekiğe doyduğu lezzet", resim: "../public/images/cop-sis.webp", loading: "lazy", oneCikan: false, sefinOnerisi: false, vejetaryen: false },
+  { id: 15, ad: "Lokum Tavuk Şiş", kategori: "kebap", fiyat: 260, aciklama: "Süt ve özel baharatlarla marine edilmiş ızgarada pişmiş yumuşacık tavuk eti", resim: "../public/images/tavuk-sis.webp", loading: "lazy", oneCikan: false, sefinOnerisi: false, vejetaryen: false },
+  { id: 16, ad: "Antep Usulü Ciğer Şiş", kategori: "kebap", fiyat: 340, aciklama: "Taze kuzu ciğeri ve kuyruk yağı ızgara, kimyon ve sumaklı soğan eşliğinde", resim: "../public/images/ciger-sis.jpg", loading: "eager", oneCikan: false, sefinOnerisi: true, vejetaryen: false },
+  { id: 2, ad: "Çıtır Lahmacun", kategori: "pide", fiyat: 150, aciklama: "Kıymayı, domatesi, soğanı mükemmel derecede pişen ağızda dağılan mükemmel bir lezzet", resim: "../public/images/lahmacun.jpg", loading: "lazy", oneCikan: true, sefinOnerisi: false, vejetaryen: false },
+  { id: 17, ad: "Fındık Lahmacun (3'lü)", kategori: "pide", fiyat: 180, aciklama: "Özel baharatlı harcı ve çıtır hamuruyla geleneksel mini atıştırmalık", resim: "../public/images/findik-lahmacun.jpg", loading: "lazy", oneCikan: false, sefinOnerisi: false, vejetaryen: false },
+  { id: 18, ad: "Antep Usulü Sarımsaklı Lahmacun", kategori: "pide", fiyat: 170, aciklama: "Zırh kıyması, bol taze sarımsak, maydanoz ve nar ekşisinin çıtır hamurla buluşması", resim: "../public/images/sarimsakli-lahmacun.jpg", loading: "eager", oneCikan: false, sefinOnerisi: true, vejetaryen: false },
+  { id: 40, ad: "Zeytinyağlı Enginar Dolması", kategori: "zeytinyagli", fiyat: 340, aciklama: "Osmanlı saray mutfağından günümüze; dereotu, dolmalık fıstık ve kuş üzümlü iç pilavla doldurulmuş Ege enginarı.", resim: "../public/images/enginar.jpg", loading: "eager", oneCikan: false, sefinOnerisi: true, vejetaryen: true },
+  { id: 41, ad: "Kuru Patlıcan ve Biber Dolması", kategori: "zeytinyagli", fiyat: 320, aciklama: "Antep usulü yazdan kurutulmuş sebzelerin nar ekşili, sumaklı ve bol baharatlı pirinç harcıyla demlenmesi.", resim: "../public/images/kuru-dolma.jpg", loading: "lazy", oneCikan: false, sefinOnerisi: false, vejetaryen: true },
+  { id: 42, ad: "Müceddere Pilavı & Süzme Yoğurt", kategori: "zeytinyagli", fiyat: 290, aciklama: "Orta Doğu ve Doğu Anadolu mutfağının asırlık lezzeti; yeşil mercimek, karamelize soğan ve baharatlı bulgur.", resim: "../public/images/muceddere.jpg", loading: "lazy", oneCikan: false, sefinOnerisi: false, vejetaryen: true },
+  { id: 19, ad: "Gavurdağı Salatası", kategori: "zeytinyagli", fiyat: 140, aciklama: "İnce kıyılmış domates, salatalık, bol ceviz, nar ekşisi ve sızma zeytinyağı ile", resim: "../public/images/gavurdagi.webp", loading: "eager", oneCikan: false, sefinOnerisi: true, vejetaryen: true },
+  { id: 20, ad: "Acılı Ezme Salata", kategori: "zeytinyagli", fiyat: 120, aciklama: "Taze domates, biber, sarımsak, maydanoz ve özel baharatlarla harmanlanmış acı lezzet", resim: "../public/images/acili-ezme.jpg", loading: "lazy", oneCikan: false, sefinOnerisi: false, vejetaryen: true },
+  { id: 21, ad: "Klasik Çoban Salatası", kategori: "zeytinyagli", fiyat: 110, aciklama: "Küp doğranmış domates, salatalık, sivri biber, kuru soğan, limon ve zeytinyağı sosuyla", resim: "../public/images/coban-salata.jpg", loading: "lazy", oneCikan: false, sefinOnerisi: false, vejetaryen: true },
+  { id: 22, ad: "Tulum Peynirli Roka Salatası", kategori: "zeytinyagli", fiyat: 150, aciklama: "Taze körpe roka yaprakları, Erzincan tulum peyniri, ceviz ve nar ekşisi eşliğinde", resim: "../public/images/roka-salata.jpg", loading: "lazy", oneCikan: false, sefinOnerisi: false, vejetaryen: true },
+  { id: 23, ad: "Urfa Usulü Bostana", kategori: "zeytinyagli", fiyat: 130, aciklama: "Zar gibi incecik kıyılmış sebzeler, buzlu soğuk sunumu ve bol sumak ekşisiyle", resim: "../public/images/bostana.webp", loading: "lazy", oneCikan: false, sefinOnerisi: false, vejetaryen: true },
+  { id: 24, ad: "Fıstıklı Künefe", kategori: "tatli", fiyat: 160, aciklama: "Özel Hatay peyniri, çıtır kadayıf ve bol Antep fıstığı ile sıcacık", resim: "../public/images/kunefe.png", loading: "eager", oneCikan: false, sefinOnerisi: true, vejetaryen: true },
+  { id: 25, ad: "Havuç Dilim Baklava", kategori: "tatli", fiyat: 180, aciklama: "İncecik yufkalar, bol fıstık ile karşınızda", resim: "../public/images/havuc-dilim.jpg", loading: "lazy", oneCikan: false, sefinOnerisi: false, vejetaryen: true },
+  { id: 26, ad: "Geleneksel Katmer", kategori: "tatli", fiyat: 190, aciklama: "Zar gibi açılmış hamur içerisinde kaymak ve taze çekilmiş Antep fıstığı", resim: "../public/images/katmer.webp", loading: "lazy", oneCikan: false, sefinOnerisi: false, vejetaryen: true },
+  { id: 27, ad: "Fırın Sütlaç", kategori: "tatli", fiyat: 110, aciklama: "Toprak güveçte nar gibi kızarmış geleneksel lezzet", resim: "../public/images/sutlac.jpg", loading: "lazy", oneCikan: false, sefinOnerisi: false, vejetaryen: true },
+  { id: 28, ad: "Dondurmalı İrmik Helvası", kategori: "tatli", fiyat: 120, aciklama: "Tereyağında kavrulmuş sıcak irmik helvası ortasında keçi sütlü dondurma ile", resim: "../public/images/irmik.jpg", loading: "lazy", oneCikan: false, sefinOnerisi: false, vejetaryen: true },
+  { id: 29, ad: "Köpüklü Yayık Ayranı", kategori: "icecek", fiyat: 50, aciklama: "Bakır maşrapada servis edilen, köy yoğurdundan ev yapımı ayran", resim: "../public/images/ayran.jpg", loading: "lazy", oneCikan: false, sefinOnerisi: false, vejetaryen: true },
+  { id: 30, ad: "Acılı / Acısız Şalgam", kategori: "icecek", fiyat: 45, aciklama: "Geleneksel Adana usulü, havuç taneleriyle servis edilen şalgam suyu", resim: "../public/images/salgam.jpeg", loading: "lazy", oneCikan: false, sefinOnerisi: false, vejetaryen: true },
+  { id: 31, ad: "Ev Yapımı Limonata", kategori: "icecek", fiyat: 60, aciklama: "Taze sıkılmış limon, nane yaprakları ve az şekerli serinletici lezzet", resim: "../public/images/limonata.webp", loading: "lazy", oneCikan: false, sefinOnerisi: false, vejetaryen: true },
+  { id: 32, ad: "Niğde Gazozu", kategori: "icecek", fiyat: 45, aciklama: "Ahududu aromalı, geleneksel Türk gazozu lezzeti", resim: "../public/images/gazoz.png", loading: "lazy", oneCikan: false, sefinOnerisi: false, vejetaryen: true },
+  { id: 33, ad: "Türk Kahvesi", kategori: "icecek", fiyat: 60, aciklama: "Çifte kavrulmuş kahve çekirdeklerinden, lokum meşe aromalı su ikramıyla", resim: "../public/images/kahve.jpg", loading: "lazy", oneCikan: false, sefinOnerisi: false, vejetaryen: true },
+  { id: 34, ad: "Taze Demleme Çay", kategori: "icecek", fiyat: 25, aciklama: "İnce belli bardakta, Karadeniz'in en seçkin yapraklarından taze demleme", resim: "../public/images/cay.jpg", loading: "lazy", oneCikan: false, sefinOnerisi: false, vejetaryen: true }
 ];
 
 document.addEventListener("DOMContentLoaded", () => {
 
   // ==========================================
-  // 1. MENÜ FİLTRELEME İŞLEMLERİ
+  // 1. MENÜ FİLTRELEME & CANLI ARAMA İŞLEMLERİ
   // ==========================================
   const menuGrid = document.getElementById("menu-grid");
   const filterBtns = document.querySelectorAll(".filter-btn");
+  const menuSearchInput = document.getElementById("menuSearchInput");
 
   if (menuGrid) {
+    let aktifKategori = "tumu";
+    let mevcutAramaMetni = "";
+
+    // Debounce Fonksiyonu (Yazarken Donma ve Çökmeyi Engeller)
+    function debounce(func, delay = 250) {
+      let timer;
+      return function (...args) {
+        clearTimeout(timer);
+        timer = setTimeout(() => func.apply(this, args), delay);
+      };
+    }
+
+    // Yemek Listesini DOM'a Kasan Olmadan Basma
     function yemekleriListele(Liste) {
       menuGrid.innerHTML = "";
 
       if (Liste.length === 0) {
-        menuGrid.innerHTML = `<p class="no-match" style="grid-column: 1/-1; text-align: center; font-size: 1.2rem; margin-top: 30px;">Bu kategoride henüz ürün bulunmamaktadır.</p>`;
+        menuGrid.innerHTML = `
+          <div style="grid-column: 1/-1; text-align: center; padding: 40px 20px; background: #fff; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-top: 20px;">
+            <i class="fa-solid fa-utensils" style="font-size: 2.2rem; color: var(--primary-kiremit, #c0392b); margin-bottom: 12px;"></i>
+            <p class="no-match" style="font-size: 1.2rem; color: #555; margin-bottom: 4px;">Aradığınız kriterlere uygun lezzet bulunamadı.</p>
+            <span style="font-size: 0.9rem; color: #888;">Farklı bir kategori veya arama kelimesi deneyebilirsiniz.</span>
+          </div>
+        `;
         return;
       }
+
+      const fragment = document.createDocumentFragment();
 
       Liste.forEach((yemek) => {
         const sefinOnerisiHTML = yemek.sefinOnerisi ? `<span class="badge badge-chef">⭐ Şefin Önerisi</span>` : '';
         const vejetaryenHTML = yemek.vejetaryen ? `<span class="badge badge-veg" title="Vejetaryen Dostu">🌱 Veg</span>` : '';
+        const aciliHTML = (yemek.kategori === 'kebap' && (yemek.ad.includes('Adana') || yemek.ad.includes('Ciğer') || yemek.ad.includes('Sarma'))) || yemek.ad.includes('Acılı') ? `<span class="badge badge-spicy" title="Acılı Lezzet"><i class="fa-solid fa-pepper-hot"></i> Acılı</span>` : '';
 
-        const kartHTML = `
-          <div class="dish-card" data-kategori="${yemek.kategori}">
-            <div class="card-badges">
-              ${sefinOnerisiHTML}
-              ${vejetaryenHTML}
-            </div>
-            <div class="dish-img-container">
-             <img src="${yemek.resim}" alt="${yemek.ad}" loading="${yemek.loading}">
-            </div>
-            <div class="dish-info">
-              <h3>${yemek.ad}</h3>
-              <p>${yemek.aciklama}</p>
-              <span class="dish-price">₺${yemek.fiyat}</span>
-            </div>
+        const cardDiv = document.createElement("div");
+        cardDiv.className = "dish-card";
+        cardDiv.dataset.kategori = yemek.kategori;
+
+        cardDiv.innerHTML = `
+          <div class="card-badges">
+            ${sefinOnerisiHTML}
+            ${vejetaryenHTML}
+            ${aciliHTML}
+          </div>
+          <div class="dish-img-container">
+            <img src="${yemek.resim}" alt="${yemek.ad}" loading="${yemek.loading}">
+          </div>
+          <div class="dish-info">
+            <h3>${yemek.ad}</h3>
+            <p>${yemek.aciklama}</p>
+            <span class="dish-price">₺${yemek.fiyat}</span>
           </div>
         `;
-        menuGrid.innerHTML += kartHTML;
+        fragment.appendChild(cardDiv);
+      });
+
+      menuGrid.appendChild(fragment);
+    }
+
+    let hepsiAcik = false;
+    const loadMoreContainer = document.getElementById("loadMoreContainer");
+    const loadMoreBtn = document.getElementById("loadMoreBtn");
+
+    // Hem Kategori Hem de Arama Filtresini Birlikte Çalıştıran Ortak Fonksiyon
+    function menuyuFiltrele() {
+      const filtrelenmis = yemekler.filter((yemek) => {
+        const kategoriUyumlu = (aktifKategori === "tumu") || (yemek.kategori === aktifKategori);
+        
+        // TÜRKÇE KARAKTER UYUMLU ARAMA (Ad, Açıklama ve Kategori Arama)
+        const adUyumlu = yemek.ad.toLocaleLowerCase('tr-TR').includes(mevcutAramaMetni);
+        const aciklamaUyumlu = yemek.aciklama.toLocaleLowerCase('tr-TR').includes(mevcutAramaMetni);
+        
+        // Kategori isimleri ve eş anlamlı terimlerle arama (Örn: "IZGARA", "KEBAP", "ÇORBA" vb.)
+        let kategoriEtiketUyumlu = false;
+        if (mevcutAramaMetni.length > 0) {
+          if (('izgara'.includes(mevcutAramaMetni) || 'ızgara'.includes(mevcutAramaMetni) || 'izgaralar'.includes(mevcutAramaMetni) || 'ızgaralar'.includes(mevcutAramaMetni) || 'kebap'.includes(mevcutAramaMetni) || 'kebaplar'.includes(mevcutAramaMetni)) && yemek.kategori === 'kebap') {
+            kategoriEtiketUyumlu = true;
+          } else if (('corba'.includes(mevcutAramaMetni) || 'çorba'.includes(mevcutAramaMetni) || 'çorbalar'.includes(mevcutAramaMetni)) && yemek.kategori === 'corba') {
+            kategoriEtiketUyumlu = true;
+          } else if (('pide'.includes(mevcutAramaMetni) || 'pideler'.includes(mevcutAramaMetni) || 'lahmacun'.includes(mevcutAramaMetni)) && yemek.kategori === 'pide') {
+            kategoriEtiketUyumlu = true;
+          } else if (('zeytinyağlı'.includes(mevcutAramaMetni) || 'zeytinyagli'.includes(mevcutAramaMetni) || 'salata'.includes(mevcutAramaMetni)) && yemek.kategori === 'zeytinyagli') {
+            kategoriEtiketUyumlu = true;
+          } else if (('tatli'.includes(mevcutAramaMetni) || 'tatlı'.includes(mevcutAramaMetni) || 'tatlılar'.includes(mevcutAramaMetni)) && yemek.kategori === 'tatli') {
+            kategoriEtiketUyumlu = true;
+          } else if (('icecek'.includes(mevcutAramaMetni) || 'içecek'.includes(mevcutAramaMetni) || 'içecekler'.includes(mevcutAramaMetni)) && yemek.kategori === 'icecek') {
+            kategoriEtiketUyumlu = true;
+          }
+        }
+        
+        const aramaUyumlu = adUyumlu || aciklamaUyumlu || kategoriEtiketUyumlu;
+        
+        return kategoriUyumlu && aramaUyumlu;
+      });
+
+      // Eğer "Tüm Lezzetler" seçiliyse, arama yapılmıyorsa ve henüz hepsiAcik tıklanmadıysa Şefin Önerisi 9 yıldız lezzeti yükle
+      if (aktifKategori === "tumu" && mevcutAramaMetni === "" && !hepsiAcik) {
+        const sefinOnerileri = yemekler.filter(y => y.sefinOnerisi);
+        yemekleriListele(sefinOnerileri);
+        if (loadMoreContainer) {
+          loadMoreContainer.style.display = "block";
+          loadMoreBtn.innerHTML = `Tüm Lezzetleri İncele (${yemekler.length} Lezzet) <i class="fa-solid fa-chevron-down"></i>`;
+        }
+      } else {
+        yemekleriListele(filtrelenmis);
+        if (loadMoreContainer) loadMoreContainer.style.display = "none";
+      }
+    }
+
+    if (loadMoreBtn) {
+      loadMoreBtn.addEventListener("click", () => {
+        hepsiAcik = true;
+        menuyuFiltrele();
       });
     }
 
-    yemekleriListele(yemekler);
+    // Sayfa Açılışında İlk Yükleme
+    menuyuFiltrele();
 
+    // Kategori Butonları Click Event
     filterBtns.forEach((btn) => {
       btn.addEventListener("click", (e) => {
         filterBtns.forEach((b) => b.classList.remove("active"));
         const targetBtn = e.currentTarget; 
         targetBtn.classList.add("active");
 
-        const secilenKategori = targetBtn.dataset.kategori;
-
-        if (secilenKategori === "tumu") {
-          yemekleriListele(yemekler);
-        } else {
-          const filtrelenmis = yemekler.filter((yemek) => yemek.kategori === secilenKategori);
-          yemekleriListele(filtrelenmis);
+        aktifKategori = targetBtn.dataset.kategori;
+        // Eğer Tüm Lezzetler sekmesine tıklanırsa tüm 42 yemeği aç
+        if (aktifKategori === "tumu") {
+          hepsiAcik = true;
         }
+        menuyuFiltrele();
       });
     });
+
+    // Arama Kutusu Input Event (Debounced & Türkçe Karakter Uyumlu)
+    if (menuSearchInput) {
+      menuSearchInput.addEventListener("input", debounce((e) => {
+        mevcutAramaMetni = e.target.value.toLocaleLowerCase('tr-TR').trim();
+        menuyuFiltrele();
+      }, 250));
+    }
   }
 
   // ==========================================
@@ -139,11 +232,13 @@ document.addEventListener("DOMContentLoaded", () => {
         const img = item.querySelector("img");
         const caption = item.querySelector(".gallery-caption");
 
-        if (img && img.src) {
+        if (img && img.src && modalImg) {
           modal.classList.add("active");
           modalImg.src = img.src;
-          modalImg.alt = img.alt;
-          modalCaption.textContent = caption ? caption.textContent : img.alt;
+          modalImg.alt = img.alt || "";
+          if (modalCaption) {
+            modalCaption.textContent = caption ? caption.textContent : (img.alt || "");
+          }
           document.body.style.overflow = "hidden"; 
         }
       });
@@ -182,7 +277,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const resFormAlert = document.getElementById('resFormAlert');
 
   // --- ADIM ADIM SIRALAMA DENETLEYİCİSİ ---
-// --- ADIM ADIM SIRALAMA DENETLEYİCİSİ (SPAM FİX) ---
   function adimKontrol(hedefAdim) {
     // 1. Ad Soyad Kontrolü
     if (hedefAdim > 1 && (!resNameInput || !resNameInput.value.trim() || resNameInput.value.trim().length < 3)) {
@@ -191,7 +285,7 @@ document.addEventListener("DOMContentLoaded", () => {
       return false;
     }
     // 2. Telefon Kontrolü
-    if (hedefAdim > 2 && (!resPhoneInput || !resPhoneInput.checkValidity())) {
+    if (hedefAdim > 2 && (!resPhoneInput || (resPhoneInput.value && !resPhoneInput.checkValidity()))) {
       alert('Lütfen önce geçerli bir cep telefonu numarası (05XXXXXXXXX) giriniz.');
       if (resPhoneInput) resPhoneInput.focus();
       return false;
@@ -199,13 +293,11 @@ document.addEventListener("DOMContentLoaded", () => {
     // 3. Tarih Kontrolü
     if (hedefAdim > 3 && (!customDateInput || !customDateInput.value)) {
       alert('Lütfen önce rezervasyon tarihini seçiniz.');
-      // click() kaldırıldı, sonsuz döngü engellendi
       return false;
     }
     // 4. Saat Kontrolü
     if (hedefAdim > 4 && (!customTimeInput || !customTimeInput.value)) {
       alert('Lütfen önce rezervasyon saatini seçiniz.');
-      // click() kaldırıldı, sonsuz döngü engellendi
       return false;
     }
     // 5. Kişi Sayısı Kontrolü
@@ -217,12 +309,12 @@ document.addEventListener("DOMContentLoaded", () => {
     return true;
   }
 
-  // --- TIKLAMA VE ODAKLANMA OYLAMALARI ---
-
-  // Telefon alanına tıklanırsa -> Ad Soyad dolu mu?
- if (resPhoneInput) {
-    resPhoneInput.addEventListener('click', () => adimKontrol(2));
-  }
+  // --- TIKLAMA VE ODAKLANMA DİNLEYİCİLERİ ---
+  ['click', 'focus'].forEach(eventType => {
+    if (resPhoneInput) resPhoneInput.addEventListener(eventType, () => adimKontrol(2));
+    if (resGuestsInput) resGuestsInput.addEventListener(eventType, () => adimKontrol(5));
+    if (resNotesInput) resNotesInput.addEventListener(eventType, () => adimKontrol(6));
+  });
 
   // Tarih alanına tıklanırsa
   if (customDateInput && hiddenNativeDate) {
@@ -233,7 +325,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     hiddenNativeDate.addEventListener('change', (e) => {
       if (e.target.value) {
-        const selectedDate = new Date(e.target.value);
+        // Tarih UTC 00:00 kaymasını engellemek için yerel saat ile ayrıştırıyoruz
+        const selectedDate = new Date(e.target.value + 'T00:00:00');
         const dayOfWeek = selectedDate.getDay(); 
 
         if (dayOfWeek === 0) {
@@ -273,7 +366,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const minMinutes = 10 * 60; 
 
       const selectedDateVal = hiddenNativeDate.value;
-      const selectedDate = new Date(selectedDateVal);
+      const selectedDate = new Date(selectedDateVal + 'T00:00:00');
       const dayOfWeek = selectedDate.getDay();
 
       const isWeekendHeader = (dayOfWeek === 5 || dayOfWeek === 6);
@@ -294,23 +387,13 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Kişi Sayısına tıklanırsa
-  if (resGuestsInput) {
-    resGuestsInput.addEventListener('click', () => adimKontrol(5));
-  }
-
-  // Notlar alanına tıklanırsa
-  if (resNotesInput) {
-    resNotesInput.addEventListener('click', () => adimKontrol(6));
-  }
-
   // --- FORM SUBMIT (GENEL DOĞRULAMA) ---
   if (reservationForm) {
     reservationForm.addEventListener('submit', (e) => {
       e.preventDefault();
 
-      const resDate = document.getElementById('resDate').value;
-      const resTime = document.getElementById('resTime').value;
+      const resDate = document.getElementById('resDate') ? document.getElementById('resDate').value : '';
+      const resTime = document.getElementById('resTime') ? document.getElementById('resTime').value : '';
 
       if (!reservationForm.checkValidity() || !resDate || !resTime) {
         alert('Lütfen tüm zorunlu alanları doğru bir şekilde doldurunuz.');
@@ -319,10 +402,12 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       const submitBtn = reservationForm.querySelector('button[type="submit"]');
-      const originalBtnText = submitBtn.innerHTML;
+      const originalBtnText = submitBtn ? submitBtn.innerHTML : 'Gönder';
 
-      submitBtn.disabled = true;
-      submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Gönderiliyor...';
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Gönderiliyor...';
+      }
 
       setTimeout(() => {
         if (resFormAlert) {
@@ -331,8 +416,10 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         reservationForm.reset();
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = originalBtnText;
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = originalBtnText;
+        }
 
         setTimeout(() => {
           if (resFormAlert) {
@@ -344,8 +431,9 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-}); 
-document.addEventListener("DOMContentLoaded", () => {
+  // ==========================================
+  // 4. HAMBURGER MENÜ (NAVBAR MOBO)
+  // ==========================================
   const hamburgerBtn = document.getElementById("hamburgerBtn");
   const mainNavbar = document.querySelector(".main-navbar");
 
@@ -372,7 +460,31 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
 
+    // Tıklama ve Sağ Tık / Uzun Basma Koruması
     hamburgerBtn.addEventListener("click", toggleMenu);
+    hamburgerBtn.addEventListener("contextmenu", (e) => e.preventDefault());
+
+    const navLinks = mainNavbar.querySelectorAll("a");
+    navLinks.forEach((link) => {
+      // Uzun basmada açılan mobil kısayol menüsünü engelle
+      link.addEventListener("contextmenu", (e) => e.preventDefault());
+
+      link.addEventListener("click", () => {
+        closeMenu();
+      });
+
+      link.addEventListener("touchend", () => {
+        closeMenu();
+      });
+    });
+
+    // Menü açıkken arka alanın kaydırılmasını tamamen engelle
+    document.addEventListener("touchmove", (e) => {
+      if (mainNavbar.classList.contains("active") && !mainNavbar.contains(e.target)) {
+        e.preventDefault();
+      }
+    }, { passive: false });
+
     document.addEventListener("click", (e) => {
       if (
         mainNavbar.classList.contains("active") &&
@@ -382,11 +494,58 @@ document.addEventListener("DOMContentLoaded", () => {
         closeMenu();
       }
     });
- 
+
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape" && mainNavbar.classList.contains("active")) {
         closeMenu();
       }
     });
   }
+
+  // ==========================================
+  // 5. İLETİŞİM FORMU (CONTACT FORM)
+  // ==========================================
+  const contactForm = document.getElementById('contactForm');
+  const formAlert = document.getElementById('formAlert');
+
+  if (contactForm) {
+    contactForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      if (!contactForm.checkValidity()) {
+        alert('Lütfen tüm zorunlu alanları doğru bir şekilde doldurunuz.');
+        contactForm.reportValidity();
+        return;
+      }
+
+      const submitBtn = contactForm.querySelector('button[type="submit"]');
+      const originalBtnText = submitBtn ? submitBtn.innerHTML : 'Gönder';
+
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Gönderiliyor...';
+      }
+
+      setTimeout(() => {
+        if (formAlert) {
+          formAlert.style.display = 'flex';
+          formAlert.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        contactForm.reset();
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = originalBtnText;
+        }
+
+        setTimeout(() => {
+          if (formAlert) {
+            formAlert.style.display = 'none';
+          }
+        }, 5000);
+
+      }, 1500);
+    });
+  }
+
 });

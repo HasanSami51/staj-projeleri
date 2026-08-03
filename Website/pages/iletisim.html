@@ -16,7 +16,11 @@
   <header class="main-header">
     <div class="container header-container">
       <div class="logo">
-        <a href="index.html"><img src="../public/images/logo.png" class="logo-img" alt="Lezzet Mührü Logo"></a>
+        <a href="index.html" class="logo-link"><img src="../public/images/logo.png" class="logo-img" alt="Lezzet Mührü Logo"></a>
+        <div class="brand-text-wrapper">
+          <span class="brand-title">Lezzet Mührü</span>
+          <span class="brand-subtitle">1932'den Beri</span>
+        </div>
       </div>
        <button class="hamburger-btn" id="hamburgerBtn" aria-label="Menüyü Aç/Kapat">
               <i class="fa-solid fa-bars"></i>
@@ -116,52 +120,64 @@
                 <div class="form-grid">
                     <div class="form-group">
                         <label for="contactName">Adınız Soyadınız <span class="required-star">*</span></label>
-                        <input 
-                        type="text"
-                        id="contactName"
-                        name="name"
-                        placeholder="Örn:Ahmet Demir"
-                        required
-                        minlength="3"
-                        maxlength="50"
-                        title="lütfen en az 3 karakterden oluşan adınızı ve soaydınızı giriniz.">
+                        <div class="input-icon-wrapper">
+                            <i class="fa-solid fa-user input-icon"></i>
+                            <input 
+                            type="text"
+                            id="contactName"
+                            name="name"
+                            placeholder="Örn: Ahmet Demir"
+                            required
+                            minlength="3"
+                            maxlength="50"
+                            title="Lütfen en az 3 karakterden oluşan adınızı ve soyadınızı giriniz.">
+                        </div>
                     </div>
 
                     <div class="form-group">
                         <label for="contactEmail">E-Posta Adresiniz <span class="required-star">*</span></label>
-                         <input 
-                        type="email"
-                        id="contactEmail"
-                        name="email"
-                        placeholder="Örn:Ahmet@example.com"
-                        required
-                        title="lütfen geçerli bir e-posta giriniz.">
+                        <div class="input-icon-wrapper">
+                            <i class="fa-solid fa-envelope input-icon"></i>
+                            <input 
+                            type="email"
+                            id="contactEmail"
+                            name="email"
+                            placeholder="Örn: ahmet@example.com"
+                            required
+                            title="Lütfen geçerli bir e-posta giriniz.">
+                        </div>
                     </div>
-                    <div class="form-group  full-width">
-                        <label for="contactSubject">Mesaj Konusu<span class="required-star">*</span></label>
-                         <input 
-                        type="text"
-                        id="contactSubject"
-                        name="subject"
-                        placeholder="Örn:Rezervasyon / Özel Etkinlik / Öneri"
-                        required
-                        minlength="3"
-                        maxlength="100"
-                        title="lütfen mesaj konusunu belirtiniz.">
+
+                    <div class="form-group full-width">
+                        <label for="contactSubject">Mesaj Konusu <span class="required-star">*</span></label>
+                        <div class="input-icon-wrapper">
+                            <i class="fa-solid fa-tag input-icon"></i>
+                            <input 
+                            type="text"
+                            id="contactSubject"
+                            name="subject"
+                            placeholder="Örn: Rezervasyon / Özel Etkinlik / Öneri"
+                            required
+                            minlength="3"
+                            maxlength="100"
+                            title="Lütfen mesaj konusunu belirtiniz.">
+                        </div>
                     </div>
 
                     <div class="form-group full-width">
                         <label for="contactMessage">Mesajınız <span class="required-star">*</span></label>
-                         <textarea
-                        id="contactMessage"
-                        name="message"
-                        rows="5"
-                        placeholder="Notunuzu veya sorunuzu buraya yazabilirsiniz..."
-                        required
-                        minlength="10"
-                        maxlength="500"
-                        title="lütfen en az 10 karakterli bir mesaj yazınız.">
-                         </textarea>
+                        <div class="input-icon-wrapper textarea-wrapper">
+                            <i class="fa-solid fa-comment-dots input-icon"></i>
+                            <textarea
+                            id="contactMessage"
+                            name="message"
+                            rows="5"
+                            placeholder="Notunuzu veya sorunuzu buraya yazabilirsiniz..."
+                            required
+                            minlength="10"
+                            maxlength="500"
+                            title="Lütfen en az 10 karakterli bir mesaj yazınız."></textarea>
+                        </div>
                     </div>
                 </div>
 
@@ -187,39 +203,44 @@
   
   <footer class="main-footer">
     <div class="container footer-container">
-      
       <div class="footer-col">
-        <a href="index.html"><img src="../public/images/logo.png" alt="Lezzet Mührü Logo" class="logo footer-logo-img"></a>
+        <a href="index.html" class="footer-logo-link"><img src="../public/images/logo.png" alt="Lezzet Mührü Logo" class="footer-logo-img"></a>
         <p class="footer-text">Geleneksel tarifler, asırlık lezzet ve ızgara ustalığıyla 1932'den beri sofralarınıza mühür vuruyoruz.</p>
       </div>
-
+     
       <div class="footer-col">
-        <h3>İletişim</h3>
-        <ul class="footer-contact-list">
-          <li><span class="icon">📍</span><span>Akkent Mahallesi, Kemalpaşa Caddesi, No:77, Şahinbey / Gaziantep</span></li>
-          <li><span class="icon">📞</span><a href="tel:02325137567">0 232 513 75 67</a></li>
-          <li><span class="icon">✉️</span><a href="mailto:info@lezzetmuhru.com">info@lezzetmuhru.com</a></li>
+        <h3>Hızlı Menü</h3>
+        <ul class="footer-links">
+          <li><a href="index.html">Anasayfa</a></li>
+          <li><a href="menu.html">Menü</a></li>
+          <li><a href="rezervasyon.html">Rezervasyon</a></li>
+          <li><a href="hakkimizda.html">Hakkımızda</a></li>
+          <li><a href="galeri.html">Galeri</a></li>
         </ul>
       </div>
 
       <div class="footer-col">
         <h3>Çalışma Saatleri</h3>
-       <div class="working-hours">
-        <p><strong>Pazartesi - Perşembe:</strong> 10:00 - 22:00</p>
-        <p><strong>Cuma - Cumartesi:</strong> 10:00 - 23:00</p>
-        <p><strong>Pazar:</strong> <span class="status-badge closed">Kapalı</span></p>
+        <div class="working-hours">
+          <p><strong>Pazartesi - Perşembe:</strong> 10:00 - 22:00</p>
+          <p><strong>Cuma - Cumartesi:</strong> 10:00 - 23:00</p>
+          <p><strong>Pazar:</strong> <span class="status-badge closed">Kapalı</span></p>
         </div>
       </div>
 
       <div class="footer-col">
-        <h3>Bizi Takip Edin</h3>
+        <h3>İletişim</h3>
+        <ul class="footer-contact-list">
+          <li><i class="fa-solid fa-location-dot"></i><span>Akkent Mahallesi, Kemalpaşa Caddesi, No:77, Şahinbey / Gaziantep</span></li>
+          <li><i class="fa-solid fa-phone"></i><a href="tel:02325137567">0 232 513 75 67</a></li>
+          <li><i class="fa-solid fa-envelope"></i><a href="mailto:info@lezzetmuhru.com">info@lezzetmuhru.com</a></li>
+        </ul>
         <div class="social-links">
           <a href="https://www.instagram.com" target="_blank" aria-label="İnstagram"><i class="fa-brands fa-instagram"></i></a>
           <a href="https://www.facebook.com" target="_blank" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
           <a href="https://twitter.com" target="_blank" aria-label="X / Twitter"><i class="fa-brands fa-x-twitter"></i></a>
         </div>
       </div>
-
     </div>
 
     <div class="footer-bottom">

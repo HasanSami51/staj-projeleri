@@ -14,7 +14,11 @@
      <header class="main-header">
         <div class="container header-container">
             <div class="logo">
-                <a href="index.html"><img src="../public/images/logo.png" class="logo-img" alt="Lezzet Mührü Logo"></a>
+                <a href="index.html" class="logo-link"><img src="../public/images/logo.png" class="logo-img" alt="Lezzet Mührü Logo"></a>
+                <div class="brand-text-wrapper">
+                    <span class="brand-title">Lezzet Mührü</span>
+                    <span class="brand-subtitle">1932'den Beri</span>
+                </div>
             </div>
             <button class="hamburger-btn" id="hamburgerBtn" aria-label="Menüyü Aç/Kapat">
               <i class="fa-solid fa-bars"></i>
@@ -47,6 +51,21 @@
       <p>
         Her gün gün ağarırken yöresinden özel olarak seçilen taze malzemeler, ustalarımızın yıllara dayanan maharetiyle buluşuyor. Bizim için her tabak, sofranıza sunulan asırlık bir gelenek ve damaklarda bırakılan bir lezzet mührüdür.
       </p>
+      
+      <div class="about-stats">
+        <div class="stat-box">
+          <span class="stat-number">90+</span>
+          <span class="stat-label">Yıllık Tecrübe</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-number">%100</span>
+          <span class="stat-label">Odun Ateşi</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-number">50K+</span>
+          <span class="stat-label">Mutlu Misafir</span>
+        </div>
+      </div>
     </div>
     <div class="about-story-img">
       <img src="../public/images/about-hero.png" alt="Lezzet Mührü Tarihi Fırın" class="rounded-img" loading="lazy" decoding="async">
@@ -64,19 +83,19 @@
 
     <div class="values-grid">
       <div class="value-card">
-        <div class="value-icon">🌱</div>
+        <div class="value-icon"><i class="fa-solid fa-leaf"></i></div>
         <h3>Yerel ve Taze Malzeme</h3>
         <p>Etlerimizden baharatlarımıza kadar tüm ürünlerimizi doğrudan yöresindeki yerel üreticilerden günlük ve taze olarak temin ediyoruz.</p>
       </div>
 
       <div class="value-card">
-        <div class="value-icon">🔥</div>
+        <div class="value-icon"><i class="fa-solid fa-fire-flame-curved"></i></div>
         <h3>Geleneksel Pişirme</h3>
         <p>Elektrikli veya gazlı ocaklar yerine, etlerimizin lezzetini mühürleyen meşe odunu ateşi ve taş fırın geleneğinden asla taviz vermiyoruz.</p>
       </div>
 
       <div class="value-card">
-        <div class="value-icon">🤝</div>
+        <div class="value-icon"><i class="fa-solid fa-handshake-angle"></i></div>
         <h3>Kuşaksız Misafirperverlik</h3>
         <p>Restoranımıza adım atan her misafirimizi evimize gelen bir dost gibi ağırlıyor, 1932'den beri süregelen esnaf samimiyetini yaşatıyoruz.</p>
       </div>
@@ -192,12 +211,6 @@
     </div> 
 </section>
 </main>
- 
-
-
-
-
- </main>
 
 
 
@@ -208,47 +221,53 @@
         <path d="M18 15l-6-6-6 6"/>
     </svg>
    </button>
-  <footer class="main-footer ">
+   <footer class="main-footer">
     <div class="container footer-container">
-        <div class="footer-col ">
-        <a href="index.html"><img src="../public/images/logo.png"alt="Lezzet Mührü Logo" class=" logo footer-logo-img"></a>
+      <div class="footer-col">
+        <a href="index.html" class="footer-logo-link"><img src="../public/images/logo.png" alt="Lezzet Mührü Logo" class="footer-logo-img"></a>
         <p class="footer-text">Geleneksel tarifler, asırlık lezzet ve ızgara ustalığıyla 1932'den beri sofralarınıza mühür vuruyoruz.</p>
-    </div>
-    
-    <div class="footer-col">
-       
-        <h3>İletişim</h3>
-        <ul class="footer-contact-list">
-          <li><span class="icon">📍</span><span>Akkent Mahallesi, Kemalpaşa Caddesi, No:77, Şahinbey / Gaziantep</span></li>
-          <li><span class="icon">📞</span><a href="tel:02325137567">0 232 513 75 67</a></li>
-          <li> <span class="icon">✉️</span><a href="mailto:info@lezzetmuhru.com">info@lezzetmuhru.com</a></li>
-        
-         </ul>
-       
-    </div>
+      </div>
+     
+      <div class="footer-col">
+        <h3>Hızlı Menü</h3>
+        <ul class="footer-links">
+          <li><a href="index.html">Anasayfa</a></li>
+          <li><a href="menu.html">Menü</a></li>
+          <li><a href="rezervasyon.html">Rezervasyon</a></li>
+          <li><a href="hakkimizda.html">Hakkımızda</a></li>
+          <li><a href="galeri.html">Galeri</a></li>
+        </ul>
+      </div>
+
       <div class="footer-col">
         <h3>Çalışma Saatleri</h3>
         <div class="working-hours">
-         <p><strong>Pazartesi - Perşembe:</strong> 10:00 - 22:00</p>
-         <p><strong>Cuma - Cumartesi:</strong> 10:00 - 23:00</p>
-         <p><strong>Pazar:</strong> <span class="status-badge closed">Kapalı</span></p>
+          <p><strong>Pazartesi - Perşembe:</strong> 10:00 - 22:00</p>
+          <p><strong>Cuma - Cumartesi:</strong> 10:00 - 23:00</p>
+          <p><strong>Pazar:</strong> <span class="status-badge closed">Kapalı</span></p>
         </div>
       </div>
-    <div class="footer-col">
-        <h3>Bizi Takip Edin</h3>
-        <div class="social-links">
-        <a href="https://www.instagram.com" target="_blank" aria-label="İnstagram"> <i class="fa-brands fa-instagram"></i></a>
-        <a href="https://www.facebook.com" target="_blank" aria-label="Facebook"> <i class="fa-brands fa-facebook-f"></i></a>
-        <a href="https://twitter.com" target="_blank" aria-label="X / Twitter"> <i class="fa-brands fa-x-twitter"></i></a>
-    </div>
-    </div>
-    </div>
-        <div class="footer-bottom">
-            <div class="container">
-            <p>&copy; 1932 - 2026 Lezzet Mührü. Tüm hakları saklıdır.</p>
-        </div>
-        </div>
 
+      <div class="footer-col">
+        <h3>İletişim</h3>
+        <ul class="footer-contact-list">
+          <li><i class="fa-solid fa-location-dot"></i><span>Akkent Mahallesi, Kemalpaşa Caddesi, No:77, Şahinbey / Gaziantep</span></li>
+          <li><i class="fa-solid fa-phone"></i><a href="tel:02325137567">0 232 513 75 67</a></li>
+          <li><i class="fa-solid fa-envelope"></i><a href="mailto:info@lezzetmuhru.com">info@lezzetmuhru.com</a></li>
+        </ul>
+        <div class="social-links">
+          <a href="https://www.instagram.com" target="_blank" aria-label="İnstagram"><i class="fa-brands fa-instagram"></i></a>
+          <a href="https://www.facebook.com" target="_blank" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+          <a href="https://twitter.com" target="_blank" aria-label="X / Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <div class="container">
+        <p>&copy; 1932 - 2026 Lezzet Mührü. Tüm hakları saklıdır.</p>
+      </div>
+    </div>
    </footer>
    <script src="../public/js/main.js"></script>
 </body>

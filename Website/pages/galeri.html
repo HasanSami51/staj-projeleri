@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="entr">
+<html lang="tr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,7 +14,11 @@
      <header class="main-header">
         <div class="container header-container">
             <div class="logo">
-                <a href="index.html"><img src="../public/images/logo.png" class="logo-img" alt="Lezzet Mührü Logo"></a>
+                <a href="index.html" class="logo-link"><img src="../public/images/logo.png" class="logo-img" alt="Lezzet Mührü Logo"></a>
+                <div class="brand-text-wrapper">
+                    <span class="brand-title">Lezzet Mührü</span>
+                    <span class="brand-subtitle">1932'den Beri</span>
+                </div>
             </div>
              <button class="hamburger-btn" id="hamburgerBtn" aria-label="Menüyü Aç/Kapat">
               <i class="fa-solid fa-bars"></i>
@@ -33,53 +37,116 @@
 </div>
 </header>
 
- <main class="main-content">
+  <main class="main-content">
     <section class="gallery-section section-padding">
         <div class="container">
             <div class="section-title text-center">
                 <h2>Lezzet & Mekan Galerisi</h2>
-                <p>Geleneksel Lezzetlerimizden ve mekanımızdan kareler</p>
+                <p>Geleneksel lezzetlerimizden ve mekanımızdan kareler (Büyütmek için fotoğraflara tıklayabilirsiniz)</p>
             </div>
 
              <div class="gallery-grid" id="galleryGrid">
              <div class="gallery-item">
-                <img src="../public/images/gallery-1.jpg" alt="Gaziantep usulü odun ateşinde pişen zırh kıyması adana kebap" loading="lazy" decoding="async">
-                <div class="gallery-overlay"><span>Odun Ateşinde Kebap</span></div>
+                <img src="../public/images/gallery-1.jpg" alt="Odun Ateşinde Kebap" loading="lazy" decoding="async">
+                <div class="gallery-overlay">
+                    <div class="zoom-icon"><i class="fa-solid fa-magnifying-glass-plus"></i></div>
+                    <span>Odun Ateşinde Kebap</span>
+                </div>
              </div>
               <div class="gallery-item">
-                <img src="../public/images/gallery-2.jpg" alt="Geleneksel Taş Fırınından yeni çıkmış çıtır kıymalı Pide" loading="lazy" decoding="async">
-                <div class="gallery-overlay"><span>Taş Fırın Pide</span></div>
+                <img src="../public/images/gallery-2.jpg" alt="Taş Fırın Pide" loading="lazy" decoding="async">
+                <div class="gallery-overlay">
+                    <div class="zoom-icon"><i class="fa-solid fa-magnifying-glass-plus"></i></div>
+                    <span>Taş Fırın Pide</span>
+                </div>
              </div>
               <div class="gallery-item">
-                <img src="../public/images/gallery-3.webp" alt="Antep fıstıklı el açması taze şerbetli ev Baklavası" loading="lazy" decoding="async">
-                <div class="gallery-overlay"><span>Geleneksel Baklava</span></div>
+                <img src="../public/images/gallery-3.webp" alt="Geleneksel Baklava" loading="lazy" decoding="async">
+                <div class="gallery-overlay">
+                    <div class="zoom-icon"><i class="fa-solid fa-magnifying-glass-plus"></i></div>
+                    <span>Geleneksel Baklava</span>
+                </div>
              </div>
               <div class="gallery-item">
-                <img src="../public/images/gallery-4.png" alt="Lezzet Mührü restoran otantik taş mimari iç mekan atmosferi" loading="lazy" decoding="async">
-                <div class="gallery-overlay"><span>Restoran İç Mekan</span></div>
+                <img src="../public/images/gallery-4.png" alt="Restoran İç Mekan" loading="lazy" decoding="async">
+                <div class="gallery-overlay">
+                    <div class="zoom-icon"><i class="fa-solid fa-magnifying-glass-plus"></i></div>
+                    <span>Restoran İç Mekan</span>
+                </div>
              </div>
               <div class="gallery-item">
-                <img src="../public/images/gallery-5.jpg" alt="Kömür ateşinde nar gibi pişmiş karışık Izgara Çeşitleri" loading="lazy" decoding="async">
-                <div class="gallery-overlay"><span>Izgara Çeşitleri</span></div>
+                <img src="../public/images/gallery-5.jpg" alt="Izgara Çeşitleri" loading="lazy" decoding="async">
+                <div class="gallery-overlay">
+                    <div class="zoom-icon"><i class="fa-solid fa-magnifying-glass-plus"></i></div>
+                    <span>Izgara Çeşitleri</span>
+                </div>
              </div>
               <div class="gallery-item">
-                <img src="../public/images/gallery-6.jpg" alt="Sıcak şerbetli çıtır künefe" loading="lazy" decoding="async">
-                <div class="gallery-overlay"><span>Çıtır Künefe</span></div>
+                <img src="../public/images/gallery-6.jpg" alt="Çıtır Künefe" loading="lazy" decoding="async">
+                <div class="gallery-overlay">
+                    <div class="zoom-icon"><i class="fa-solid fa-magnifying-glass-plus"></i></div>
+                    <span>Çıtır Künefe</span>
+                </div>
              </div>
               <div class="gallery-item">
-                <img src="../public/images/gallery-7.jpg" alt="Açık havada yemek keyfi sunan Ferah restoran Bahçesi" loading="lazy" decoding="async">
-                <div class="gallery-overlay"><span>Ferah Bahçe Alanımız</span></div>
+                <img src="../public/images/gallery-7.jpg" alt="Ferah Bahçe Alanımız" loading="lazy" decoding="async">
+                <div class="gallery-overlay">
+                    <div class="zoom-icon"><i class="fa-solid fa-magnifying-glass-plus"></i></div>
+                    <span>Ferah Bahçe Alanımız</span>
+                </div>
              </div>
               <div class="gallery-item">
-                <img src="../public/images/gallery-8.jpg" alt="İncecik hamurlu taş fırında pişen Gaziantep lahmacunu" loading="lazy" decoding="async">
-                <div class="gallery-overlay"><span>Gaziantep Lahmacunu</span></div>
+                <img src="../public/images/gallery-8.jpg" alt="Gaziantep Lahmacunu" loading="lazy" decoding="async">
+                <div class="gallery-overlay">
+                    <div class="zoom-icon"><i class="fa-solid fa-magnifying-glass-plus"></i></div>
+                    <span>Gaziantep Lahmacunu</span>
+                </div>
              </div> 
                <div class="gallery-item">
-                <img src="../public/images/gallery-9.jpg" alt="Bol Zeytinyağıyla karışan mükemmel mezelerimiz" loading="lazy" decoding="async">
-                <div class="gallery-overlay"><span>Mezeler</span></div>
+                <img src="../public/images/gallery-9.jpg" alt="Geleneksel Mezeler" loading="lazy" decoding="async">
+                <div class="gallery-overlay">
+                    <div class="zoom-icon"><i class="fa-solid fa-magnifying-glass-plus"></i></div>
+                    <span>Geleneksel Mezeler</span>
+                </div>
              </div> 
              </div>
         </div>
+    </section>
+
+    <!-- Instagram Social Banner -->
+    <section class="instagram-banner-section">
+      <div class="container">
+        <div class="instagram-banner">
+          <div class="instagram-icon-box">
+            <i class="fa-brands fa-instagram"></i>
+          </div>
+          <div class="instagram-text">
+            <h3>@lezzetmuhru1932 Instagram'da Bizi Takip Edin</h3>
+            <p>Günlük taze sunumlarımızı, usta ellerden çıkan ızgara videolarımızı ve mutfak arkası özel karelerimizi kaçırmayın.</p>
+          </div>
+          <a href="https://www.instagram.com" target="_blank" class="btn-instagram">
+            <i class="fa-brands fa-instagram"></i> Instagram'da Takip Et
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Call to Action Banner -->
+    <section class="cta-banner-section section-padding">
+      <div class="container">
+        <div class="cta-banner">
+          <div class="cta-content">
+            <span class="cta-badge">1932'den Beri Değişmeyen Lezzet</span>
+            <h2>Lezzetlerimizi Yakından Deneyimlemek İster Misiniz?</h2>
+            <p>Geleneksel meşe odunu ateşinde pişen özel ızgaralarımız ve sıcak taş fırın lezzetlerimiz için masanızı şimdiden ayırtın.</p>
+          </div>
+          <div class="cta-action">
+            <a href="rezervasyon.html" class="btn-cta-primary">
+              <i class="fa-solid fa-calendar-check"></i> Masa Rezerve Et
+            </a>
+          </div>
+        </div>
+      </div>
     </section>
  </main>
 
@@ -94,48 +161,53 @@
     </button>
 
 
-      <footer class="main-footer ">
+   <footer class="main-footer">
     <div class="container footer-container">
-        <div class="footer-col ">
-        <a href="index.html"><img src="../public/images/logo.png"alt="Lezzet Mührü Logo" class=" logo footer-logo-img"></a>
+      <div class="footer-col">
+        <a href="index.html" class="footer-logo-link"><img src="../public/images/logo.png" alt="Lezzet Mührü Logo" class="footer-logo-img"></a>
         <p class="footer-text">Geleneksel tarifler, asırlık lezzet ve ızgara ustalığıyla 1932'den beri sofralarınıza mühür vuruyoruz.</p>
-    </div>
-    
-    <div class="footer-col">
-       
-        <h3>İletişim</h3>
-        <ul class="footer-contact-list">
-          <li><span class="icon">📍</span><span>Akkent Mahallesi, Kemalpaşa Caddesi, No:77, Şahinbey / Gaziantep</span></li>
-          <li><span class="icon">📞</span><a href="tel:02325137567">0 232 513 75 67</a></li>
-          <li> <span class="icon">✉️</span><a href="mailto:info@lezzetmuhru.com">info@lezzetmuhru.com</a></li>
-        
-         </ul>
-       
-    </div>
+      </div>
+     
+      <div class="footer-col">
+        <h3>Hızlı Menü</h3>
+        <ul class="footer-links">
+          <li><a href="index.html">Anasayfa</a></li>
+          <li><a href="menu.html">Menü</a></li>
+          <li><a href="rezervasyon.html">Rezervasyon</a></li>
+          <li><a href="hakkimizda.html">Hakkımızda</a></li>
+          <li><a href="galeri.html">Galeri</a></li>
+        </ul>
+      </div>
 
       <div class="footer-col">
         <h3>Çalışma Saatleri</h3>
-       <div class="working-hours">
-       <p><strong>Pazartesi - Perşembe:</strong> 10:00 - 22:00</p>
-       <p><strong>Cuma - Cumartesi:</strong> 10:00 - 23:00</p>
-       <p><strong>Pazar:</strong> <span class="status-badge closed">Kapalı</span></p>
+        <div class="working-hours">
+          <p><strong>Pazartesi - Perşembe:</strong> 10:00 - 22:00</p>
+          <p><strong>Cuma - Cumartesi:</strong> 10:00 - 23:00</p>
+          <p><strong>Pazar:</strong> <span class="status-badge closed">Kapalı</span></p>
         </div>
       </div>
-    <div class="footer-col">
-        <h3>Bizi Takip Edin</h3>
-        <div class="social-links">
-        <a href="https://www.instagram.com" target="_blank" aria-label="İnstagram"> <i class="fa-brands fa-instagram"></i></a>
-        <a href="https://www.facebook.com" target="_blank" aria-label="Facebook"> <i class="fa-brands fa-facebook-f"></i></a>
-        <a href="https://twitter.com" target="_blank" aria-label="X / Twitter"> <i class="fa-brands fa-x-twitter"></i></a>
-    </div>
-    </div>
-    </div>
-        <div class="footer-bottom">
-            <div class="container">
-            <p>&copy; 1932 - 2026 Lezzet Mührü. Tüm hakları saklıdır.</p>
-        </div>
-        </div>
 
+      <div class="footer-col">
+        <h3>İletişim</h3>
+        <ul class="footer-contact-list">
+          <li><i class="fa-solid fa-location-dot"></i><span>Akkent Mahallesi, Kemalpaşa Caddesi, No:77, Şahinbey / Gaziantep</span></li>
+          <li><i class="fa-solid fa-phone"></i><a href="tel:02325137567">0 232 513 75 67</a></li>
+          <li><i class="fa-solid fa-envelope"></i><a href="mailto:info@lezzetmuhru.com">info@lezzetmuhru.com</a></li>
+        </ul>
+        <div class="social-links">
+          <a href="https://www.instagram.com" target="_blank" aria-label="İnstagram"><i class="fa-brands fa-instagram"></i></a>
+          <a href="https://www.facebook.com" target="_blank" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+          <a href="https://twitter.com" target="_blank" aria-label="X / Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <div class="container">
+        <p>&copy; 1932 - 2026 Lezzet Mührü. Tüm hakları saklıdır.</p>
+      </div>
+    </div>
    </footer>
    <div id="imageModal" class="image-modal">
     <div class="modal-wrapper">

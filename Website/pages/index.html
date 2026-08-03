@@ -14,7 +14,11 @@
     <header class="main-header">
         <div class="container header-container">
             <div class="logo">
-                <a href="index.html"><img src="../public/images/logo.png" class="logo-img" alt="Lezzet Mührü Logo"></a>
+                <a href="index.html" class="logo-link"><img src="../public/images/logo.png" class="logo-img" alt="Lezzet Mührü Logo"></a>
+                <div class="brand-text-wrapper">
+                    <span class="brand-title">Lezzet Mührü</span>
+                    <span class="brand-subtitle">1932'den Beri</span>
+                </div>
             </div>
              <button class="hamburger-btn" id="hamburgerBtn" aria-label="Menüyü Aç/Kapat">
               <i class="fa-solid fa-bars"></i>
@@ -37,9 +41,49 @@
       <section class="hero-section">
         <div class="hero-overlay"></div>
         <div class="hero-content">
-            <h1 class="hero title" style="color:#ffffff !important;">1932'den Beri Geleneksel Izgara Lezzeti</h1>
+            <span class="hero-tag-badge"><i class="fa-solid fa-fire"></i> 1932'den Beri Gaziantep Mirası</span>
+            <h1 class="hero-title" style="color:#ffffff !important;">1932'den Beri Geleneksel Izgara Lezzeti</h1>
             <p class="hero-subtitle">Asırlık tarifler ve usta ellerden çıkan benzersiz lezzetler sofranızda</p>
-            <a href="rezervasyon.html" class="btn-primary">Rezervasyon Yap</a>
+            <div class="hero-buttons">
+              <a href="rezervasyon.html" class="btn-primary">Rezervasyon Yap</a>
+              <a href="menu.html" class="btn-hero-outline"><i class="fa-solid fa-utensils"></i> Menümüzü İnceleyin</a>
+            </div>
+        </div>
+      </section>
+
+      <!-- Trust Features Bar -->
+      <section class="trust-bar-section">
+        <div class="container">
+          <div class="trust-bar">
+            <div class="trust-item">
+              <i class="fa-solid fa-drumstick-bite"></i>
+              <div>
+                <strong>%100 Taze Yerel Etler</strong>
+                <span>Günlük yöresel tedarik</span>
+              </div>
+            </div>
+            <div class="trust-item">
+              <i class="fa-solid fa-fire-flame-curved"></i>
+              <div>
+                <strong>Meşe Odunu Ateşi</strong>
+                <span>Geleneksel taş fırın</span>
+              </div>
+            </div>
+            <div class="trust-item">
+              <i class="fa-solid fa-square-parking"></i>
+              <div>
+                <strong>Ücretsiz Otopark & Vale</strong>
+                <span>Geniş araç park alanı</span>
+              </div>
+            </div>
+            <div class="trust-item">
+              <i class="fa-solid fa-award"></i>
+              <div>
+                <strong>Asırlık Ustalık</strong>
+                <span>1932'den beri değişmeyen lezzet</span>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -50,6 +94,9 @@
 
          <div class="dishes-grid">
          <div class="dish-card">
+            <div class="card-badges">
+              <span class="badge badge-chef">⭐ Şefin Önerisi</span>
+            </div>
             <img src="../public/images/Adana-Kebab.jpg" alt="Adana Kebap" class="dish-img">
             <div class="dish-info">
                 <h3>Meşhur Adana Kebap</h3>
@@ -58,10 +105,13 @@
             </div>
          </div>
            <div class="dish-card">
+            <div class="card-badges">
+              <span class="badge badge-chef">🔥 Taş Fırından</span>
+            </div>
             <img src="../public/images/lahmacun.jpg" alt="lahmacun" class="dish-img">
             <div class="dish-info">
                 <h3>Çıtır Lahmacun</h3>
-                <p>Kıymayı domatesi soğanı mükemmel derecede pişen ağızda dağılan boğazda kalmayan mükemmel bir lezzet</p>
+                <p>Kıymayı domatesi soğanı mükemmel derecede pişen ağızda dağılan lezzet</p>
                 <span class="dish-price">₺150</span>
             </div>
            </div>
@@ -73,9 +123,16 @@
                 <span class="dish-price">₺280</span>
             </div>
          </div>
-      </div>
+       </div>
+
+       <div class="view-full-menu-wrapper text-center">
+         <a href="menu.html" class="btn-full-menu">
+           Tüm Menüyü Keşfedin <i class="fa-solid fa-arrow-right"></i>
+         </a>
+       </div>
     </div>
       </section>
+
       <section class="about-summary">
     <div class="container about-container">
       <div class="about-text">
@@ -89,10 +146,49 @@
           Şahinbey Akkent'deki mekanımızda, en kaliteli malzemeleri meşe kömürü ateşinde 
           mükemmel bir ustalıkla buluşturarak sofralarınıza mühür vurmaya devam ediyoruz.
         </p>
-        <a href="hakkimizda.html" class="btn-secondary">Devamını Oku</a>
+        <a href="hakkimizda.html" class="btn-secondary">Devamını Oku <i class="fa-solid fa-arrow-right"></i></a>
       </div>
       <div class="about-image">
         <img src="../public/images/lezzet-mührü.png" alt="Lezzet Mührü Restoran Görseli">
+      </div>
+    </div>
+  </section>
+
+  <!-- Müşteri Yorumları -->
+  <section class="testimonials-section section-padding">
+    <div class="container">
+      <div class="section-title text-center">
+        <h2>Misafirlerimizin Yorumları</h2>
+        <p class="section-subtitle">Google'da 4.9 ★★★★★ puanı ile binlerce mutlu misafirimizin değerlendirmeleri</p>
+      </div>
+
+      <div class="testimonials-grid">
+        <div class="testimonial-card">
+          <div class="stars">★★★★★</div>
+          <p class="review-text">"Gaziantep'te yediğim en lezzetli Adana kebaptı. Meşe odunu kokusu etin lezzetini muazzam kılıyor. Personel de son derece ilgiliydi."</p>
+          <div class="reviewer-info">
+            <strong>Murat Kaya</strong>
+            <span>Google İncelemesi</span>
+          </div>
+        </div>
+
+        <div class="testimonial-card">
+          <div class="stars">★★★★★</div>
+          <p class="review-text">"Taş fırından yeni çıkan lahmacun ve kuşbaşılı pidesi tam anlamıyla asırlık lezzet sözünü tutuyor. Ailemizle her hafta sonu buradayız."</p>
+          <div class="reviewer-info">
+            <strong>Elif Şahin</strong>
+            <span>Google İncelemesi</span>
+          </div>
+        </div>
+
+        <div class="testimonial-card">
+          <div class="stars">★★★★★</div>
+          <p class="review-text">"1932'den kalma esnaf samimiyeti ve temizlik gerçekten takdire şayan. Vale ve otopark hizmeti de büyük kolaylık sağladı."</p>
+          <div class="reviewer-info">
+            <strong>Hakan Yılmaz</strong>
+            <span>Google İncelemesi</span>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -102,24 +198,24 @@
     <path d="M18 15l-6-6-6 6"/>
   </svg>
 </button>
-   <footer class="main-footer ">
+   <footer class="main-footer">
     <div class="container footer-container">
-        <div class="footer-col ">
-        <a href="index.html" class="footer-logo-link"><img src="../public/images/logo.png"alt="Lezzet Mührü Logo" class="footer-logo-img"></a>
+      <div class="footer-col">
+        <a href="index.html" class="footer-logo-link"><img src="../public/images/logo.png" alt="Lezzet Mührü Logo" class="footer-logo-img"></a>
         <p class="footer-text">Geleneksel tarifler, asırlık lezzet ve ızgara ustalığıyla 1932'den beri sofralarınıza mühür vuruyoruz.</p>
-    </div>
-    
-    <div class="footer-col">
-       
-        <h3>İletişim</h3>
-        <ul class="footer-contact-list">
-          <li><span class="icon">📍</span><span>Akkent Mahallesi, Kemalpaşa Caddesi, No:77, Şahinbey / Gaziantep</span></li>
-          <li><span class="icon">📞</span><a href="tel:02325137567">0 232 513 75 67</a></li>
-          <li> <span class="icon">✉️</span><a href="mailto:info@lezzetmuhru.com">info@lezzetmuhru.com</a></li>
-        
-         </ul>
-       
-    </div>
+      </div>
+     
+      <div class="footer-col">
+        <h3>Hızlı Menü</h3>
+        <ul class="footer-links">
+          <li><a href="index.html">Anasayfa</a></li>
+          <li><a href="menu.html">Menü</a></li>
+          <li><a href="rezervasyon.html">Rezervasyon</a></li>
+          <li><a href="hakkimizda.html">Hakkımızda</a></li>
+          <li><a href="galeri.html">Galeri</a></li>
+        </ul>
+      </div>
+
       <div class="footer-col">
         <h3>Çalışma Saatleri</h3>
         <div class="working-hours">
@@ -128,21 +224,27 @@
           <p><strong>Pazar:</strong> <span class="status-badge closed">Kapalı</span></p>
         </div>
       </div>
-    <div class="footer-col">
-        <h3>Bizi Takip Edin</h3>
-        <div class="social-links">
-        <a href="https://www.instagram.com" target="_blank" aria-label="İnstagram"> <i class="fa-brands fa-instagram"></i></a>
-        <a href="https://www.facebook.com" target="_blank" aria-label="Facebook"> <i class="fa-brands fa-facebook-f"></i></a>
-        <a href="https://twitter.com" target="_blank" aria-label="X / Twitter"> <i class="fa-brands fa-x-twitter"></i></a>
-    </div>
-    </div>
-    </div>
-        <div class="footer-bottom">
-            <div class="container">
-            <p>&copy; 1932 - 2026 Lezzet Mührü. Tüm hakları saklıdır.</p>
-        </div>
-        </div>
 
+      <div class="footer-col">
+        <h3>İletişim</h3>
+        <ul class="footer-contact-list">
+          <li><i class="fa-solid fa-location-dot"></i><span>Akkent Mahallesi, Kemalpaşa Caddesi, No:77, Şahinbey / Gaziantep</span></li>
+          <li><i class="fa-solid fa-phone"></i><a href="tel:02325137567">0 232 513 75 67</a></li>
+          <li><i class="fa-solid fa-envelope"></i><a href="mailto:info@lezzetmuhru.com">info@lezzetmuhru.com</a></li>
+        </ul>
+        <div class="social-links">
+          <a href="https://www.instagram.com" target="_blank" aria-label="İnstagram"><i class="fa-brands fa-instagram"></i></a>
+          <a href="https://www.facebook.com" target="_blank" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+          <a href="https://twitter.com" target="_blank" aria-label="X / Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <div class="container">
+        <p>&copy; 1932 - 2026 Lezzet Mührü. Tüm hakları saklıdır.</p>
+      </div>
+    </div>
    </footer>
 
      <script src="../public/js/main.js"></script>

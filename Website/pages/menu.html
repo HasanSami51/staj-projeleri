@@ -13,11 +13,14 @@
     <title>Menü | Lezzet Mührü</title>
 </head>
 <body>
-    
     <header class="main-header">
         <div class="container header-container">
  <div class="logo">
-   <a href="index.html"><img src="../public/images/logo.png" class="logo-img" alt="Lezzet Mührü Logo"></a>
+    <a href="index.html" class="logo-link"><img src="../public/images/logo.png" class="logo-img" alt="Lezzet Mührü Logo"></a>
+    <div class="brand-text-wrapper">
+        <span class="brand-title">Lezzet Mührü</span>
+        <span class="brand-subtitle">1932'den Beri</span>
+    </div>
  </div>
   <button class="hamburger-btn" id="hamburgerBtn" aria-label="Menüyü Aç/Kapat">
               <i class="fa-solid fa-bars"></i>
@@ -31,7 +34,7 @@
             <li><a href="galeri.html">Galeri</a></li>
             <li><a href="iletisim.html" class="nav-btn">İletişim</a></li>
         </ul>
-            </nav>
+             </nav>
         </div>
     </header>
 
@@ -47,24 +50,68 @@
       
 <section class="menu-section" style="padding-bottom: 60px;">
     <div class="container">
-    <div class="filter-buttons">
-        <button class="filter-btn active" data-kategori="tumu">Tüm Lezzetler</button>
-        <button class="filter-btn" data-kategori="corba">Çorbalar</button>
-        <button class="filter-btn" data-kategori="kebap">Izgaralar & Kebaplar</button>
-        <button class="filter-btn" data-kategori="pide">Pideler & Lahmacunlar</button>
-        <button class="filter-btn" data-kategori="zeytinyagli">Zeytinyağlı & Salatalar</button> 
-        <button class="filter-btn" data-kategori="tatli">Tatlılar</button>
-        <button class="filter-btn" data-kategori="icecek">İçecekler</button>
-       
+        <div class="search-container" style="margin-bottom: 25px; text-align:center;">
+            <div style="position: relative; max-width:460px; margin:0 auto">
+                <input type="text" id="menuSearchInput" placeholder="Lezzetlerde ara... (Örn: Adana, Künefe, Mercimek)" style="width: 100%; padding: 13px 20px 13px 45px; border-radius: 30px; border: 2px solid var(--primary-kiremit); font-size: 0.95rem; outline: none; transition: all 0.3s ease;">
+                <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 18px; top: 50%; transform: translateY(-50%); color: var(--primary-kiremit); font-size: 1.1rem;"></i>     
+            </div>
+        </div>
+
+        <div class="filter-buttons-wrapper">
+          <div class="filter-buttons">
+              <button class="filter-btn active" data-kategori="tumu">Tüm Lezzetler <span class="badge-count">42</span></button>
+              <button class="filter-btn" data-kategori="corba">Çorbalar <span class="badge-count">5</span></button>
+              <button class="filter-btn" data-kategori="kebap">Izgaralar & Kebaplar <span class="badge-count">9</span></button>
+              <button class="filter-btn" data-kategori="pide">Pideler & Lahmacunlar <span class="badge-count">9</span></button>
+              <button class="filter-btn" data-kategori="zeytinyagli">Zeytinyağlı & Salatalar <span class="badge-count">8</span></button> 
+              <button class="filter-btn" data-kategori="tatli">Tatlılar <span class="badge-count">5</span></button>
+              <button class="filter-btn" data-kategori="icecek">İçecekler <span class="badge-count">6</span></button>
+          </div>
+        </div>
+
+        <div class="dishes-grid" id="menu-grid"></div>
+
+        <!-- Load More Button -->
+        <div id="loadMoreContainer" class="load-more-wrapper text-center">
+          <button id="loadMoreBtn" class="btn-load-more">
+            Tüm Lezzetleri İncele (42 Lezzet) <i class="fa-solid fa-chevron-down"></i>
+          </button>
+        </div>
+
+        <!-- Chef's Recommendation Card (Menü Ortası) -->
+        <div class="chef-special-card">
+          <div class="chef-special-badge"><i class="fa-solid fa-star"></i> Şefin Günün Menü Tavsiyesi</div>
+          <div class="chef-special-content">
+            <h3>Geleneksel Taş Fırın & Izgara Kombini</h3>
+            <p>Köz Patlıcanlı Süt Çorbası + Zırh Kıyması Adana Kebap + Çıtır Antep Fıstıklı Künefe</p>
+          </div>
+          <a href="rezervasyon.html" class="btn-chef-special"><i class="fa-solid fa-calendar-check"></i> Masa Rezerve Et</a>
+        </div>
     </div>
+</section>
 
-                
-<div class="dishes-grid" id="menu-grid">
-     
-
-
-</div>
+<!-- Digital Services & PDF Download Banner (Menü Altı) -->
+<section class="menu-bottom-services">
+  <div class="container">
+    <div class="services-banner">
+      <div class="service-box">
+        <i class="fa-solid fa-file-pdf"></i>
+        <div>
+          <strong>Dijital Menü PDF</strong>
+          <span>Telefonunuza indirmek için tıklayın</span>
+        </div>
+        <a href="#" class="btn-service-action" onclick="alert('Dijital Menü PDF formatında indiriliyor...'); return false;">PDF İndir</a>
+      </div>
+      <div class="service-box">
+        <i class="fa-solid fa-phone-volume"></i>
+        <div>
+          <strong>Masaya Sipariş & Bilgi</strong>
+          <span>Garson çağırma ve detaylı bilgi için</span>
+        </div>
+        <a href="tel:02325137567" class="btn-service-action highlight">Bizi Arayın</a>
+      </div>
     </div>
+  </div>
 </section>
 </main>
 
@@ -75,42 +122,50 @@
 </button>
     <footer class="main-footer">
         <div class="container footer-container">
-        <div class="footer-col">
-            <a href="index.html"><img src="../public/images/logo.png" alt="Lezzet Mührü Logo" class="logo footer-logo-img"></a>
+          <div class="footer-col">
+            <a href="index.html" class="footer-logo-link"><img src="../public/images/logo.png" alt="Lezzet Mührü Logo" class="footer-logo-img"></a>
             <p class="footer-text">Geleneksel tarifler, asırlık lezzet ve ızgara ustalığıyla 1932'den beri sofralarınıza mühür vuruyoruz.</p>
-        </div>
-            
-        <div class="footer-col">
+          </div>
+         
+          <div class="footer-col">
+            <h3>Hızlı Menü</h3>
+            <ul class="footer-links">
+              <li><a href="index.html">Anasayfa</a></li>
+              <li><a href="menu.html">Menü</a></li>
+              <li><a href="rezervasyon.html">Rezervasyon</a></li>
+              <li><a href="hakkimizda.html">Hakkımızda</a></li>
+              <li><a href="galeri.html">Galeri</a></li>
+            </ul>
+          </div>
+
+          <div class="footer-col">
+            <h3>Çalışma Saatleri</h3>
+            <div class="working-hours">
+              <p><strong>Pazartesi - Perşembe:</strong> 10:00 - 22:00</p>
+              <p><strong>Cuma - Cumartesi:</strong> 10:00 - 23:00</p>
+              <p><strong>Pazar:</strong> <span class="status-badge closed">Kapalı</span></p>
+            </div>
+          </div>
+
+          <div class="footer-col">
             <h3>İletişim</h3>
             <ul class="footer-contact-list">
-             <li><span class="icon">📍</span><span>Akkent Mahallesi, Kemalpaşa Caddesi, No:77, Şahinbey / Gaziantep</span></li>
-             <li><span class="icon">📞</span><a href="tel:02325137567">0 232 513 75 67</a></li>
-             <li><span class="icon">✉️</span><a href="mailto:info@lezzetmuhru.com">info@lezzetmuhru.com</a></li>
+              <li><i class="fa-solid fa-location-dot"></i><span>Akkent Mahallesi, Kemalpaşa Caddesi, No:77, Şahinbey / Gaziantep</span></li>
+              <li><i class="fa-solid fa-phone"></i><a href="tel:02325137567">0 232 513 75 67</a></li>
+              <li><i class="fa-solid fa-envelope"></i><a href="mailto:info@lezzetmuhru.com">info@lezzetmuhru.com</a></li>
             </ul>
+            <div class="social-links">
+              <a href="https://www.instagram.com" target="_blank" aria-label="İnstagram"><i class="fa-brands fa-instagram"></i></a>
+              <a href="https://www.facebook.com" target="_blank" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+              <a href="https://twitter.com" target="_blank" aria-label="X / Twitter"><i class="fa-brands fa-x-twitter"></i></a>
             </div>
+          </div>
+        </div>
 
-    
-      <div class="footer-col">
-        <h3>Çalışma Saatleri</h3>
-      <div class="working-hours">
-         <p><strong>Pazartesi - Perşembe:</strong> 10:00 - 22:00</p>
-         <p><strong>Cuma - Cumartesi:</strong> 10:00 - 23:00</p>
-         <p><strong>Pazar:</strong> <span class="status-badge closed">Kapalı</span></p>
-        </div>
-      </div>
-        <div class="footer-col">
-         <h3>Bizi Takip Edin</h3>
-        <div class="social-links">
-            <a href="https://www.instagram.com" target="_blank" aria-label="İnstagram"><i class="fa-brands fa-instagram"></i></a>
-            <a href="https://www.facebook.com" target="_blank" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
-            <a href="https://twitter.com" target="_blank" aria-label="X / Twitter"><i class="fa-brands fa-x-twitter"></i></a>
-        </div>
-            </div>
-        </div>
         <div class="footer-bottom">
-        <div class="container">
+          <div class="container">
             <p>&copy; 1932 - 2026 Lezzet Mührü. Tüm hakları saklıdır.</p>
-        </div>
+          </div>
         </div>
     </footer>
 
