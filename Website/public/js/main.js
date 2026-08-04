@@ -51,6 +51,63 @@ const yemekler = [
 document.addEventListener("DOMContentLoaded", () => {
 
   // ==========================================
+  // MODÜLER YARDIMCI FONKSİYONLAR
+  // ==========================================
+
+  // 1. Ekranı Yumuşak Kaydırma (Smooth Scroll)
+  function yumusakKaydir(hedef, offset = 90) {
+    if (!hedef) return;
+    const element = typeof hedef === "string" ? document.querySelector(hedef) : hedef;
+    if (!element) return;
+    const elementPosition = element.getBoundingClientRect().top;
+    const offsetPosition = elementPosition + window.pageYOffset - offset;
+    window.scrollTo({ top: offsetPosition, behavior: "smooth" });
+  }
+
+  // 2. Türkçe Karakter Uyumlu Küçük Harfe Çevirici
+  function trKucukHarf(metin) {
+    return (metin || "").toLocaleLowerCase("tr-TR").trim();
+  }
+
+  // 3. Saat Metnini Toplam Dakikaya Çevirici ("10:30" -> 630)
+  function saatiDakikayaCevir(saatMetni) {
+    if (!saatMetni) return 0;
+    const [saat, dakika] = saatMetni.split(":").map(Number);
+    return saat * 60 + dakika;
+  }
+
+  // 4. Form Gönderim & Yüklenme Simülatörü
+  function formGonderimSimuleEt(formEl, alertEl, gonderimMetni = "Gönderiliyor...", beklemeSuresi = 1200) {
+    if (!formEl) return;
+    const submitBtn = formEl.querySelector('button[type="submit"]');
+    const originalText = submitBtn ? submitBtn.innerHTML : "Gönder";
+
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> ${gonderimMetni}`;
+    }
+
+    setTimeout(() => {
+      if (alertEl) {
+        alertEl.style.display = "flex";
+        yumusakKaydir(alertEl);
+      }
+      formEl.reset();
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalText;
+      }
+      setTimeout(() => {
+        if (alertEl) alertEl.style.display = "none";
+        const ticketContainer = document.getElementById('resTicketContainer');
+        if (ticketContainer && ticketContainer.style.display !== 'none') {
+          yumusakKaydir(ticketContainer);
+        }
+      }, 4200);
+    }, beklemeSuresi);
+  }
+
+  // ==========================================
   // 1. MENÜ FİLTRELEME & CANLI ARAMA İŞLEMLERİ
   // ==========================================
   const menuGrid = document.getElementById("menu-grid");
@@ -115,6 +172,28 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
       menuGrid.appendChild(fragment);
+
+      // 6. ADIM: Skeleton Shimmer & Image Fade-In Event Listeners
+      const imgContainers = menuGrid.querySelectorAll('.dish-img-container');
+      imgContainers.forEach(container => {
+        const img = container.querySelector('img');
+        if (img) {
+          container.classList.add('skeleton-loading');
+          if (img.complete && img.naturalWidth > 0) {
+            img.classList.add('loaded');
+            container.classList.remove('skeleton-loading');
+          } else {
+            img.addEventListener('load', () => {
+              img.classList.add('loaded');
+              container.classList.remove('skeleton-loading');
+            });
+            img.addEventListener('error', () => {
+              img.classList.add('loaded');
+              container.classList.remove('skeleton-loading');
+            });
+          }
+        }
+      });
     }
 
     let hepsiAcik = false;
@@ -167,10 +246,114 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
 
+    const kategoriAdlari = {
+      corba: "🍲 Çorbalar",
+      kebap: "🥩 Izgaralar & Kebaplar",
+      pide: "🍕 Pideler & Lahmacunlar",
+      zeytinyagli: "🥗 Zeytinyağlılar & Salatalar",
+      tatli: "🍨 Tatlılar",
+      icecek: "🥤 İçecekler"
+    };
+
+    function tumYemekleriGosterYazdir() {
+      hepsiAcik = true;
+      aktifKategori = "tumu";
+      mevcutAramaMetni = "";
+      if (menuSearchInput) menuSearchInput.value = "";
+      if (filterBtns) {
+        filterBtns.forEach((b) => b.classList.remove("active"));
+      }
+      const tumuBtn = document.querySelector('.filter-btn[data-kategori="tumu"]');
+      if (tumuBtn) tumuBtn.classList.add("active");
+      
+      if (Array.isArray(yemekler) && menuGrid) {
+        menuGrid.innerHTML = "";
+        const kategorilerOrder = ["corba", "kebap", "pide", "zeytinyagli", "tatli", "icecek"];
+        
+        kategorilerOrder.forEach(katKey => {
+          const katYemekleri = yemekler.filter(y => y.kategori === katKey);
+          if (katYemekleri.length > 0) {
+            const catHeader = document.createElement("div");
+            catHeader.className = "print-category-header";
+            catHeader.innerHTML = `<span>${kategoriAdlari[katKey] || katKey}</span>`;
+            menuGrid.appendChild(catHeader);
+
+            katYemekleri.forEach(yemek => {
+              const sefinOnerisiHTML = yemek.sefinOnerisi ? `<span class="badge badge-chef">⭐ Şefin Önerisi</span>` : '';
+              const vejetaryenHTML = yemek.vejetaryen ? `<span class="badge badge-veg" title="Vejetaryen">🌱 Veg</span>` : '';
+              const aciliHTML = (yemek.kategori === 'kebap' && (yemek.ad.includes('Adana') || yemek.ad.includes('Ciğer') || yemek.ad.includes('Sarma'))) || yemek.ad.includes('Acılı') ? `<span class="badge badge-spicy"><i class="fa-solid fa-pepper-hot"></i> Acılı</span>` : '';
+
+              const cardDiv = document.createElement("div");
+              cardDiv.className = "dish-card";
+              cardDiv.dataset.kategori = yemek.kategori;
+
+              cardDiv.innerHTML = `
+                <div class="card-badges">
+                  ${sefinOnerisiHTML}
+                  ${vejetaryenHTML}
+                  ${aciliHTML}
+                </div>
+                <div class="dish-img-container">
+                  <img src="${yemek.resim}" alt="${yemek.ad}" loading="eager">
+                </div>
+                <div class="dish-info">
+                  <h3>${yemek.ad}</h3>
+                  <p>${yemek.aciklama}</p>
+                  <span class="dish-price">₺${yemek.fiyat}</span>
+                </div>
+              `;
+              menuGrid.appendChild(cardDiv);
+            });
+          }
+        });
+
+        // 6. ADIM: Skeleton Shimmer Listener
+        const imgContainers = menuGrid.querySelectorAll('.dish-img-container');
+        imgContainers.forEach(container => {
+          const img = container.querySelector('img');
+          if (img) {
+            container.classList.add('skeleton-loading');
+            if (img.complete && img.naturalWidth > 0) {
+              img.classList.add('loaded');
+              container.classList.remove('skeleton-loading');
+            } else {
+              img.addEventListener('load', () => {
+                img.classList.add('loaded');
+                container.classList.remove('skeleton-loading');
+              });
+              img.addEventListener('error', () => {
+                img.classList.add('loaded');
+                container.classList.remove('skeleton-loading');
+              });
+            }
+          }
+        });
+      }
+      if (loadMoreContainer) loadMoreContainer.style.display = "none";
+    }
+
+    window.menuyuYazdirAninda = function() {
+      tumYemekleriGosterYazdir();
+      setTimeout(() => {
+        window.print();
+      }, 150);
+    };
+
+    const btnPrintMenu = document.getElementById("btnPrintMenu") || document.querySelector(".btn-print-menu");
+    if (btnPrintMenu) {
+      btnPrintMenu.onclick = function(e) {
+        if (e) e.preventDefault();
+        window.menuyuYazdirAninda();
+      };
+    }
+
+    window.addEventListener('beforeprint', tumYemekleriGosterYazdir);
+
     if (loadMoreBtn) {
       loadMoreBtn.addEventListener("click", () => {
         hepsiAcik = true;
         menuyuFiltrele();
+        yumusakKaydir(".menu-section") || yumusakKaydir("#menu-grid");
       });
     }
 
@@ -196,7 +379,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Arama Kutusu Input Event (Debounced & Türkçe Karakter Uyumlu)
     if (menuSearchInput) {
       menuSearchInput.addEventListener("input", debounce((e) => {
-        mevcutAramaMetni = e.target.value.toLocaleLowerCase('tr-TR').trim();
+        mevcutAramaMetni = trKucukHarf(e.target.value);
         menuyuFiltrele();
       }, 250));
     }
@@ -220,45 +403,91 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // ==========================================
+  // 2. GALERİ LIGHTBOX & KLAVYE OK TUŞLARI GEZİNMESİ
+  // ==========================================
   const modal = document.getElementById("imageModal");
   const modalImg = document.getElementById("modalImg");
   const modalCaption = document.getElementById("modalCaption");
+  const modalCounter = document.getElementById("modalCounter");
   const closeBtn = document.querySelector(".modal-close");
+  const prevBtn = document.getElementById("modalPrev");
+  const nextBtn = document.getElementById("modalNext");
   const galleryItems = document.querySelectorAll(".gallery-item");
 
-  if (modal && galleryItems.length > 0) {
-    galleryItems.forEach(item => {
-      item.addEventListener("click", () => {
-        const img = item.querySelector("img");
-        const caption = item.querySelector(".gallery-caption");
+  let currentGalleryIndex = 0;
 
-        if (img && img.src && modalImg) {
-          modal.classList.add("active");
-          modalImg.src = img.src;
-          modalImg.alt = img.alt || "";
-          if (modalCaption) {
-            modalCaption.textContent = caption ? caption.textContent : (img.alt || "");
-          }
-          document.body.style.overflow = "hidden"; 
-        }
+  if (modal && galleryItems.length > 0) {
+    galleryItems.forEach((item, index) => {
+      item.addEventListener("click", () => {
+        openGalleryModal(index);
       });
     });
 
-    if (closeBtn) closeBtn.addEventListener("click", closeModal);
+    function openGalleryModal(index) {
+      currentGalleryIndex = index;
+      modal.classList.add("active");
+      document.body.style.overflow = "hidden";
+      updateModalContent();
+    }
 
+    function updateModalContent() {
+      if (!galleryItems[currentGalleryIndex]) return;
+
+      const item = galleryItems[currentGalleryIndex];
+      const img = item.querySelector("img");
+      const overlayText = item.querySelector(".gallery-overlay span");
+      const captionText = overlayText ? overlayText.textContent : (img ? img.alt : "");
+
+      if (img && modalImg) {
+        modalImg.classList.add("change-anim");
+        setTimeout(() => {
+          modalImg.src = img.src;
+          modalImg.alt = img.alt || "";
+          if (modalCaption) modalCaption.textContent = captionText;
+          if (modalCounter) modalCounter.textContent = `${currentGalleryIndex + 1} / ${galleryItems.length}`;
+          modalImg.classList.remove("change-anim");
+        }, 120);
+      }
+    }
+
+    function showNextImage() {
+      currentGalleryIndex = (currentGalleryIndex + 1) % galleryItems.length;
+      updateModalContent();
+    }
+
+    function showPrevImage() {
+      currentGalleryIndex = (currentGalleryIndex - 1 + galleryItems.length) % galleryItems.length;
+      updateModalContent();
+    }
+
+    if (closeBtn) closeBtn.addEventListener("click", closeModal);
+    if (nextBtn) nextBtn.addEventListener("click", showNextImage);
+    if (prevBtn) prevBtn.addEventListener("click", showPrevImage);
+
+    // Dış boşluğa tıklanınca kapat
     modal.addEventListener("click", (e) => {
       if (e.target === modal) closeModal();
     });
 
+    // Klavye Tuş Dinleyicileri (Sol/Sağ Ok Tuşları & ESC)
     document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape" && modal.classList.contains("active")) closeModal();
+      if (!modal.classList.contains("active")) return;
+
+      if (e.key === "Escape") {
+        closeModal();
+      } else if (e.key === "ArrowRight") {
+        showNextImage();
+      } else if (e.key === "ArrowLeft") {
+        showPrevImage();
+      }
     });
   }
 
   function closeModal() {
     if (modal) {
       modal.classList.remove("active");
-      document.body.style.overflow = "auto"; 
+      document.body.style.overflow = "auto";
     }
   }
 
@@ -276,44 +505,150 @@ document.addEventListener("DOMContentLoaded", () => {
   const reservationForm = document.getElementById('reservationForm');
   const resFormAlert = document.getElementById('resFormAlert');
 
-  // --- ADIM ADIM SIRALAMA DENETLEYİCİSİ ---
+  // --- YARDIMCI DOĞRULAMA FONKSİYONLARI ---
+  function hataGoster(inputElement, mesaj) {
+    if (!inputElement) return;
+    const formGroup = inputElement.closest('.form-group');
+    if (!formGroup) return;
+
+    const wrapper = formGroup.querySelector('.input-icon-wrapper') || inputElement;
+    wrapper.classList.add('has-error');
+
+    let errorSpan = formGroup.querySelector('.error-msg');
+    if (!errorSpan) {
+      errorSpan = document.createElement('span');
+      errorSpan.className = 'error-msg';
+      formGroup.appendChild(errorSpan);
+    }
+    errorSpan.innerHTML = `<i class="fa-solid fa-circle-exclamation"></i> ${mesaj}`;
+  }
+
+  function alanHatasiniTemizle(inputElement) {
+    if (!inputElement) return;
+    const formGroup = inputElement.closest('.form-group');
+    if (!formGroup) return;
+
+    const wrapper = formGroup.querySelector('.input-icon-wrapper') || inputElement;
+    wrapper.classList.remove('has-error');
+    const errorSpan = formGroup.querySelector('.error-msg');
+    if (errorSpan) errorSpan.remove();
+  }
+
+  function hatalariTemizle() {
+    document.querySelectorAll('.error-msg').forEach((el) => el.remove());
+    document.querySelectorAll('.has-error').forEach((el) => el.classList.remove('has-error'));
+  }
+
+  // --- ADIM ADIM SIRALAMA VE CANLI ALAN DENETLEYİCİSİ ---
   function adimKontrol(hedefAdim) {
-    // 1. Ad Soyad Kontrolü
+    // 1. Ad Soyad Kontrolü (Adım 1)
     if (hedefAdim > 1 && (!resNameInput || !resNameInput.value.trim() || resNameInput.value.trim().length < 3)) {
-      alert('Lütfen önce Adınızı ve Soyadınızı tam olarak giriniz.');
-      if (resNameInput) resNameInput.focus();
+      hataGoster(resNameInput, 'Lütfen önce Adınızı ve Soyadınızı tam olarak giriniz.');
+      if (resNameInput) {
+        resNameInput.focus();
+        resNameInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
       return false;
     }
-    // 2. Telefon Kontrolü
-    if (hedefAdim > 2 && (!resPhoneInput || (resPhoneInput.value && !resPhoneInput.checkValidity()))) {
-      alert('Lütfen önce geçerli bir cep telefonu numarası (05XXXXXXXXX) giriniz.');
-      if (resPhoneInput) resPhoneInput.focus();
+    // 2. Telefon Kontrolü (Adım 2)
+    if (hedefAdim > 2 && (!resPhoneInput || !resPhoneInput.value.trim() || !/^05[0-9]{9}$/.test(resPhoneInput.value.replace(/\s+/g, '')))) {
+      hataGoster(resPhoneInput, 'Lütfen önce geçerli bir cep telefonu numarası (05XXXXXXXXX) giriniz.');
+      if (resPhoneInput) {
+        resPhoneInput.focus();
+        resPhoneInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
       return false;
     }
-    // 3. Tarih Kontrolü
+    // 3. Tarih Kontrolü (Adım 3)
     if (hedefAdim > 3 && (!customDateInput || !customDateInput.value)) {
-      alert('Lütfen önce rezervasyon tarihini seçiniz.');
+      hataGoster(customDateInput, 'Lütfen önce rezervasyon tarihini seçiniz.');
+      if (customDateInput) {
+        customDateInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
       return false;
     }
-    // 4. Saat Kontrolü
+    // 4. Saat Kontrolü (Adım 4)
     if (hedefAdim > 4 && (!customTimeInput || !customTimeInput.value)) {
-      alert('Lütfen önce rezervasyon saatini seçiniz.');
+      hataGoster(customTimeInput, 'Lütfen önce rezervasyon saatini seçiniz.');
+      if (customTimeInput) {
+        customTimeInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
       return false;
     }
-    // 5. Kişi Sayısı Kontrolü
+    // 5. Kişi Sayısı Kontrolü (Adım 5)
     if (hedefAdim > 5 && (!resGuestsInput || !resGuestsInput.value)) {
-      alert('Lütfen önce kişi sayısını giriniz.');
-      if (resGuestsInput) resGuestsInput.focus();
+      hataGoster(resGuestsInput, 'Lütfen önce kişi sayısını giriniz.');
+      if (resGuestsInput) {
+        resGuestsInput.focus();
+        resGuestsInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
       return false;
     }
     return true;
   }
 
-  // --- TIKLAMA VE ODAKLANMA DİNLEYİCİLERİ ---
-  ['click', 'focus'].forEach(eventType => {
-    if (resPhoneInput) resPhoneInput.addEventListener(eventType, () => adimKontrol(2));
-    if (resGuestsInput) resGuestsInput.addEventListener(eventType, () => adimKontrol(5));
-    if (resNotesInput) resNotesInput.addEventListener(eventType, () => adimKontrol(6));
+  // --- KİLİTLİ ALAN KORUYUCUSU (Önceki Adım Tamamlanmadan İlerlenemez) ---
+  const adimEngelleri = [
+    { el: resPhoneInput, adim: 2 },
+    { el: customDateInput, adim: 3 },
+    { el: hiddenNativeDate, adim: 3 },
+    { el: customTimeInput, adim: 4 },
+    { el: hiddenNativeTime, adim: 4 },
+    { el: resGuestsInput, adim: 5 },
+    { el: resNotesInput, adim: 6 }
+  ];
+
+  adimEngelleri.forEach(item => {
+    if (item.el) {
+      ['mousedown', 'click', 'focus', 'keydown', 'input', 'change'].forEach(evtType => {
+        item.el.addEventListener(evtType, (e) => {
+          if (!adimKontrol(item.adim)) {
+            if (evtType === 'input' || evtType === 'change') {
+              item.el.value = '';
+            }
+            e.preventDefault();
+            e.stopPropagation();
+          }
+        });
+      });
+    }
+  });
+
+  // Kişi Sayısı için Anında Canlı Uarı ve Sınırlama (Live Input Validation)
+  if (resGuestsInput) {
+    resGuestsInput.addEventListener('input', (e) => {
+      if (!adimKontrol(5)) {
+        e.target.value = '';
+        return;
+      }
+      const rawVal = e.target.value;
+      if (!rawVal) {
+        alanHatasiniTemizle(resGuestsInput);
+        return;
+      }
+      const val = parseInt(rawVal, 10);
+      if (rawVal.length > 2 || val > 10) {
+        hataGoster(resGuestsInput, 'Online en fazla 10 kişilik rezervasyon kabul edilmektedir.');
+        e.target.value = rawVal.slice(0, 2);
+      } else if (val < 1) {
+        hataGoster(resGuestsInput, 'Kişi sayısı en az 1 kişi olmalıdır.');
+      } else {
+        alanHatasiniTemizle(resGuestsInput);
+      }
+    });
+  }
+
+  // İnput yazıldıkça veya düzeltildikçe hatayı anında temizle
+  [resNameInput, resPhoneInput, customDateInput, customTimeInput].forEach(input => {
+    if (input) {
+      ['input', 'change', 'blur'].forEach(evt => {
+        input.addEventListener(evt, () => {
+          if (input.value && input.value.trim() !== '') {
+            alanHatasiniTemizle(input);
+          }
+        });
+      });
+    }
   });
 
   // Tarih alanına tıklanırsa
@@ -324,13 +659,17 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     hiddenNativeDate.addEventListener('change', (e) => {
+      if (!adimKontrol(3)) {
+        e.target.value = '';
+        return;
+      }
       if (e.target.value) {
-        // Tarih UTC 00:00 kaymasını engellemek için yerel saat ile ayrıştırıyoruz
+        alanHatasiniTemizle(customDateInput);
         const selectedDate = new Date(e.target.value + 'T00:00:00');
         const dayOfWeek = selectedDate.getDay(); 
 
         if (dayOfWeek === 0) {
-          alert('Restoranımız Pazar günleri kapalıdır. Lütfen başka bir gün seçiniz.');
+          hataGoster(customDateInput, 'Restoranımız Pazar günleri kapalıdır. Lütfen başka bir gün seçiniz.');
           customDateInput.value = '';
           hiddenNativeDate.value = '';
           if (customTimeInput) customTimeInput.value = '';
@@ -346,6 +685,7 @@ document.addEventListener("DOMContentLoaded", () => {
           if (customTimeInput) customTimeInput.value = '';
           hiddenNativeTime.value = '';
         }
+        if (typeof updateTicketPreview === 'function') updateTicketPreview();
       }
     });
   }
@@ -358,15 +698,20 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     hiddenNativeTime.addEventListener('change', (e) => {
+      if (!adimKontrol(4)) {
+        e.target.value = '';
+        return;
+      }
       const selectedTime = e.target.value;
       if (!selectedTime) return;
 
+      alanHatasiniTemizle(customTimeInput);
       const [hours, minutes] = selectedTime.split(':').map(Number);
       const totalMinutes = hours * 60 + minutes;
       const minMinutes = 10 * 60; 
 
-      const selectedDateVal = hiddenNativeDate.value;
-      const selectedDate = new Date(selectedDateVal + 'T00:00:00');
+      const selectedDateVal = hiddenNativeDate ? hiddenNativeDate.value : '';
+      const selectedDate = selectedDateVal ? new Date(selectedDateVal + 'T00:00:00') : new Date();
       const dayOfWeek = selectedDate.getDay();
 
       const isWeekendHeader = (dayOfWeek === 5 || dayOfWeek === 6);
@@ -374,11 +719,11 @@ document.addEventListener("DOMContentLoaded", () => {
       const maxTimeStr = isWeekendHeader ? '23:00' : '22:00';
 
       if (totalMinutes < minMinutes) {
-        alert(`Çalışma saatlerimiz 10:00 ile ${maxTimeStr} arasındadır. Saat 10:00 olarak ayarlandı.`);
+        hataGoster(customTimeInput, `Çalışma saatlerimiz 10:00 ile ${maxTimeStr} arasındadır. Saat 10:00 olarak ayarlandı.`);
         customTimeInput.value = '10:00';
         hiddenNativeTime.value = '10:00';
       } else if (totalMinutes > maxMinutes) {
-        alert(`Seçtiğiniz günde çalışma saatlerimiz ${maxTimeStr}'a kadardır. Saat ${maxTimeStr} olarak ayarlandı.`);
+        hataGoster(customTimeInput, `Seçtiğiniz günde çalışma saatlerimiz ${maxTimeStr}'a kadardır. Saat ${maxTimeStr} olarak ayarlandı.`);
         customTimeInput.value = maxTimeStr;
         hiddenNativeTime.value = maxTimeStr;
       } else {
@@ -387,47 +732,269 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // --- FORM SUBMIT (GENEL DOĞRULAMA) ---
+  let lastSubmittedTicketData = null;
+
+  // --- FORM SUBMIT (DETAYLI DOĞRULAMA: BOŞ ALAN, TELEFON, GEÇMİŞ TARİH, KAPALI SAAT) ---
   if (reservationForm) {
     reservationForm.addEventListener('submit', (e) => {
       e.preventDefault();
 
-      const resDate = document.getElementById('resDate') ? document.getElementById('resDate').value : '';
-      const resTime = document.getElementById('resTime') ? document.getElementById('resTime').value : '';
+      // Önceki tüm hataları temizle
+      hatalariTemizle();
 
-      if (!reservationForm.checkValidity() || !resDate || !resTime) {
-        alert('Lütfen tüm zorunlu alanları doğru bir şekilde doldurunuz.');
-        reservationForm.reportValidity();
+      let formGecerli = true;
+
+      const nameInput = document.getElementById('resName');
+      const phoneInput = document.getElementById('resPhone');
+      const dateInput = document.getElementById('resDate');
+      const hiddenDateInput = document.getElementById('hiddenNativeDate');
+      const timeInput = document.getElementById('resTime');
+      const hiddenTimeInput = document.getElementById('hiddenNativeTime');
+      const guestsInput = document.getElementById('resGuests');
+      const notesInput = document.getElementById('resNotes');
+
+      // 1. Ad Soyad Kontrolü (Boş alan ve min hane)
+      if (!nameInput || !nameInput.value.trim()) {
+        hataGoster(nameInput, 'Lütfen adınızı ve soyadınızı giriniz.');
+        formGecerli = false;
+      } else if (nameInput.value.trim().length < 3) {
+        hataGoster(nameInput, 'Ad Soyad en az 3 karakter olmalıdır.');
+        formGecerli = false;
+      }
+
+      // 2. Telefon Numarası Kontrolü (05XXXXXXXXX formatı)
+      const phoneRegex = /^05[0-9]{9}$/;
+      const temizTelefon = phoneInput ? phoneInput.value.replace(/\s+/g, '') : '';
+      if (!temizTelefon) {
+        hataGoster(phoneInput, 'Lütfen telefon numaranızı giriniz.');
+        formGecerli = false;
+      } else if (!phoneRegex.test(temizTelefon)) {
+        hataGoster(phoneInput, 'Geçersiz telefon numarası. (Örn: 05XXXXXXXXX)');
+        formGecerli = false;
+      }
+
+      // 3. Geçmiş Tarih Kontrolü
+      const secilenTarihMetni = hiddenDateInput && hiddenDateInput.value ? hiddenDateInput.value : (dateInput ? dateInput.value : '');
+      if (!secilenTarihMetni) {
+        hataGoster(dateInput, 'Lütfen bir rezervasyon tarihi seçiniz.');
+        formGecerli = false;
+      } else {
+        const bugun = new Date();
+        bugun.setHours(0, 0, 0, 0);
+
+        const secilenTarih = new Date(secilenTarihMetni);
+        secilenTarih.setHours(0, 0, 0, 0);
+
+        if (secilenTarih < bugun) {
+          hataGoster(dateInput, 'Geçmiş bir tarih için rezervasyon yapılamaz.');
+          formGecerli = false;
+        }
+      }
+
+      // 4. Kapalı Saat Kontrolü (Açık Saatler: 10:00 - 22:00)
+      const secilenSaatMetni = hiddenTimeInput && hiddenTimeInput.value ? hiddenTimeInput.value : (timeInput ? timeInput.value : '');
+      if (!secilenSaatMetni) {
+        hataGoster(timeInput, 'Lütfen bir rezervasyon saati seçiniz.');
+        formGecerli = false;
+      } else {
+        const [saat, dakika] = secilenSaatMetni.split(':').map(Number);
+        const toplamDakika = saat * 60 + dakika;
+
+        const acilisDakika = 10 * 60; // 10:00
+        const kapanisDakika = 22 * 60; // 22:00
+
+        if (toplamDakika < acilisDakika || toplamDakika > kapanisDakika) {
+          hataGoster(timeInput, 'Restoranımız bu saatte kapalıdır. (Açık saatler: 10:00 - 22:00)');
+          formGecerli = false;
+        }
+      }
+
+      // 5. Kişi Sayısı Kontrolü
+      if (!guestsInput || !guestsInput.value || guestsInput.value < 1) {
+        hataGoster(guestsInput, 'Lütfen kişi sayısını belirtiniz.');
+        formGecerli = false;
+      } else if (guestsInput.value > 10) {
+        hataGoster(guestsInput, 'Online en fazla 10 kişilik rezervasyon kabul edilmektedir.');
+        formGecerli = false;
+      }
+
+      // Eğer formda hata varsa gönderimi durdur
+      if (!formGecerli) {
+        const ilkHata = document.querySelector('.has-error');
+        if (ilkHata) {
+          yumusakKaydir(ilkHata);
+        }
         return;
       }
 
-      const submitBtn = reservationForm.querySelector('button[type="submit"]');
-      const originalBtnText = submitBtn ? submitBtn.innerHTML : 'Gönder';
+      // BİLGİLERİ FORM SIFIRLANMADAN ÖNCE (formGonderimSimuleEt ÖNCESİNDE) YAKALA
+      const nameVal = nameInput ? nameInput.value.trim() : '';
+      const phoneVal = phoneInput ? phoneInput.value.trim() : '';
+      const dateVal = dateInput ? dateInput.value.trim() : '';
+      const timeVal = (hiddenTimeInput && hiddenTimeInput.value) ? hiddenTimeInput.value : (timeInput ? timeInput.value.trim() : '');
+      const guestsVal = guestsInput ? guestsInput.value.trim() : '1';
+      const notesVal = notesInput ? notesInput.value.trim() : '';
 
-      if (submitBtn) {
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Gönderiliyor...';
+      lastSubmittedTicketData = {
+        name: nameVal,
+        phone: phoneVal,
+        date: dateVal,
+        time: timeVal,
+        guests: guestsVal,
+        notes: notesVal
+      };
+
+      // Form Geçerliyse Ortak Simülatörle Gönderim (800ms sonra yeşil bildirim görünür)
+      formGonderimSimuleEt(reservationForm, resFormAlert, 'Talebiniz İşleniyor...', 800);
+
+      // Kullanıcının yeşil başarı mesajını rahatça okuması için 5.0 saniye sonra bilete kay
+      setTimeout(() => {
+        const ticketContainer = document.getElementById('resTicketContainer');
+        const masaNo = String(Math.floor(1 + Math.random() * 18)).padStart(2, '0');
+        const konumlar = ['(Geleneksel Odun Ateşi Katı)', '(Tarihi Avlu Tarafı)', '(Taş Fırın Yanı)', '(Üst Kat Balkon)', '(VIP Salon)'];
+        const rastgeleKonum = konumlar[Math.floor(Math.random() * konumlar.length)];
+
+        const ticketData = {
+          masaNo,
+          konum: rastgeleKonum,
+          name: nameVal,
+          phone: phoneVal,
+          dateTime: `${dateVal} • ${timeVal}`,
+          guests: `${guestsVal} Kişilik Masa`,
+          notes: notesVal
+        };
+
+        displayTicketData(ticketData);
+        if (ticketContainer) {
+          ticketContainer.style.display = 'block';
+        }
+      }, 1250);
+    });
+
+    // --- BİLET BİLGİLERİNİ EKRANA YAZDIRMA FONKSİYONU ---
+    function displayTicketData(data) {
+      const cardTableNumber = document.getElementById('cardTableNumber');
+      const cardTicketName = document.getElementById('cardTicketName');
+      const cardTicketPhone = document.getElementById('cardTicketPhone');
+      const cardTicketDateTime = document.getElementById('cardTicketDateTime');
+      const cardTicketGuests = document.getElementById('cardTicketGuests');
+      const cardTicketNotes = document.getElementById('cardTicketNotes');
+      const cardTicketNotesRow = document.getElementById('cardTicketNotesRow');
+      const cardTicketWaBtn = document.getElementById('cardTicketWaBtn');
+
+      if (cardTableNumber) cardTableNumber.innerHTML = `Masa No: ${data.masaNo} <small>${data.konum}</small>`;
+      if (cardTicketName) cardTicketName.textContent = data.name || 'Girilmedi';
+      if (cardTicketPhone) cardTicketPhone.textContent = data.phone || '---';
+      if (cardTicketDateTime) cardTicketDateTime.textContent = data.dateTime || 'Tarih ve Saat Seçiniz';
+      if (cardTicketGuests) cardTicketGuests.textContent = data.guests || '-- Kişilik Masa';
+
+      if (cardTicketNotes && cardTicketNotesRow) {
+        if (data.notes) {
+          cardTicketNotes.textContent = data.notes;
+          cardTicketNotesRow.style.display = 'flex';
+        } else {
+          cardTicketNotesRow.style.display = 'none';
+        }
       }
 
-      setTimeout(() => {
+      if (cardTicketWaBtn) {
+        cardTicketWaBtn.href = `https://wa.me/902325137567?text=Merhaba,%20Masa%20No:%20${data.masaNo}%20${encodeURIComponent(data.konum)}%20rezervasyonum%20hakkinda%20bilgi%20almak%20istiyorum.`;
+      }
+    }
+
+    // --- SEÇENEK B: SAYFA YENİLENDİĞİNDE (F5) TERTEMİZ BAŞLA ---
+    try {
+      localStorage.removeItem('lm_lastReservationTicket');
+    } catch(e) {}
+
+    // --- BİLGİLERİ DÜZENLE (FORMA GERİ DÖN VE BİLGİLERİ DOLDUR) BUTONU ---
+    const btnEditReservation = document.getElementById('btnEditReservation');
+    if (btnEditReservation) {
+      btnEditReservation.addEventListener('click', () => {
+        const ticketContainer = document.getElementById('resTicketContainer');
+        if (ticketContainer) {
+          ticketContainer.style.display = 'none';
+        }
+        if (lastSubmittedTicketData) {
+          const elName = document.getElementById('resName');
+          const elPhone = document.getElementById('resPhone');
+          const elDate = document.getElementById('resDate');
+          const elNativeDate = document.getElementById('hiddenNativeDate');
+          const elTime = document.getElementById('resTime');
+          const elNativeTime = document.getElementById('hiddenNativeTime');
+          const elGuests = document.getElementById('resGuests');
+          const elNotes = document.getElementById('resNotes');
+
+          if (elName) elName.value = lastSubmittedTicketData.name || '';
+          if (elPhone) elPhone.value = lastSubmittedTicketData.phone || '';
+          if (elDate) elDate.value = lastSubmittedTicketData.date || '';
+          if (elNativeDate) elNativeDate.value = lastSubmittedTicketData.date || '';
+          if (elTime) elTime.value = lastSubmittedTicketData.time || '';
+          if (elNativeTime) elNativeTime.value = lastSubmittedTicketData.time || '';
+          if (elGuests) elGuests.value = lastSubmittedTicketData.guests || '1';
+          if (elNotes) elNotes.value = lastSubmittedTicketData.notes || '';
+        }
+        const resFormAlert = document.getElementById('resFormAlert');
         if (resFormAlert) {
-          resFormAlert.style.display = 'flex';
-          resFormAlert.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          resFormAlert.style.display = 'none';
         }
-
-        reservationForm.reset();
-        if (submitBtn) {
-          submitBtn.disabled = false;
-          submitBtn.innerHTML = originalBtnText;
+        hatalariTemizle();
+        if (reservationForm) {
+          yumusakKaydir(reservationForm);
         }
+      });
+    }
 
-        setTimeout(() => {
-          if (resFormAlert) {
-            resFormAlert.style.display = 'none';
-          }
-        }, 5000);
+    // --- 1932 MASA MÜHRÜ KAYIT KARTI CANLI ÖNİZLEME (LIVE PREVIEW SYNC) ---
+    function updateTicketPreview() {
+      const cardTicketName = document.getElementById('cardTicketName');
+      const cardTicketPhone = document.getElementById('cardTicketPhone');
+      const cardTicketDateTime = document.getElementById('cardTicketDateTime');
+      const cardTicketGuests = document.getElementById('cardTicketGuests');
+      const cardTicketNotes = document.getElementById('cardTicketNotes');
+      const cardTicketNotesRow = document.getElementById('cardTicketNotesRow');
 
-      }, 1500);
+      const nameVal = document.getElementById('resName')?.value.trim();
+      const phoneVal = document.getElementById('resPhone')?.value.trim();
+      const dateVal = document.getElementById('resDate')?.value.trim();
+      const timeVal = document.getElementById('resTime')?.value.trim();
+      const guestsVal = document.getElementById('resGuests')?.value.trim();
+      const notesVal = document.getElementById('resNotes')?.value.trim();
+
+      if (cardTicketName) cardTicketName.textContent = nameVal || 'Girilmedi';
+      if (cardTicketPhone) cardTicketPhone.textContent = phoneVal || '---';
+      if (cardTicketGuests) cardTicketGuests.textContent = (guestsVal && guestsVal > 0) ? `${guestsVal} Kişi` : '-- Kişi';
+
+      if (cardTicketDateTime) {
+        if (dateVal && timeVal) {
+          cardTicketDateTime.textContent = `${dateVal} • ${timeVal}`;
+        } else if (dateVal) {
+          cardTicketDateTime.textContent = `${dateVal} • Saat Seçiniz`;
+        } else if (timeVal) {
+          cardTicketDateTime.textContent = `Tarih Seçiniz • ${timeVal}`;
+        } else {
+          cardTicketDateTime.textContent = 'Tarih ve Saat Seçiniz';
+        }
+      }
+
+      if (cardTicketNotes && cardTicketNotesRow) {
+        if (notesVal) {
+          cardTicketNotes.textContent = notesVal;
+          cardTicketNotesRow.style.display = 'flex';
+        } else {
+          cardTicketNotesRow.style.display = 'none';
+        }
+      }
+    }
+
+    // Tüm İnputlara Canlı Dinleyici Bağla (Form doldurulurken canlı güncellensin)
+    ['resName', 'resPhone', 'resDate', 'resTime', 'resGuests', 'resNotes'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) {
+        ['input', 'change', 'keyup', 'blur'].forEach(evt => {
+          el.addEventListener(evt, updateTicketPreview);
+        });
+      }
     });
   }
 
@@ -513,39 +1080,114 @@ document.addEventListener("DOMContentLoaded", () => {
       e.preventDefault();
 
       if (!contactForm.checkValidity()) {
-        alert('Lütfen tüm zorunlu alanları doğru bir şekilde doldurunuz.');
-        contactForm.reportValidity();
+        const ilkGecersiz = contactForm.querySelector(':invalid');
+        if (ilkGecersiz) {
+          hataGoster(ilkGecersiz, 'Lütfen bu alanı doğru bir şekilde doldurunuz.');
+          yumusakKaydir(ilkGecersiz);
+        }
         return;
       }
 
-      const submitBtn = contactForm.querySelector('button[type="submit"]');
-      const originalBtnText = submitBtn ? submitBtn.innerHTML : 'Gönder';
-
-      if (submitBtn) {
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Gönderiliyor...';
-      }
-
-      setTimeout(() => {
-        if (formAlert) {
-          formAlert.style.display = 'flex';
-          formAlert.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-
-        contactForm.reset();
-        if (submitBtn) {
-          submitBtn.disabled = false;
-          submitBtn.innerHTML = originalBtnText;
-        }
-
-        setTimeout(() => {
-          if (formAlert) {
-            formAlert.style.display = 'none';
-          }
-        }, 5000);
-
-      }, 1500);
+      formGonderimSimuleEt(contactForm, formAlert, 'Gönderiliyor...', 1500);
     });
+  }
+
+  // ==========================================
+  // 6. CANLI ÇALIŞMA SAATİ KONTROLÜ (LIVE STATUS BADGE)
+  // ==========================================
+  function calismaSaatleriniKontrolEt() {
+    const simdikiZaman = new Date();
+    const gun = simdikiZaman.getDay(); // 0: Pazar, 1-4: Pzt-Prş, 5-6: Cum-Cmt
+    const saat = simdikiZaman.getHours();
+    const dakika = simdikiZaman.getMinutes();
+    const toplamDakika = saat * 60 + dakika;
+
+    let acik = false;
+    let kapanisSaati = "22:00";
+
+    if (gun === 0) {
+      // Pazar Kapalı
+      acik = false;
+    } else if (gun === 5 || gun === 6) {
+      // Cuma - Cumartesi: 10:00 - 23:00
+      kapanisSaati = "23:00";
+      acik = (toplamDakika >= 10 * 60 && toplamDakika < 23 * 60);
+    } else {
+      // Pazartesi - Perşembe: 10:00 - 22:00
+      kapanisSaati = "22:00";
+      acik = (toplamDakika >= 10 * 60 && toplamDakika < 22 * 60);
+    }
+
+    const badgeElements = document.querySelectorAll('.live-status-badge');
+    badgeElements.forEach(badge => {
+      if (acik) {
+        badge.className = 'live-status-badge status-open';
+        badge.innerHTML = `<span class="pulse-dot green"></span> <span class="status-text">Şu An Açığız <small>(${kapanisSaati}'a kadar)</small></span>`;
+      } else {
+        badge.className = 'live-status-badge status-closed';
+        badge.innerHTML = `<span class="pulse-dot red"></span> <span class="status-text">Şu An Kapalıyız <small>(Açılış 10:00)</small></span>`;
+      }
+    });
+  }
+
+  // Sayfa yüklenince canlı durumu çalıştır
+  calismaSaatleriniKontrolEt();
+
+  // ==========================================
+  // 7. MÜŞTERİ YORUMLARI İNTERAKTİF SLIDER
+  // ==========================================
+  const testimonialsTrack = document.getElementById('testimonialsTrack');
+  const btnTestimonialPrev = document.getElementById('btnTestimonialPrev');
+  const btnTestimonialNext = document.getElementById('btnTestimonialNext');
+  const testimonialDots = document.getElementById('testimonialDots');
+
+  if (testimonialsTrack && btnTestimonialPrev && btnTestimonialNext) {
+    const slides = testimonialsTrack.querySelectorAll('.testimonial-card-slide');
+    let currentSlide = 0;
+    let autoSlideTimer = null;
+
+    if (testimonialDots && slides.length > 0) {
+      testimonialDots.innerHTML = '';
+      slides.forEach((_, index) => {
+        const dot = document.createElement('div');
+        dot.className = `slider-dot ${index === 0 ? 'active' : ''}`;
+        dot.addEventListener('click', () => goToSlide(index));
+        testimonialDots.appendChild(dot);
+      });
+    }
+
+    function goToSlide(index) {
+      if (index < 0) index = slides.length - 1;
+      if (index >= slides.length) index = 0;
+      currentSlide = index;
+      testimonialsTrack.style.transform = `translateX(-${currentSlide * 100}%)`;
+
+      if (testimonialDots) {
+        const dots = testimonialDots.querySelectorAll('.slider-dot');
+        dots.forEach((d, i) => {
+          d.classList.toggle('active', i === currentSlide);
+        });
+      }
+    }
+
+    function resetAutoSlide() {
+      if (autoSlideTimer) clearInterval(autoSlideTimer);
+      autoSlideTimer = setInterval(() => {
+        goToSlide(currentSlide + 1);
+      }, 5500);
+    }
+
+    btnTestimonialPrev.addEventListener('click', () => {
+      goToSlide(currentSlide - 1);
+      resetAutoSlide();
+    });
+
+    btnTestimonialNext.addEventListener('click', () => {
+      goToSlide(currentSlide + 1);
+      resetAutoSlide();
+    });
+
+    resetAutoSlide();
   }
 
 });

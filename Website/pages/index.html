@@ -7,23 +7,45 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <title>Lezzet Mührü 1932</title>
+    <title>Lezzet Mührü 1932 - Geleneksel Izgara Lezzetleri</title>
+    <meta name="description" content="1932'den beri Gaziantep mirası geleneksel meşe odunu ateşinde ızgaralar, taş fırın pide ve künefe lezzetleri.">
+    <meta name="theme-color" content="#1a252f">
+    
+    <!-- OpenGraph (WhatsApp, Instagram, Facebook Paylaşım Etiketleri) -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Lezzet Mührü 1932">
+    <meta property="og:title" content="Lezzet Mührü 1932 &#10; Geleneksel Gaziantep Izgara Lezzetleri">
+    <meta property="og:description" content="1932'den beri değişmeyen lezzet mirası. Odun ateşinde kebap, taş fırında pide ve geleneksel Gaziantep tatlıları.">
+    <meta property="og:image" content="../public/images/logo.png">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Lezzet Mührü 1932 &#10; Geleneksel Gaziantep Izgara Lezzetleri">
+    <meta name="twitter:description" content="1932'den beri değişmeyen lezzet mirası. Odun ateşinde kebap ve taş fırın pide lezzetleri.">
+    <meta name="twitter:image" content="../public/images/logo.png">
+    
+    <!-- 50% Dairesel Kesimli Gerçek Logo Favicon -->
+    <link rel="icon" type="image/png" href="../public/images/favicon-round.png">
     <link rel="stylesheet" href="../public/css/style.css">   
 </head> 
 <body>
     <header class="main-header">
         <div class="container header-container">
             <div class="logo">
-                <a href="index.html" class="logo-link"><img src="../public/images/logo.png" class="logo-img" alt="Lezzet Mührü Logo"></a>
+                <a href="index.html" class="logo-link" title="Lezzet Mührü 1932&#10;Geleneksel Gaziantep Izgara Lezzetleri"><img src="../public/images/logo.png" class="logo-img" alt="Lezzet Mührü 1932 Logo"></a>
                 <div class="brand-text-wrapper">
                     <span class="brand-title">Lezzet Mührü</span>
                     <span class="brand-subtitle">1932'den Beri</span>
                 </div>
             </div>
+            <div class="header-status-wrapper">
+                <div class="header-divider"></div>
+                <div class="live-status-badge"></div>
+            </div>
              <button class="hamburger-btn" id="hamburgerBtn" aria-label="Menüyü Aç/Kapat">
               <i class="fa-solid fa-bars"></i>
             </button>
-         
+          
             <nav class="main-navbar" id="mainNavbar">
                 <ul>
                     <li><a href="index.html" class="active">Anasayfa</a></li>
@@ -32,12 +54,12 @@
                     <li><a href="hakkimizda.html">Hakkımızda</a></li>
                     <li><a href="galeri.html">Galeri</a></li>
                     <li><a href="iletisim.html" class="nav-btn">İletişim</a></li>
-                    
                 </ul>
             </nav>
  </div>
 </header>
 <main class="main-content">
+    <div class="hero-wrapper">
       <section class="hero-section">
         <div class="hero-overlay"></div>
         <div class="hero-content">
@@ -86,6 +108,7 @@
           </div>
         </div>
       </section>
+    </div>
 
       <section class="featured-dishes">
         <div class="container about-container">
@@ -154,40 +177,57 @@
     </div>
   </section>
 
-  <!-- Müşteri Yorumları -->
+  <!-- Müşteri Yorumları (İnteraktif Slider) -->
   <section class="testimonials-section section-padding">
     <div class="container">
       <div class="section-title text-center">
-        <h2>Misafirlerimizin Yorumları</h2>
-        <p class="section-subtitle">Google'da 4.9 ★★★★★ puanı ile binlerce mutlu misafirimizin değerlendirmeleri</p>
+        <h2>Misafirlerimizin Değerlendirmeleri</h2>
+        <p class="section-subtitle">Google'da 4.9 ★★★★★ puanı ile binlerce mutlu misafirimizin gurme deneyimleri</p>
       </div>
 
-      <div class="testimonials-grid">
-        <div class="testimonial-card">
-          <div class="stars">★★★★★</div>
-          <p class="review-text">"Gaziantep'te yediğim en lezzetli Adana kebaptı. Meşe odunu kokusu etin lezzetini muazzam kılıyor. Personel de son derece ilgiliydi."</p>
-          <div class="reviewer-info">
-            <strong>Murat Kaya</strong>
-            <span>Google İncelemesi</span>
+      <div class="testimonials-slider-container">
+        <div class="testimonials-track" id="testimonialsTrack">
+          <div class="testimonial-card-slide">
+            <div class="stars">★★★★★</div>
+            <p class="review-text">"Gaziantep'te yediğim en lezzetli Adana kebaptı. Meşe odunu kokusu etin lezzetini muazzam kılıyor. Personel de son derece ilgiliydi."</p>
+            <div class="reviewer-info">
+              <strong>Murat Kaya</strong>
+              <span>Google İncelemesi • 5 Yıldız</span>
+            </div>
+          </div>
+
+          <div class="testimonial-card-slide">
+            <div class="stars">★★★★★</div>
+            <p class="review-text">"Taş fırından yeni çıkan lahmacun ve kuşbaşılı pidesi tam anlamıyla asırlık lezzet sözünü tutuyor. Ailemizle her hafta sonu buradayız."</p>
+            <div class="reviewer-info">
+              <strong>Elif Şahin</strong>
+              <span>TripAdvisor • Gurme İnceleme</span>
+            </div>
+          </div>
+
+          <div class="testimonial-card-slide">
+            <div class="stars">★★★★★</div>
+            <p class="review-text">"1932'den kalma esnaf samimiyeti ve temizlik gerçekten takdire şayan. Vale ve otopark hizmeti de büyük kolaylık sağladı."</p>
+            <div class="reviewer-info">
+              <strong>Hakan Yılmaz</strong>
+              <span>Google İncelemesi • Doğrulanmış Misafir</span>
+            </div>
+          </div>
+
+          <div class="testimonial-card-slide">
+            <div class="stars">★★★★★</div>
+            <p class="review-text">"Fıstıklı Künefe ve Katmer tek kelimeyle bir şaheser! Antep fıstığının tazeliği ve şerbetin kıvamı o kadar dengeli ki anlatamam."</p>
+            <div class="reviewer-info">
+              <strong>Selin Öztürk</strong>
+              <span>Yemek & Mutfak Yazarı</span>
+            </div>
           </div>
         </div>
 
-        <div class="testimonial-card">
-          <div class="stars">★★★★★</div>
-          <p class="review-text">"Taş fırından yeni çıkan lahmacun ve kuşbaşılı pidesi tam anlamıyla asırlık lezzet sözünü tutuyor. Ailemizle her hafta sonu buradayız."</p>
-          <div class="reviewer-info">
-            <strong>Elif Şahin</strong>
-            <span>Google İncelemesi</span>
-          </div>
-        </div>
-
-        <div class="testimonial-card">
-          <div class="stars">★★★★★</div>
-          <p class="review-text">"1932'den kalma esnaf samimiyeti ve temizlik gerçekten takdire şayan. Vale ve otopark hizmeti de büyük kolaylık sağladı."</p>
-          <div class="reviewer-info">
-            <strong>Hakan Yılmaz</strong>
-            <span>Google İncelemesi</span>
-          </div>
+        <div class="slider-controls">
+          <button type="button" class="btn-slider-nav" id="btnTestimonialPrev"><i class="fa-solid fa-chevron-left"></i></button>
+          <div class="slider-dots" id="testimonialDots"></div>
+          <button type="button" class="btn-slider-nav" id="btnTestimonialNext"><i class="fa-solid fa-chevron-right"></i></button>
         </div>
       </div>
     </div>
@@ -235,7 +275,7 @@
         <div class="social-links">
           <a href="https://www.instagram.com" target="_blank" aria-label="İnstagram"><i class="fa-brands fa-instagram"></i></a>
           <a href="https://www.facebook.com" target="_blank" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
-          <a href="https://twitter.com" target="_blank" aria-label="X / Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+          <a href="https://wa.me/902325137567" target="_blank" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
         </div>
       </div>
     </div>

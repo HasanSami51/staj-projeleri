@@ -178,7 +178,7 @@ header nav a.active {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-right: auto;
+  margin-right: 0;
 }
 
 .brand-text-wrapper {
@@ -219,12 +219,13 @@ header nav a.active {
 }
 
 .footer-logo-img {
-  max-width: 120px;
-  height: 120px;
+  max-width: 155px;
+  height: 155px;
   object-fit: cover;
-  margin-bottom: 12px;
+  margin-bottom: 6px;
   display: block;
   border-radius: 50%;
+  transition: transform 0.3s ease;
 }
 
 .footer-logo-link {
@@ -320,10 +321,10 @@ header nav a.active {
 
 .footer-desc,
 .footer-text {
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   color: #a0aec0;
-  margin-top: 0.8rem;
-  line-height: 1.6;
+  margin-top: 0.4rem;
+  line-height: 1.5;
 }
 
 .footer-col h3 {
@@ -421,9 +422,18 @@ header nav a.active {
   color: #ffffff !important; 
   border-radius: 50%;
   text-decoration: none;
-  font-size: 1rem;
+  font-size: 1.15rem;
   transition: all 0.3s ease;
   border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.social-links a .fa-facebook-f {
+  font-size: 0.96rem;
+}
+
+.social-links a .fa-instagram,
+.social-links a .fa-whatsapp {
+  font-size: 1.18rem;
 }
 
 .social-links a:hover {
@@ -432,6 +442,91 @@ header nav a.active {
   color: #ffffff !important;
   transform: translateY(-4px);
   box-shadow: 0 5px 15px rgba(192, 57, 43, 0.4);
+}
+
+/* Canlı Çalışma Saati Rozeti (Logo Yanına Yakın Prestij Yerleşimi) */
+.header-status-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: 12px;
+  margin-right: auto;
+}
+
+.header-divider {
+  width: 1px;
+  height: 26px;
+  background: rgba(255, 255, 255, 0.18);
+  border-radius: 1px;
+}
+
+.live-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 13px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(8px);
+  white-space: nowrap;
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.live-status-badge.status-open {
+  background: rgba(46, 204, 113, 0.15);
+  color: #2ecc71;
+  border: 1px solid rgba(46, 204, 113, 0.45);
+  box-shadow: 0 4px 15px rgba(46, 204, 113, 0.2);
+}
+
+.live-status-badge.status-open .status-text small,
+.live-status-badge.status-closed .status-text small {
+  opacity: 0.85;
+  font-weight: 400;
+  margin-left: 3px;
+}
+
+.live-status-badge.status-closed {
+  background: rgba(231, 76, 60, 0.15);
+  color: #ef5350;
+  border: 1px solid rgba(231, 76, 60, 0.45);
+  box-shadow: 0 4px 15px rgba(231, 76, 60, 0.2);
+}
+
+.pulse-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.pulse-dot.green {
+  background-color: #2ecc71;
+  box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.7);
+  animation: pulseGreen 1.8s infinite;
+}
+
+.pulse-dot.red {
+  background-color: #e74c3c;
+  box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.7);
+  animation: pulseRed 1.8s infinite;
+}
+
+@keyframes pulseGreen {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.7); }
+  70% { transform: scale(1.1); box-shadow: 0 0 0 8px rgba(46, 204, 113, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(46, 204, 113, 0); }
+}
+
+@keyframes pulseRed {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.7); }
+  70% { transform: scale(1.1); box-shadow: 0 0 0 8px rgba(231, 76, 60, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(231, 76, 60, 0); }
 }
 
 .footer-bottom {
@@ -447,10 +542,17 @@ header nav a.active {
   margin: 0;
 }
 
+.hero-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - 90px);
+  width: 100%;
+}
+
 .hero-section {
   position: relative;
   width: 100%;
-  min-height: calc(100vh - 105px);
+  flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -460,7 +562,7 @@ header nav a.active {
   background-position: center;
   background-repeat: no-repeat;
   background-attachment: fixed;
-  padding: 2rem 1rem;
+  padding: 40px 1rem;
 }
 
 .hero-overlay {
@@ -488,18 +590,6 @@ header nav a.active {
   color: #ffffff;
   margin-bottom: 1.25rem;
   text-shadow: 0 2px 10px rgba(49, 48, 48, 0.5);
-}
-.hero-section {
-  min-height: auto !important;     
-  padding-top: 100px !important;    
-  padding-bottom: 100px !important; 
-  margin-bottom: 0 !important;      
-}
-
-
-.hero-content {
-  margin-bottom: 0 !important;
-  padding-bottom: 0 !important;
 }
 
 
@@ -819,7 +909,6 @@ header nav a.active {
     white-space: nowrap !important;
     gap: 10px !important;
     padding: 10px 15px !important;
-    -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
   }
   .filter-buttons::-webkit-scrollbar {
@@ -1261,8 +1350,9 @@ header nav a.active {
   color:#2e7d32;
 }
 .status-badge.closed{
-  background-color: #ffebee;
-  color:#c62828;
+  background-color: rgba(231, 76, 60, 0.15);
+  color: #ef5350;
+  border: 1px solid rgba(231, 76, 60, 0.35);
 }
 .gallery-grid{
   display:grid;
@@ -1478,8 +1568,9 @@ header nav a.active {
   top: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.88); 
-  backdrop-filter: blur(8px);
+  background-color: rgba(15, 23, 42, 0.94); 
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   align-items: center;
   justify-content: center;
   padding: 20px;
@@ -1496,9 +1587,9 @@ header nav a.active {
   position: relative;
   background-color: #1a252f;
   padding: 16px;
-  border-radius: 14px;
-  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   width: 900px;
   max-width: 92vw;
   display: flex;
@@ -1511,17 +1602,23 @@ header nav a.active {
   height: 520px;
   max-height: 65vh;
   object-fit: cover !important;
-  border-radius: 8px;
+  border-radius: 10px;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.modal-content.change-anim {
+  opacity: 0.3;
+  transform: scale(0.98);
 }
 
 .modal-caption-text {
   width: 100%;
   margin-top: 14px;
-  padding: 10px 18px;
+  padding: 12px 18px;
   color: #f39c12;
   font-family: var(--font-heading, 'Playfair Display', serif);
-  font-size: 1.2rem;
+  font-size: 1.25rem;
   font-weight: 600;
   letter-spacing: 0.5px;
   text-align: center; 
@@ -1530,40 +1627,118 @@ header nav a.active {
   border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
+.modal-counter {
+  position: absolute;
+  top: 25px;
+  left: 30px;
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  backdrop-filter: blur(8px);
+  z-index: 2010;
+}
+
 .modal-close {
   position: absolute;
-  top: -18px;
-  right: -18px;
+  top: 25px;
+  right: 30px;
   background-color: var(--primary-kiremit);
   color: #ffffff;
-  width: 36px;
-  height: 36px;
+  width: 42px;
+  height: 42px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 22px;
+  font-size: 24px;
   font-weight: bold;
   cursor: pointer;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
   border: 2px solid #ffffff;
-  z-index: 10;
+  z-index: 2010;
   transition: all 0.25s ease;
+  line-height: 1;
 }
 
 .modal-close:hover {
   background-color: var(--accent-baharat);
-  transform: scale(1.1);
+  transform: scale(1.1) rotate(90deg);
+}
+
+.modal-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  cursor: pointer;
+  z-index: 2010;
+  transition: all 0.25s ease;
+  backdrop-filter: blur(8px);
+}
+
+.modal-nav:hover {
+  background-color: var(--primary-kiremit);
+  border-color: var(--primary-kiremit);
+  transform: translateY(-50%) scale(1.12);
+  box-shadow: 0 6px 20px rgba(192, 57, 43, 0.4);
+}
+
+.modal-prev {
+  left: 30px;
+}
+
+.modal-next {
+  right: 30px;
+}
+
+@media(max-width: 768px) {
+  .modal-prev {
+    left: 10px;
+    width: 42px;
+    height: 42px;
+    font-size: 1rem;
+  }
+  .modal-next {
+    right: 10px;
+    width: 42px;
+    height: 42px;
+    font-size: 1rem;
+  }
+  .modal-counter {
+    top: 15px;
+    left: 15px;
+    font-size: 0.8rem;
+  }
+  .modal-close {
+    top: 15px;
+    right: 15px;
+    width: 36px;
+    height: 36px;
+    font-size: 20px;
+  }
 }
 .contact-wrapper{
   display: grid;
-  grid-template-columns: 1fr 1.2fr;
-  gap:30px;
+  grid-template-columns: 1fr 1fr;
+  gap: 25px;
   align-items: stretch;
 }
 .contact-info-card{
   background-color: #ffffff;
-  padding: 35px;
+  padding: 30px 24px;
   border-radius: 16px;
   box-shadow: 0 15px 40px rgba(0, 0, 0, 0.07);
   border: 1px solid rgba(0, 0, 0, 0.05);
@@ -1769,27 +1944,32 @@ grid-column: span 2;
   font-size: 0.95rem;
   font-weight: 500;
 }
-.location-features{
+.location-features {
   display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 25px;
-  padding-top: 20px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  margin-top: 22px;
+  padding-top: 18px;
   border-top: 1px solid #f1f5f9;
 }
-.feature-badge{
+.feature-badge {
   background-color: rgba(192, 57, 43, 0.06);
   border: 1px solid rgba(192, 57, 43, 0.2);
   color: var(--primary-kiremit);
-  padding: 7px 14px;
+  padding: 7px 8px;
   border-radius: 20px;
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   font-weight: 600;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  justify-content: center;
+  gap: 5px;
+  white-space: nowrap;
+  flex: 1;
+  text-align: center;
 }
-.feature-badge i{
+.feature-badge i {
   color: var(--primary-kiremit);
 }
 .reservation-form-container{
@@ -2253,8 +2433,9 @@ user-select: none !important;
 .trust-bar-section {
   background-color: #ffffff;
   border-bottom: 1px solid rgba(0, 0, 0, 0.06);
-  padding: 25px 0;
+  padding: 16px 0;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+  flex-shrink: 0;
 }
 
 .trust-bar {
@@ -2900,4 +3081,701 @@ user-select: none !important;
 
 .btn-load-more:hover i {
   transform: translateY(4px);
+}
+
+/* Reservation Form Validation Error Styles */
+.error-msg {
+  color: #e74c3c;
+  font-size: 0.83rem;
+  font-weight: 600;
+  margin-top: 6px;
+  display: block;
+  animation: fadeInError 0.25s ease forwards;
+}
+
+@keyframes fadeInError {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.input-icon-wrapper.has-error input,
+.input-icon-wrapper.has-error select,
+.input-icon-wrapper.has-error textarea {
+  border-color: #e74c3c !important;
+  background-color: rgba(231, 76, 60, 0.03);
+}
+
+/* Menüyü Yazdır / PDF Butonu */
+.btn-print-menu {
+  background-color: var(--color-surface, #ffffff);
+  color: var(--primary-kiremit);
+  border: 2px solid var(--primary-kiremit);
+  padding: 12px 24px;
+  border-radius: 30px;
+  font-weight: 700;
+  font-size: 0.92rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.btn-print-menu:hover {
+  background-color: var(--primary-kiremit);
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(192, 57, 43, 0.3);
+}
+
+/* ==========================================
+   6. ADIM: SKELETON SHIMMER (GÖRSEL YÜKLENME IŞILTISI)
+   ========================================== */
+.dish-img-container {
+  position: relative;
+  overflow: hidden;
+  background-color: #f1f5f9;
+}
+
+.dish-img-container.skeleton-loading::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -150%;
+  width: 150%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.65) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  animation: skeletonShimmer 1.5s infinite linear;
+  z-index: 2;
+  pointer-events: none;
+}
+
+@keyframes skeletonShimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(200%);
+  }
+}
+
+.dish-img-container img {
+  opacity: 0;
+  transition: opacity 0.4s ease-in-out, transform 0.4s ease;
+}
+
+.dish-img-container img.loaded {
+  opacity: 1;
+}
+
+/* ==========================================
+   3. ÖZELLİK: MÜŞTERİ YORUMLARI SLIDER
+   ========================================== */
+.testimonials-slider-container {
+  position: relative;
+  max-width: 800px;
+  margin: 0 auto;
+  overflow: hidden;
+  padding: 10px 0;
+}
+
+.testimonials-track {
+  display: flex;
+  transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+  width: 100%;
+}
+
+.testimonial-card-slide {
+  flex: 0 0 100%;
+  width: 100%;
+  box-sizing: border-box;
+  background: #ffffff;
+  padding: 35px 35px;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+  border: 1px solid rgba(192, 57, 43, 0.12);
+  text-align: center;
+}
+
+.testimonial-card-slide .stars {
+  color: #f1c40f;
+  font-size: 1.3rem;
+  letter-spacing: 3px;
+  margin-bottom: 12px;
+}
+
+.testimonial-card-slide .review-text {
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: #444;
+  font-style: italic;
+  margin-bottom: 20px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.testimonial-card-slide .reviewer-info strong {
+  display: block;
+  font-size: 1.1rem;
+  color: #2c3e50;
+  font-family: Georgia, serif;
+}
+
+.testimonial-card-slide .reviewer-info span {
+  font-size: 0.85rem;
+  color: #888;
+}
+
+.slider-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  margin-top: 25px;
+}
+
+.btn-slider-nav {
+  background: #ffffff;
+  border: 2px solid var(--primary-kiremit, #c0392b);
+  color: var(--primary-kiremit, #c0392b);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.btn-slider-nav:hover {
+  background: var(--primary-kiremit, #c0392b);
+  color: #ffffff;
+  transform: scale(1.08);
+}
+
+.slider-dots {
+  display: flex;
+  gap: 8px;
+}
+
+.slider-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #cbd5e1;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.slider-dot.active {
+  background: var(--primary-kiremit, #c0392b);
+  width: 25px;
+  border-radius: 10px;
+}
+
+/* Sadece Yazıcı / PDF Çıktısında Görünür Başlıklar (Normal Ekranda %100 GİZLİ) */
+.print-only-header,
+.print-category-header {
+  display: none !important;
+}
+
+/* ==========================================
+   YAZICI VE PDF ÖZELLEŞTİRMELERİ (@media print)
+   ========================================== */
+@media print {
+  /* Orijinal canlı renkleri yazıcı ve PDF çıktısında koru */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Ekran ögelerini ve ekstra widget'ları gizle (Sadece Menü Basılacak) */
+  header, footer, .main-header, .main-footer, .scroll-to-top, 
+  .live-status-badge, .search-container, .filter-buttons-wrapper, 
+  .load-more-wrapper, .btn-print-menu, .menu-hero, .hero-section,
+  .chef-special-card, .menu-bottom-services, .services-banner, .service-box,
+  .pdf-download-card, .table-order-card {
+    display: none !important;
+  }
+
+  body {
+    background: #ffffff !important;
+    color: #111111 !important;
+    font-size: 7.5pt !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .main-content, .menu-section {
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .container {
+    max-width: 100% !important;
+    width: 100% !important;
+    padding: 0 6px !important;
+  }
+
+  /* Lüks 1932 Restoran Yazıcı Başlığı (Sadece Kâğıtta Çıkar) */
+  .print-only-header {
+    display: block !important;
+    text-align: center;
+    margin: 0 0 8px 0;
+    padding: 6px 0 4px 0;
+    border-bottom: 3px double #c0392b;
+    border-top: 2px solid #c0392b;
+    background: #fdfbf7 !important;
+  }
+
+  .print-only-header h1 {
+    font-size: 16pt !important;
+    color: #c0392b !important;
+    font-family: Georgia, 'Times New Roman', serif !important;
+    font-weight: 800 !important;
+    letter-spacing: 1px !important;
+    margin: 0 0 2px 0 !important;
+  }
+
+  .print-only-header p {
+    font-size: 8pt !important;
+    color: #555555 !important;
+    font-style: italic !important;
+    margin: 0 !important;
+  }
+
+  /* Kategori Başlık Bandı (3 Kolon Üzerine Yayılır) */
+  .print-category-header {
+    display: block !important;
+    grid-column: 1 / -1 !important;
+    font-size: 9pt !important;
+    font-weight: 800 !important;
+    color: #ffffff !important;
+    background: #c0392b !important;
+    padding: 3px 8px !important;
+    border-radius: 4px !important;
+    margin-top: 6px !important;
+    margin-bottom: 3px !important;
+    page-break-after: avoid !important;
+    letter-spacing: 0.5px !important;
+  }
+
+  /* 42 Yemek İçin Sıkışık Lüks 3-Kolonlu 2-Sayfa Izgarası */
+  .dishes-grid {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 5px !important;
+    page-break-inside: auto;
+  }
+
+  .dish-card, .menu-card {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 6px !important;
+    box-shadow: none !important;
+    background: #ffffff !important;
+    padding: 4px 6px !important;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 6px !important;
+    min-height: 44px !important;
+  }
+
+  /* Mini Fotoğraf Çerçevesi (Boş Beyaz Kutuları Engeller) */
+  .dish-img-container {
+    width: 50px !important;
+    height: 38px !important;
+    min-width: 50px !important;
+    min-height: 38px !important;
+    overflow: hidden !important;
+    border-radius: 4px !important;
+    border: 1px solid rgba(0,0,0,0.1) !important;
+    flex-shrink: 0 !important;
+    margin-bottom: 0 !important;
+  }
+
+  .dish-img-container img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    display: block !important;
+    opacity: 1 !important;
+  }
+
+  .dish-info {
+    flex: 1 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    overflow: hidden !important;
+    padding: 0 !important;
+  }
+
+  .dish-info h3 {
+    font-size: 7.8pt !important;
+    font-weight: 700 !important;
+    color: #2c3e50 !important;
+    margin: 0 0 1px 0 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  .dish-info p {
+    font-size: 6.3pt !important;
+    color: #666666 !important;
+    line-height: 1.1 !important;
+    margin: 0 0 1px 0 !important;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 1 !important;
+    line-clamp: 1 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+  }
+
+  .dish-price {
+    color: #c0392b !important;
+    font-size: 8.2pt !important;
+    font-weight: 800 !important;
+    margin: 0 !important;
+  }
+
+  .card-badges {
+    display: none !important;
+  }
+
+  /* REZERVAZYON BİLETİ ÇIKTISI (YALNIZCA BİLET KARTI 1 TEK A4 SAYFADA YAZDIRILIR) */
+  .main-header,
+  .main-footer,
+  .reservation-section .section-title,
+  .reservation-form,
+  .back-to-top,
+  .res-ticket-actions {
+    display: none !important;
+  }
+
+  .reservation-section {
+    padding: 0 !important;
+    background: transparent !important;
+  }
+
+  .reservation-form-container {
+    background: transparent !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    border: none !important;
+  }
+
+  .res-ticket-result-wrapper {
+    margin-top: 0 !important;
+    display: block !important;
+  }
+
+  .vintage-ticket-card {
+    border: 3px double #b8860b !important;
+    box-shadow: none !important;
+    background: #fbf7ee !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    padding: 24px !important;
+    page-break-inside: avoid !important;
+    page-break-before: avoid !important;
+    page-break-after: avoid !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}
+
+/* ==========================================
+   1932 NOSTALJİK MASA MÜHRÜ BİLET STİLLERİ
+   ========================================== */
+.res-ticket-result-wrapper {
+  margin-top: 35px;
+  animation: slideUpFade 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.vintage-ticket-card {
+  background: #fbf7ee; /* Nostaljik Saman Kağıdı Dokusu */
+  border-radius: 16px;
+  border: 3px double #b8860b;
+  box-shadow: 0 18px 45px rgba(60, 30, 10, 0.18), inset 0 0 25px rgba(184, 134, 11, 0.08);
+  position: relative;
+  padding: 30px 32px;
+  max-width: 650px;
+  margin: 0 auto;
+  text-align: left;
+  font-family: Georgia, 'Times New Roman', serif;
+  color: #3e2723;
+}
+
+.vintage-ticket-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-bottom: 18px;
+}
+
+.vintage-stamp-badge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.vintage-seal-img {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+.vintage-stamp-badge span {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 800;
+  font-size: 0.95rem;
+  letter-spacing: 1.5px;
+  color: #8b4513;
+  text-transform: uppercase;
+}
+
+.vintage-status-pill {
+  background: rgba(211, 84, 0, 0.1);
+  color: #b93800;
+  border: 1px solid rgba(211, 84, 0, 0.35);
+  padding: 5px 14px;
+  border-radius: 20px;
+  font-size: 0.84rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: sans-serif;
+}
+
+.pulse-dot-amber {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #d35400;
+  box-shadow: 0 0 8px #d35400;
+  animation: pulseDot 1.8s infinite ease-in-out;
+}
+
+.vintage-ticket-divider {
+  position: relative;
+  margin: 15px 0 20px 0;
+}
+
+.ticket-dashed-line {
+  border-top: 2px dashed #d7ccc8;
+  height: 1px;
+}
+
+.vintage-table-highlight {
+  background: #f4ece1;
+  border: 1px dashed #b8860b;
+  border-radius: 12px;
+  padding: 16px 20px;
+  text-align: center;
+  margin-bottom: 22px;
+}
+
+.vintage-table-highlight .table-label {
+  display: block;
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: #8b4513;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.table-number-display {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1.55rem;
+  color: #4a2c11;
+  margin: 0;
+  font-weight: 800;
+}
+
+.table-number-display small {
+  font-size: 0.85rem;
+  color: #6d4c41;
+  font-weight: normal;
+  display: inline-block;
+  margin-left: 6px;
+}
+
+.vintage-body {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+  margin-bottom: 22px;
+}
+
+.res-ticket-item {
+  font-size: 0.94rem;
+  color: #4e342e;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.res-ticket-item i {
+  color: #8b4513;
+  width: 18px;
+  font-size: 1rem;
+}
+
+.vintage-notice {
+  background: #fbe9e7;
+  border: 1px solid #ffccbc;
+  border-left: 4px solid #d84315;
+  padding: 14px 16px;
+  border-radius: 8px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 22px;
+}
+
+.vintage-notice i {
+  color: #d84315;
+  font-size: 1.15rem;
+  margin-top: 2px;
+}
+
+.vintage-notice p {
+  font-size: 0.86rem;
+  color: #bf360c;
+  margin: 0;
+  line-height: 1.5;
+  font-weight: 600;
+  font-family: sans-serif;
+}
+
+.res-ticket-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.vintage-btn {
+  background: #ffffff !important;
+  border: 1.5px solid #8b4513 !important;
+  color: #5d4037 !important;
+  padding: 9px 18px !important;
+  border-radius: 8px !important;
+  font-size: 0.88rem !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  transition: all 0.25s ease !important;
+  text-decoration: none !important;
+  font-family: system-ui, -apple-system, sans-serif !important;
+  box-sizing: border-box !important;
+  white-space: nowrap !important;
+}
+
+.vintage-btn:hover {
+  background: #8b4513 !important;
+  color: #ffffff !important;
+  transform: translateY(-2px) !important;
+  text-decoration: none !important;
+}
+
+.vintage-btn-wa {
+  background: #ffffff !important;
+  border: 1.5px solid #25d366 !important;
+  color: #128c7e !important;
+  padding: 9px 18px !important;
+  border-radius: 8px !important;
+  font-size: 0.88rem !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  transition: all 0.25s ease !important;
+  text-decoration: none !important;
+  font-family: system-ui, -apple-system, sans-serif !important;
+  box-sizing: border-box !important;
+  white-space: nowrap !important;
+}
+
+.vintage-btn-wa:hover {
+  background: #25d366 !important;
+  color: #ffffff !important;
+  border-color: #25d366 !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3) !important;
+  text-decoration: none !important;
+}
+
+.vintage-btn-edit {
+  background: #ffffff !important;
+  border: 1.5px solid #d97706 !important;
+  color: #b45309 !important;
+  padding: 9px 18px !important;
+  border-radius: 8px !important;
+  font-size: 0.88rem !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  transition: all 0.25s ease !important;
+  text-decoration: none !important;
+  font-family: system-ui, -apple-system, sans-serif !important;
+  box-sizing: border-box !important;
+  white-space: nowrap !important;
+}
+
+.vintage-btn-edit:hover {
+  background: #d97706 !important;
+  color: #ffffff !important;
+  border-color: #d97706 !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 12px rgba(217, 119, 6, 0.25) !important;
+}
+
+.active-res-banner {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  color: #166534;
+  border-radius: 12px;
+  padding: 12px 20px;
+  max-width: 650px;
+  margin: 0 auto 16px auto;
+  font-weight: 700;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 4px 12px rgba(22, 101, 52, 0.08);
+}
+
+@keyframes slideUpFade {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }

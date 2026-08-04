@@ -3,7 +3,25 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Masa Rezervasyonu | Lezzet Mührü</title>
+  <title>Lezzet Mührü 1932 - Masa Rezervasyon</title>
+  <meta name="description" content="Lezzet Mührü 1932 restoranımızda kolay ve hızlı online masa rezervasyonu yaptırın.">
+  <meta name="theme-color" content="#1a252f">
+  
+  <!-- OpenGraph (WhatsApp, Instagram, Facebook) -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Lezzet Mührü 1932">
+  <meta property="og:title" content="Lezzet Mührü 1932 &#10; Masa Rezervasyon">
+  <meta property="og:description" content="Geleneksel Gaziantep ızgara lezzetleri için online masanızı hemen ayırtın.">
+  <meta property="og:image" content="../public/images/logo.png">
+  
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Lezzet Mührü 1932 &#10; Masa Rezervasyon">
+  <meta name="twitter:description" content="Online masanızı şimdiden ayırtın.">
+  <meta name="twitter:image" content="../public/images/logo.png">
+  
+  <!-- 50% Dairesel Kesimli Gerçek Logo Favicon -->
+  <link rel="icon" type="image/png" href="../public/images/favicon-round.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
@@ -14,11 +32,15 @@
      <header class="main-header">
     <div class="container header-container">
       <div class="logo">
-        <a href="index.html" class="logo-link"><img src="../public/images/logo.png" class="logo-img" alt="Lezzet Mührü Logo"></a>
+        <a href="index.html" class="logo-link" title="Lezzet Mührü 1932&#10;Masa Rezervasyon"><img src="../public/images/logo.png" class="logo-img" alt="Lezzet Mührü 1932 Logo"></a>
         <div class="brand-text-wrapper">
           <span class="brand-title">Lezzet Mührü</span>
           <span class="brand-subtitle">1932'den Beri</span>
         </div>
+      </div>
+      <div class="header-status-wrapper">
+          <div class="header-divider"></div>
+          <div class="live-status-badge"></div>
       </div>
        <button class="hamburger-btn" id="hamburgerBtn" aria-label="Menüyü Aç/Kapat">
               <i class="fa-solid fa-bars"></i>
@@ -44,81 +66,119 @@
                     <p>Asırlık lezzetlerimizi yerinde deneyimlemek için masanızı şimdiden ayırtın</p>
                 </div>
                 <div class="reservation-form-container">
-                   <form id="reservationForm" class="reservation-form" novalidate>
-  <div id="resFormAlert" class="form-alert" style="display: none;">
-    <i class="fa-solid fa-circle-check"></i>
-    <span>Rezervasyon talebiniz alındı! Teyit için en kısa sürede sizi arayacağız.</span>
-  </div>
+                    <form id="reservationForm" class="reservation-form" novalidate>
+                      <div id="resFormAlert" class="form-alert" style="display: none;">
+                        <i class="fa-solid fa-circle-check"></i>
+                        <span>Rezervasyon talebiniz alındı! Teyit için en kısa sürede sizi arayacağız.</span>
+                      </div>
 
-  <div class="form-grid">
-  
-    <div class="form-group">
-      <label for="resName">Adınız Soyadınız <span class="required-star">*</span></label>
-      <div class="input-icon-wrapper">
-        <i class="fa-solid fa-user input-icon"></i>
-        <input type="text" id="resName" name="name" placeholder="Örn: Mehmet Ünal" required minlength="3" maxlength="50" title="Lütfen en az 3 karakterden oluşan adınızı giriniz.">
-      </div>
-    </div>
+                      <div class="form-grid">
+                        <div class="form-group">
+                          <label for="resName">Adınız Soyadınız <span class="required-star">*</span></label>
+                          <div class="input-icon-wrapper">
+                            <i class="fa-solid fa-user input-icon"></i>
+                            <input type="text" id="resName" name="name" placeholder="Örn: Mehmet Ünal" required minlength="3" maxlength="50" title="Lütfen en az 3 karakterden oluşan adınızı giriniz.">
+                          </div>
+                        </div>
 
-    
-    <div class="form-group">
-      <label for="resPhone">Telefon Numaranız <span class="required-star">*</span></label>
-      <div class="input-icon-wrapper">
-        <i class="fa-solid fa-phone input-icon"></i>
-        <input type="tel" id="resPhone" name="phone" placeholder="05XXXXXXXXX" required pattern="05[0-9]{9}" title="Lütfen 05 ile başlayan 11 haneli cep telefonunuzu giriniz.">
-      </div>
-    </div>
+                        <div class="form-group">
+                          <label for="resPhone">Telefon Numaranız <span class="required-star">*</span></label>
+                          <div class="input-icon-wrapper">
+                            <i class="fa-solid fa-phone input-icon"></i>
+                            <input type="tel" id="resPhone" name="phone" placeholder="05XXXXXXXXX" required pattern="05[0-9]{9}" title="Lütfen 05 ile başlayan 11 haneli cep telefonunuzu giriniz.">
+                          </div>
+                        </div>
 
-  
-    <div class="form-group">
-      <label for="resDate">Rezervasyon Tarihi <span class="required-star">*</span></label>
-      <div class="input-picker-wrapper input-icon-wrapper">
-        <i class="fa-solid fa-calendar-days input-icon"></i>
-        <input type="text" id="resDate" name="date" placeholder="Tarih Seçiniz" readonly required>
-        <input type="date" id="hiddenNativeDate" min="2026-07-30" tabindex="-1" class="hidden-picker-element">
-      </div>
-    </div>
+                        <div class="form-group">
+                          <label for="resDate">Rezervasyon Tarihi <span class="required-star">*</span></label>
+                          <div class="input-picker-wrapper input-icon-wrapper">
+                            <i class="fa-solid fa-calendar-days input-icon"></i>
+                            <input type="text" id="resDate" name="date" placeholder="Tarih Seçiniz" readonly required>
+                            <input type="date" id="hiddenNativeDate" min="2026-07-30" tabindex="-1" class="hidden-picker-element">
+                          </div>
+                        </div>
 
-    
-    <div class="form-group">
-      <label for="resTime">Saat <span class="required-star">*</span></label>
-      <div class="input-picker-wrapper input-icon-wrapper">
-        <i class="fa-solid fa-clock input-icon"></i>
-        <input type="text" id="resTime" name="time" placeholder="Saat Seçiniz" readonly required>
-        <input type="time" id="hiddenNativeTime" min="10:00" max="22:00" step="900" tabindex="-1" class="hidden-picker-element">
-      </div>
-    </div>
+                        <div class="form-group">
+                          <label for="resTime">Saat <span class="required-star">*</span></label>
+                          <div class="input-picker-wrapper input-icon-wrapper">
+                            <i class="fa-solid fa-clock input-icon"></i>
+                            <input type="text" id="resTime" name="time" placeholder="Saat Seçiniz" readonly required>
+                            <input type="time" id="hiddenNativeTime" min="10:00" max="22:00" step="900" tabindex="-1" class="hidden-picker-element">
+                          </div>
+                        </div>
 
-    
-    <div class="form-group full-width">
-      <label for="resGuests">Kişi Sayısı <span class="required-star">*</span></label>
-      <div class="input-icon-wrapper">
-        <i class="fa-solid fa-user-group input-icon"></i>
-        <input type="number" id="resGuests" name="guests" placeholder="Örn: 4" required min="1" max="10" title="Tek seferde en fazla 10 kişilik rezervasyon yapılabilir.">
-      </div>
-    </div>
+                        <div class="form-group full-width">
+                          <label for="resGuests">Kişi Sayısı <span class="required-star">*</span></label>
+                          <div class="input-icon-wrapper">
+                            <i class="fa-solid fa-user-group input-icon"></i>
+                            <input type="number" id="resGuests" name="guests" placeholder="Örn: 4" required min="1" max="10" title="Tek seferde en fazla 10 kişilik rezervasyon yapılabilir.">
+                          </div>
+                        </div>
 
-    
-    <div class="form-group full-width">
-      <label for="resNotes">Özel İstekler / Notlar</label>
-      <div class="input-icon-wrapper textarea-wrapper">
-        <i class="fa-solid fa-pen-to-square input-icon"></i>
-        <textarea id="resNotes" name="notes" rows="4" placeholder="Alerjen durumları, özel gün (doğum günü vb.) veya masa tercihinizi belirtebilirsiniz..." maxlength="300"></textarea>
-      </div>
-    </div>
-  </div>
+                        <div class="form-group full-width">
+                          <label for="resNotes">Özel İstekler / Notlar</label>
+                          <div class="input-icon-wrapper textarea-wrapper">
+                            <i class="fa-solid fa-pen-to-square input-icon"></i>
+                            <textarea id="resNotes" name="notes" rows="4" placeholder="Alerjen durumları, özel gün (doğum günü vb.) veya masa tercihinizi belirtebilirsiniz..." maxlength="300"></textarea>
+                          </div>
+                        </div>
+                      </div>
 
-  <div class="form-submit-btn text-center">
-    <button type="submit" class="btn-primary">
-      <i class="fa-solid fa-calendar-check"></i> Rezervasyon Yap
-    </button>
-  </div>
-</form>
+                      <div class="form-submit-btn text-center">
+                        <button type="submit" class="btn-primary">
+                          <i class="fa-solid fa-calendar-check"></i> Rezervasyon Yap
+                        </button>
+                      </div>
+                    </form>
+
+                     <!-- 1932 NOSTALJİK MASA MÜHRÜ REZERVAZYON BİLET KUTUSU -->
+                     <div id="resTicketContainer" class="res-ticket-result-wrapper" style="display: none;">
+                       <div class="vintage-ticket-card">
+                         <div class="vintage-ticket-top">
+                           <div class="vintage-stamp-badge">
+                             <img src="../public/images/logo.png" alt="1932 Mühür" class="vintage-seal-img">
+                             <span>1932 LEZZET MÜHRÜ</span>
+                           </div>
+                           <div class="vintage-status-pill">
+                             <span class="pulse-dot-amber"></span> ⏳ Restoran Onayı Bekliyor
+                           </div>
+                         </div>
+
+                         <div class="vintage-ticket-divider">
+                           <div class="ticket-notch left"></div>
+                           <div class="ticket-dashed-line"></div>
+                           <div class="ticket-notch right"></div>
+                         </div>
+                         
+                         <div class="vintage-table-highlight">
+                           <span class="table-label">TAHSİS EDİLEN MASA</span>
+                           <h3 class="table-number-display" id="cardTableNumber">Masa No: 07 <small>(Geleneksel Odun Ateşi Katı)</small></h3>
+                         </div>
+
+                         <div class="res-ticket-body vintage-body">
+                           <div class="res-ticket-item"><i class="fa-solid fa-user"></i> <span><strong>Misafir Adı:</strong> <span id="cardTicketName">Mehmet Ünal</span></span></div>
+                           <div class="res-ticket-item"><i class="fa-solid fa-phone"></i> <span><strong>İrtibat Tel:</strong> <span id="cardTicketPhone">0532 123 45 67</span></span></div>
+                           <div class="res-ticket-item"><i class="fa-solid fa-calendar-days"></i> <span><strong>Tarih & Saat:</strong> <span id="cardTicketDateTime">Tarih ve Saat Seçiniz</span></span></div>
+                           <div class="res-ticket-item"><i class="fa-solid fa-users"></i> <span><strong>Masa Kapasitesi:</strong> <span id="cardTicketGuests">-- Kişilik Masa</span></span></div>
+                           <div class="res-ticket-item" id="cardTicketNotesRow" style="grid-column: 1 / -1; display: none;"><i class="fa-solid fa-comment-dots"></i> <span><strong>Özel Not:</strong> <span id="cardTicketNotes">---</span></span></div>
+                         </div>
+
+                         <div class="res-ticket-notice vintage-notice">
+                           <i class="fa-solid fa-scroll"></i>
+                           <p>⚠️ Lütfen rezervasyon bilgilerinizin doğru olduğundan emin olunuz. İptal ve değişiklik talepleriniz için lütfen restoranımız ile iletişime geçiniz.</p>
+                         </div>
+
+                         <div class="res-ticket-actions">
+                           <button type="button" class="btn-ticket-action vintage-btn" onclick="window.print()"><i class="fa-solid fa-mobile-screen-button"></i> Telefonuna Kaydet (PDF)</button>
+                           <a href="https://wa.me/902325137567?text=Merhaba,%20Masa%20No:%2007%20rezervasyonum%20hakkinda%20bilgi%20almak%20istiyorum." target="_blank" class="btn-ticket-action btn-wa vintage-btn-wa" id="cardTicketWaBtn"><i class="fa-brands fa-whatsapp"></i> WhatsApp ile Masanı Teyit Et</a>
+                           <button type="button" class="btn-ticket-action vintage-btn-edit" id="btnEditReservation"><i class="fa-solid fa-pen-to-square"></i> Bilgileri Düzenle</button>
+                         </div>
+                       </div>
+                     </div>
                 </div>
             </div>
         </section>
     </main>
-
 
 
 
@@ -168,7 +228,7 @@
         <div class="social-links">
           <a href="https://www.instagram.com" target="_blank" aria-label="İnstagram"><i class="fa-brands fa-instagram"></i></a>
           <a href="https://www.facebook.com" target="_blank" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
-          <a href="https://twitter.com" target="_blank" aria-label="X / Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+          <a href="https://wa.me/902325137567" target="_blank" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
         </div>
       </div>
     </div>
