@@ -181,8 +181,7 @@
                             placeholder="Örn: Rezervasyon / Özel Etkinlik / Öneri"
                             required
                             minlength="3"
-                            maxlength="100"
-                            title="Lütfen mesaj konusunu belirtiniz.">
+                            maxlength="100">
                         </div>
                     </div>
 
@@ -190,23 +189,22 @@
                         <label for="contactMessage">Mesajınız <span class="required-star">*</span></label>
                         <div class="input-icon-wrapper textarea-wrapper">
                             <i class="fa-solid fa-comment-dots input-icon"></i>
-                            <textarea
+                            <textarea 
                             id="contactMessage"
                             name="message"
                             rows="5"
                             placeholder="Notunuzu veya sorunuzu buraya yazabilirsiniz..."
                             required
                             minlength="10"
-                            maxlength="500"
-                            title="Lütfen en az 10 karakterli bir mesaj yazınız."></textarea>
+                            maxlength="500"></textarea>
                         </div>
                     </div>
-                </div>
 
-                <div class="form-submit-btn text-center">
-                    <button type="submit" class="btn-primary">
-                        <i class="fa-solid fa-paper-plane"></i>Mesajı Gönder
-                    </button>
+                    <div class="form-group full-width text-center" style="margin-top: 15px;">
+                        <button type="submit" class="btn-primary">
+                            <i class="fa-solid fa-paper-plane"></i> Mesajı Gönder
+                        </button>
+                    </div>
                 </div>
             </form>
          </div>

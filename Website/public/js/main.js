@@ -1,9 +1,9 @@
 // ==========================================
-// LEZZET MÜHRÜ - EKSİKSİZ VE HATASIZ MAIN.JS
+// 🏛️ 1932 LEZZET MÜHRÜ - FULL-STACK MAIN.JS
 // ==========================================
 
-// --- YEMEK VERİLERİ (MENU) ---
-const yemekler = [
+// --- YEMEK VERİLERİ (VARSAYILAN & API DİNAMİK YÜKLEME) ---
+let yemekler = [
   { id: 35, ad: "Geleneksel Süzme Mercimek Çorbası", kategori: "corba", fiyat: 200, aciklama: "Taş değirmen mercimeği, taze tereyağı ve özel baharatlı kıtır ekmekler ile.", resim: "../public/images/mercimek-corbasi.webp", loading: "eager", oneCikan: false, sefinOnerisi: false, vejetaryen: true },
   { id: 36, ad: "Köz Patlıcanlı Süt Çorbası", kategori: "corba", fiyat: 220, aciklama: "Odun ateşinde közlenmiş patlıcanların süt ve taze otlarla pişirilmesiyle hazırlanan 1930'lar klasiği.", resim: "../public/images/patlican-corbasi.webp", loading: "eager", oneCikan: false, sefinOnerisi: true, vejetaryen: true },
   { id: 37, ad: "Mahluta Çorbası", kategori: "corba", fiyat: 210, aciklama: "Kırmızı mercimek, kişniş, kimyon ve zeytinyağında sotelenmiş soğan sosuyla Güneydoğu'nun kadim çorbası.", resim: "../public/images/mahluta.webp", loading: "eager", oneCikan: false, sefinOnerisi: false, vejetaryen: true },
@@ -50,9 +50,84 @@ const yemekler = [
 
 document.addEventListener("DOMContentLoaded", () => {
 
-  // ==========================================
-  // MODÜLER YARDIMCI FONKSİYONLAR
-  // ==========================================
+  // --- STICKY NAVBAR SCROLL DİNLEYİCİSİ ---
+  const mainHeader = document.querySelector('.main-header');
+  if (mainHeader) {
+    const handleScroll = () => {
+      if (window.scrollY > 20) {
+        mainHeader.classList.add('scrolled');
+      } else {
+        mainHeader.classList.remove('scrolled');
+      }
+    };
+    window.addEventListener('scroll', handleScroll);
+    handleScroll();
+  }
+
+  // --- BACK TO TOP BUTTON DİNLEYİCİSİ (HER SAYFADA KESİNTİSİZ ÇALIŞAN) ---
+  const backToTopBtn = document.getElementById('backToTop') || document.querySelector('.back-to-top');
+  if (backToTopBtn) {
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 250) {
+        backToTopBtn.classList.add('visible');
+        backToTopBtn.style.opacity = '1';
+        backToTopBtn.style.visibility = 'visible';
+      } else {
+        backToTopBtn.classList.remove('visible');
+        backToTopBtn.style.opacity = '0';
+        backToTopBtn.style.visibility = 'hidden';
+      }
+    });
+
+    backToTopBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  }
+
+  // --- CANLI "ŞU AN AÇIĞIZ / KAPALIYIZ" DİNAMİK SAAT VE GÜN SİSTEMİ ---
+  const liveStatusBadges = document.querySelectorAll('.live-status-badge');
+  if (liveStatusBadges.length > 0) {
+    const now = new Date();
+    const day = now.getDay(); // 0 = Pazar, 1 = Pazartesi, ..., 5 = Cuma, 6 = Cumartesi
+    const currentHour = now.getHours();
+    const currentMinute = now.getMinutes();
+    const currentTotalMinutes = currentHour * 60 + currentMinute;
+
+    const openMinutes = 10 * 60; // 10:00
+
+    let isTodayOpen = true;
+    let closeHour = 22;
+
+    if (day === 0) {
+      isTodayOpen = false; // Pazar: Kapalı
+    } else if (day === 5 || day === 6) {
+      closeHour = 23; // Cuma & Cumartesi: 10:00 - 23:00
+    } else {
+      closeHour = 22; // Pazartesi - Perşembe: 10:00 - 22:00
+    }
+
+    const closeMinutes = closeHour * 60;
+    const isOpenNow = isTodayOpen && (currentTotalMinutes >= openMinutes && currentTotalMinutes < closeMinutes);
+    const timeRangeText = isTodayOpen ? `10:00 - ${closeHour}:00` : 'Pazar Kapalı';
+
+    liveStatusBadges.forEach(badge => {
+      if (isOpenNow) {
+        badge.className = 'live-status-badge status-open';
+        badge.innerHTML = `
+          <span class="pulse-dot green"></span>
+          <span class="status-text">Şu An Açığız <small>(${timeRangeText})</small></span>
+        `;
+      } else {
+        badge.className = 'live-status-badge status-closed';
+        const subtext = !isTodayOpen ? 'Pazar Günleri Kapalıyız' : `Açılış 10:00 (${timeRangeText})`;
+        badge.innerHTML = `
+          <span class="pulse-dot red"></span>
+          <span class="status-text">Şu An Kapalıyız <small>(${subtext})</small></span>
+        `;
+      }
+    });
+  }
 
   // 1. Ekranı Yumuşak Kaydırma (Smooth Scroll)
   function yumusakKaydir(hedef, offset = 90) {
@@ -118,7 +193,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let aktifKategori = "tumu";
     let mevcutAramaMetni = "";
 
-    // Debounce Fonksiyonu (Yazarken Donma ve Çökmeyi Engeller)
+    // Debounce Fonksiyonu
     function debounce(func, delay = 250) {
       let timer;
       return function (...args) {
@@ -173,7 +248,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       menuGrid.appendChild(fragment);
 
-      // 6. ADIM: Skeleton Shimmer & Image Fade-In Event Listeners
+      // Skeleton Shimmer Listener
       const imgContainers = menuGrid.querySelectorAll('.dish-img-container');
       imgContainers.forEach(container => {
         const img = container.querySelector('img');
@@ -200,39 +275,33 @@ document.addEventListener("DOMContentLoaded", () => {
     const loadMoreContainer = document.getElementById("loadMoreContainer");
     const loadMoreBtn = document.getElementById("loadMoreBtn");
 
-    // Hem Kategori Hem de Arama Filtresini Birlikte Çalıştıran Ortak Fonksiyon
+    // Kategori ve Arama Filtresi
     function menuyuFiltrele() {
       const filtrelenmis = yemekler.filter((yemek) => {
         const kategoriUyumlu = (aktifKategori === "tumu") || (yemek.kategori === aktifKategori);
-        
-        // TÜRKÇE KARAKTER UYUMLU ARAMA (Ad, Açıklama ve Kategori Arama)
         const adUyumlu = yemek.ad.toLocaleLowerCase('tr-TR').includes(mevcutAramaMetni);
         const aciklamaUyumlu = yemek.aciklama.toLocaleLowerCase('tr-TR').includes(mevcutAramaMetni);
         
-        // Kategori isimleri ve eş anlamlı terimlerle arama (Örn: "IZGARA", "KEBAP", "ÇORBA" vb.)
         let kategoriEtiketUyumlu = false;
         if (mevcutAramaMetni.length > 0) {
-          if (('izgara'.includes(mevcutAramaMetni) || 'ızgara'.includes(mevcutAramaMetni) || 'izgaralar'.includes(mevcutAramaMetni) || 'ızgaralar'.includes(mevcutAramaMetni) || 'kebap'.includes(mevcutAramaMetni) || 'kebaplar'.includes(mevcutAramaMetni)) && yemek.kategori === 'kebap') {
+          if (('izgara'.includes(mevcutAramaMetni) || 'ızgara'.includes(mevcutAramaMetni) || 'kebap'.includes(mevcutAramaMetni)) && yemek.kategori === 'kebap') {
             kategoriEtiketUyumlu = true;
-          } else if (('corba'.includes(mevcutAramaMetni) || 'çorba'.includes(mevcutAramaMetni) || 'çorbalar'.includes(mevcutAramaMetni)) && yemek.kategori === 'corba') {
+          } else if (('corba'.includes(mevcutAramaMetni) || 'çorba'.includes(mevcutAramaMetni)) && yemek.kategori === 'corba') {
             kategoriEtiketUyumlu = true;
-          } else if (('pide'.includes(mevcutAramaMetni) || 'pideler'.includes(mevcutAramaMetni) || 'lahmacun'.includes(mevcutAramaMetni)) && yemek.kategori === 'pide') {
+          } else if (('pide'.includes(mevcutAramaMetni) || 'lahmacun'.includes(mevcutAramaMetni)) && yemek.kategori === 'pide') {
             kategoriEtiketUyumlu = true;
-          } else if (('zeytinyağlı'.includes(mevcutAramaMetni) || 'zeytinyagli'.includes(mevcutAramaMetni) || 'salata'.includes(mevcutAramaMetni)) && yemek.kategori === 'zeytinyagli') {
+          } else if (('zeytinyağlı'.includes(mevcutAramaMetni) || 'salata'.includes(mevcutAramaMetni)) && yemek.kategori === 'zeytinyagli') {
             kategoriEtiketUyumlu = true;
-          } else if (('tatli'.includes(mevcutAramaMetni) || 'tatlı'.includes(mevcutAramaMetni) || 'tatlılar'.includes(mevcutAramaMetni)) && yemek.kategori === 'tatli') {
+          } else if (('tatli'.includes(mevcutAramaMetni) || 'tatlı'.includes(mevcutAramaMetni)) && yemek.kategori === 'tatli') {
             kategoriEtiketUyumlu = true;
-          } else if (('icecek'.includes(mevcutAramaMetni) || 'içecek'.includes(mevcutAramaMetni) || 'içecekler'.includes(mevcutAramaMetni)) && yemek.kategori === 'icecek') {
+          } else if (('icecek'.includes(mevcutAramaMetni) || 'içecek'.includes(mevcutAramaMetni)) && yemek.kategori === 'icecek') {
             kategoriEtiketUyumlu = true;
           }
         }
         
-        const aramaUyumlu = adUyumlu || aciklamaUyumlu || kategoriEtiketUyumlu;
-        
-        return kategoriUyumlu && aramaUyumlu;
+        return kategoriUyumlu && (adUyumlu || aciklamaUyumlu || kategoriEtiketUyumlu);
       });
 
-      // Eğer "Tüm Lezzetler" seçiliyse, arama yapılmıyorsa ve henüz hepsiAcik tıklanmadıysa Şefin Önerisi 9 yıldız lezzeti yükle
       if (aktifKategori === "tumu" && mevcutAramaMetni === "" && !hepsiAcik) {
         const sefinOnerileri = yemekler.filter(y => y.sefinOnerisi);
         yemekleriListele(sefinOnerileri);
@@ -246,109 +315,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
 
-    const kategoriAdlari = {
-      corba: "🍲 Çorbalar",
-      kebap: "🥩 Izgaralar & Kebaplar",
-      pide: "🍕 Pideler & Lahmacunlar",
-      zeytinyagli: "🥗 Zeytinyağlılar & Salatalar",
-      tatli: "🍨 Tatlılar",
-      icecek: "🥤 İçecekler"
-    };
-
-    function tumYemekleriGosterYazdir() {
-      hepsiAcik = true;
-      aktifKategori = "tumu";
-      mevcutAramaMetni = "";
-      if (menuSearchInput) menuSearchInput.value = "";
-      if (filterBtns) {
-        filterBtns.forEach((b) => b.classList.remove("active"));
-      }
-      const tumuBtn = document.querySelector('.filter-btn[data-kategori="tumu"]');
-      if (tumuBtn) tumuBtn.classList.add("active");
-      
-      if (Array.isArray(yemekler) && menuGrid) {
-        menuGrid.innerHTML = "";
-        const kategorilerOrder = ["corba", "kebap", "pide", "zeytinyagli", "tatli", "icecek"];
-        
-        kategorilerOrder.forEach(katKey => {
-          const katYemekleri = yemekler.filter(y => y.kategori === katKey);
-          if (katYemekleri.length > 0) {
-            const catHeader = document.createElement("div");
-            catHeader.className = "print-category-header";
-            catHeader.innerHTML = `<span>${kategoriAdlari[katKey] || katKey}</span>`;
-            menuGrid.appendChild(catHeader);
-
-            katYemekleri.forEach(yemek => {
-              const sefinOnerisiHTML = yemek.sefinOnerisi ? `<span class="badge badge-chef">⭐ Şefin Önerisi</span>` : '';
-              const vejetaryenHTML = yemek.vejetaryen ? `<span class="badge badge-veg" title="Vejetaryen">🌱 Veg</span>` : '';
-              const aciliHTML = (yemek.kategori === 'kebap' && (yemek.ad.includes('Adana') || yemek.ad.includes('Ciğer') || yemek.ad.includes('Sarma'))) || yemek.ad.includes('Acılı') ? `<span class="badge badge-spicy"><i class="fa-solid fa-pepper-hot"></i> Acılı</span>` : '';
-
-              const cardDiv = document.createElement("div");
-              cardDiv.className = "dish-card";
-              cardDiv.dataset.kategori = yemek.kategori;
-
-              cardDiv.innerHTML = `
-                <div class="card-badges">
-                  ${sefinOnerisiHTML}
-                  ${vejetaryenHTML}
-                  ${aciliHTML}
-                </div>
-                <div class="dish-img-container">
-                  <img src="${yemek.resim}" alt="${yemek.ad}" loading="eager">
-                </div>
-                <div class="dish-info">
-                  <h3>${yemek.ad}</h3>
-                  <p>${yemek.aciklama}</p>
-                  <span class="dish-price">₺${yemek.fiyat}</span>
-                </div>
-              `;
-              menuGrid.appendChild(cardDiv);
-            });
-          }
-        });
-
-        // 6. ADIM: Skeleton Shimmer Listener
-        const imgContainers = menuGrid.querySelectorAll('.dish-img-container');
-        imgContainers.forEach(container => {
-          const img = container.querySelector('img');
-          if (img) {
-            container.classList.add('skeleton-loading');
-            if (img.complete && img.naturalWidth > 0) {
-              img.classList.add('loaded');
-              container.classList.remove('skeleton-loading');
-            } else {
-              img.addEventListener('load', () => {
-                img.classList.add('loaded');
-                container.classList.remove('skeleton-loading');
-              });
-              img.addEventListener('error', () => {
-                img.classList.add('loaded');
-                container.classList.remove('skeleton-loading');
-              });
-            }
-          }
-        });
-      }
-      if (loadMoreContainer) loadMoreContainer.style.display = "none";
-    }
-
-    window.menuyuYazdirAninda = function() {
-      tumYemekleriGosterYazdir();
-      setTimeout(() => {
-        window.print();
-      }, 150);
-    };
-
-    const btnPrintMenu = document.getElementById("btnPrintMenu") || document.querySelector(".btn-print-menu");
-    if (btnPrintMenu) {
-      btnPrintMenu.onclick = function(e) {
-        if (e) e.preventDefault();
-        window.menuyuYazdirAninda();
-      };
-    }
-
-    window.addEventListener('beforeprint', tumYemekleriGosterYazdir);
-
     if (loadMoreBtn) {
       loadMoreBtn.addEventListener("click", () => {
         hepsiAcik = true;
@@ -357,477 +323,134 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
 
-    // Sayfa Açılışında İlk Yükleme
-    menuyuFiltrele();
-
-    // Kategori Butonları Click Event
-    filterBtns.forEach((btn) => {
-      btn.addEventListener("click", (e) => {
-        filterBtns.forEach((b) => b.classList.remove("active"));
-        const targetBtn = e.currentTarget; 
-        targetBtn.classList.add("active");
-
-        aktifKategori = targetBtn.dataset.kategori;
-        // Eğer Tüm Lezzetler sekmesine tıklanırsa tüm 42 yemeği aç
-        if (aktifKategori === "tumu") {
-          hepsiAcik = true;
+    // --- EXPRESS BACKEND API'DEN CANLI VERİ ÇEKME (FETCH API) ---
+    async function backendMenuyuGetir() {
+      try {
+        const response = await fetch('/api/menu');
+        const result = await response.json();
+        if (result && result.success && Array.isArray(result.data)) {
+          yemekler = result.data;
+          menuyuFiltrele();
         }
+      } catch (err) {
+        console.error('Backend API Fetch Hatası:', err);
+      }
+    }
+
+    // İlk Yükleme
+    menuyuFiltrele();
+    backendMenuyuGetir();
+
+    // Kategori Butonları
+    filterBtns.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        filterBtns.forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        aktifKategori = btn.dataset.kategori;
         menuyuFiltrele();
       });
     });
 
-    // Arama Kutusu Input Event (Debounced & Türkçe Karakter Uyumlu)
     if (menuSearchInput) {
-      menuSearchInput.addEventListener("input", debounce((e) => {
-        mevcutAramaMetni = trKucukHarf(e.target.value);
-        menuyuFiltrele();
-      }, 250));
+      menuSearchInput.addEventListener(
+        "input",
+        debounce((e) => {
+          mevcutAramaMetni = e.target.value.toLocaleLowerCase("tr-TR").trim();
+          menuyuFiltrele();
+        }, 250)
+      );
     }
   }
 
-  // ==========================================
-  // 2. YUKARI ÇIK BUTONU VE GALERİ MODAL
-  // ==========================================
-  const backToTopBtn = document.getElementById("backToTop");
-  if (backToTopBtn) {
-    window.addEventListener("scroll", () => {
-      if (window.scrollY > 300) {
-        backToTopBtn.classList.add("show");
-      } else {
-        backToTopBtn.classList.remove("show");
-      }
-    });
-
-    backToTopBtn.addEventListener("click", () => {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    });
-  }
-
-  // ==========================================
-  // 2. GALERİ LIGHTBOX & KLAVYE OK TUŞLARI GEZİNMESİ
-  // ==========================================
-  const modal = document.getElementById("imageModal");
-  const modalImg = document.getElementById("modalImg");
-  const modalCaption = document.getElementById("modalCaption");
-  const modalCounter = document.getElementById("modalCounter");
-  const closeBtn = document.querySelector(".modal-close");
-  const prevBtn = document.getElementById("modalPrev");
-  const nextBtn = document.getElementById("modalNext");
-  const galleryItems = document.querySelectorAll(".gallery-item");
-
-  let currentGalleryIndex = 0;
-
-  if (modal && galleryItems.length > 0) {
-    galleryItems.forEach((item, index) => {
-      item.addEventListener("click", () => {
-        openGalleryModal(index);
-      });
-    });
-
-    function openGalleryModal(index) {
-      currentGalleryIndex = index;
-      modal.classList.add("active");
-      document.body.style.overflow = "hidden";
-      updateModalContent();
-    }
-
-    function updateModalContent() {
-      if (!galleryItems[currentGalleryIndex]) return;
-
-      const item = galleryItems[currentGalleryIndex];
-      const img = item.querySelector("img");
-      const overlayText = item.querySelector(".gallery-overlay span");
-      const captionText = overlayText ? overlayText.textContent : (img ? img.alt : "");
-
-      if (img && modalImg) {
-        modalImg.classList.add("change-anim");
-        setTimeout(() => {
-          modalImg.src = img.src;
-          modalImg.alt = img.alt || "";
-          if (modalCaption) modalCaption.textContent = captionText;
-          if (modalCounter) modalCounter.textContent = `${currentGalleryIndex + 1} / ${galleryItems.length}`;
-          modalImg.classList.remove("change-anim");
-        }, 120);
-      }
-    }
-
-    function showNextImage() {
-      currentGalleryIndex = (currentGalleryIndex + 1) % galleryItems.length;
-      updateModalContent();
-    }
-
-    function showPrevImage() {
-      currentGalleryIndex = (currentGalleryIndex - 1 + galleryItems.length) % galleryItems.length;
-      updateModalContent();
-    }
-
-    if (closeBtn) closeBtn.addEventListener("click", closeModal);
-    if (nextBtn) nextBtn.addEventListener("click", showNextImage);
-    if (prevBtn) prevBtn.addEventListener("click", showPrevImage);
-
-    // Dış boşluğa tıklanınca kapat
-    modal.addEventListener("click", (e) => {
-      if (e.target === modal) closeModal();
-    });
-
-    // Klavye Tuş Dinleyicileri (Sol/Sağ Ok Tuşları & ESC)
-    document.addEventListener("keydown", (e) => {
-      if (!modal.classList.contains("active")) return;
-
-      if (e.key === "Escape") {
-        closeModal();
-      } else if (e.key === "ArrowRight") {
-        showNextImage();
-      } else if (e.key === "ArrowLeft") {
-        showPrevImage();
-      }
-    });
-  }
-
-  function closeModal() {
-    if (modal) {
-      modal.classList.remove("active");
-      document.body.style.overflow = "auto";
-    }
-  }
-
-  // ==========================================
-  // 3. REZERVASYON FORMU VE ADIM ADIM SIRALI KONTROLLER
-  // ==========================================
-  const customDateInput = document.getElementById('resDate');
-  const hiddenNativeDate = document.getElementById('hiddenNativeDate');
-  const customTimeInput = document.getElementById('resTime');
-  const hiddenNativeTime = document.getElementById('hiddenNativeTime');
-  const resNameInput = document.getElementById('resName');
-  const resPhoneInput = document.getElementById('resPhone');
-  const resGuestsInput = document.getElementById('resGuests');
-  const resNotesInput = document.getElementById('resNotes');
+  // --- REZERVAZYON SİSTEMİ ---
   const reservationForm = document.getElementById('reservationForm');
   const resFormAlert = document.getElementById('resFormAlert');
 
-  // --- YARDIMCI DOĞRULAMA FONKSİYONLARI ---
-  function hataGoster(inputElement, mesaj) {
-    if (!inputElement) return;
-    const formGroup = inputElement.closest('.form-group');
-    if (!formGroup) return;
+  const nameInput = document.getElementById('resName');
+  const phoneInput = document.getElementById('resPhone');
+  const dateInput = document.getElementById('resDate');
+  const hiddenNativeDate = document.getElementById('hiddenNativeDate');
+  const timeInput = document.getElementById('resTime');
+  const hiddenNativeTime = document.getElementById('hiddenNativeTime');
+  const guestsInput = document.getElementById('resGuests');
+  const notesInput = document.getElementById('resNotes');
 
-    const wrapper = formGroup.querySelector('.input-icon-wrapper') || inputElement;
-    wrapper.classList.add('has-error');
-
-    let errorSpan = formGroup.querySelector('.error-msg');
-    if (!errorSpan) {
-      errorSpan = document.createElement('span');
-      errorSpan.className = 'error-msg';
-      formGroup.appendChild(errorSpan);
-    }
-    errorSpan.innerHTML = `<i class="fa-solid fa-circle-exclamation"></i> ${mesaj}`;
-  }
-
-  function alanHatasiniTemizle(inputElement) {
-    if (!inputElement) return;
-    const formGroup = inputElement.closest('.form-group');
-    if (!formGroup) return;
-
-    const wrapper = formGroup.querySelector('.input-icon-wrapper') || inputElement;
-    wrapper.classList.remove('has-error');
-    const errorSpan = formGroup.querySelector('.error-msg');
-    if (errorSpan) errorSpan.remove();
-  }
-
-  function hatalariTemizle() {
-    document.querySelectorAll('.error-msg').forEach((el) => el.remove());
-    document.querySelectorAll('.has-error').forEach((el) => el.classList.remove('has-error'));
-  }
-
-  // --- ADIM ADIM SIRALAMA VE CANLI ALAN DENETLEYİCİSİ ---
-  function adimKontrol(hedefAdim) {
-    // 1. Ad Soyad Kontrolü (Adım 1)
-    if (hedefAdim > 1 && (!resNameInput || !resNameInput.value.trim() || resNameInput.value.trim().length < 3)) {
-      hataGoster(resNameInput, 'Lütfen önce Adınızı ve Soyadınızı tam olarak giriniz.');
-      if (resNameInput) {
-        resNameInput.focus();
-        resNameInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
-      return false;
-    }
-    // 2. Telefon Kontrolü (Adım 2)
-    if (hedefAdim > 2 && (!resPhoneInput || !resPhoneInput.value.trim() || !/^05[0-9]{9}$/.test(resPhoneInput.value.replace(/\s+/g, '')))) {
-      hataGoster(resPhoneInput, 'Lütfen önce geçerli bir cep telefonu numarası (05XXXXXXXXX) giriniz.');
-      if (resPhoneInput) {
-        resPhoneInput.focus();
-        resPhoneInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
-      return false;
-    }
-    // 3. Tarih Kontrolü (Adım 3)
-    if (hedefAdim > 3 && (!customDateInput || !customDateInput.value)) {
-      hataGoster(customDateInput, 'Lütfen önce rezervasyon tarihini seçiniz.');
-      if (customDateInput) {
-        customDateInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
-      return false;
-    }
-    // 4. Saat Kontrolü (Adım 4)
-    if (hedefAdim > 4 && (!customTimeInput || !customTimeInput.value)) {
-      hataGoster(customTimeInput, 'Lütfen önce rezervasyon saatini seçiniz.');
-      if (customTimeInput) {
-        customTimeInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
-      return false;
-    }
-    // 5. Kişi Sayısı Kontrolü (Adım 5)
-    if (hedefAdim > 5 && (!resGuestsInput || !resGuestsInput.value)) {
-      hataGoster(resGuestsInput, 'Lütfen önce kişi sayısını giriniz.');
-      if (resGuestsInput) {
-        resGuestsInput.focus();
-        resGuestsInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
-      return false;
-    }
-    return true;
-  }
-
-  // --- KİLİTLİ ALAN KORUYUCUSU (Önceki Adım Tamamlanmadan İlerlenemez) ---
-  const adimEngelleri = [
-    { el: resPhoneInput, adim: 2 },
-    { el: customDateInput, adim: 3 },
-    { el: hiddenNativeDate, adim: 3 },
-    { el: customTimeInput, adim: 4 },
-    { el: hiddenNativeTime, adim: 4 },
-    { el: resGuestsInput, adim: 5 },
-    { el: resNotesInput, adim: 6 }
-  ];
-
-  adimEngelleri.forEach(item => {
-    if (item.el) {
-      ['mousedown', 'click', 'focus', 'keydown', 'input', 'change'].forEach(evtType => {
-        item.el.addEventListener(evtType, (e) => {
-          if (!adimKontrol(item.adim)) {
-            if (evtType === 'input' || evtType === 'change') {
-              item.el.value = '';
-            }
-            e.preventDefault();
-            e.stopPropagation();
-          }
-        });
-      });
-    }
-  });
-
-  // Kişi Sayısı için Anında Canlı Uarı ve Sınırlama (Live Input Validation)
-  if (resGuestsInput) {
-    resGuestsInput.addEventListener('input', (e) => {
-      if (!adimKontrol(5)) {
-        e.target.value = '';
-        return;
-      }
-      const rawVal = e.target.value;
-      if (!rawVal) {
-        alanHatasiniTemizle(resGuestsInput);
-        return;
-      }
-      const val = parseInt(rawVal, 10);
-      if (rawVal.length > 2 || val > 10) {
-        hataGoster(resGuestsInput, 'Online en fazla 10 kişilik rezervasyon kabul edilmektedir.');
-        e.target.value = rawVal.slice(0, 2);
-      } else if (val < 1) {
-        hataGoster(resGuestsInput, 'Kişi sayısı en az 1 kişi olmalıdır.');
+  const openDatePicker = () => {
+    if (!hiddenNativeDate) return;
+    try {
+      if (typeof hiddenNativeDate.showPicker === 'function') {
+        hiddenNativeDate.showPicker();
       } else {
-        alanHatasiniTemizle(resGuestsInput);
+        hiddenNativeDate.focus();
+        hiddenNativeDate.click();
       }
-    });
-  }
-
-  // İnput yazıldıkça veya düzeltildikçe hatayı anında temizle
-  [resNameInput, resPhoneInput, customDateInput, customTimeInput].forEach(input => {
-    if (input) {
-      ['input', 'change', 'blur'].forEach(evt => {
-        input.addEventListener(evt, () => {
-          if (input.value && input.value.trim() !== '') {
-            alanHatasiniTemizle(input);
-          }
-        });
-      });
+    } catch (e) {
+      hiddenNativeDate.focus();
+      hiddenNativeDate.click();
     }
-  });
+  };
 
-  // Tarih alanına tıklanırsa
-  if (customDateInput && hiddenNativeDate) {
-    customDateInput.addEventListener('click', () => {
-      if (!adimKontrol(3)) return;
-      hiddenNativeDate.showPicker();
-    });
-
-    hiddenNativeDate.addEventListener('change', (e) => {
-      if (!adimKontrol(3)) {
-        e.target.value = '';
-        return;
-      }
-      if (e.target.value) {
-        alanHatasiniTemizle(customDateInput);
-        const selectedDate = new Date(e.target.value + 'T00:00:00');
-        const dayOfWeek = selectedDate.getDay(); 
-
-        if (dayOfWeek === 0) {
-          hataGoster(customDateInput, 'Restoranımız Pazar günleri kapalıdır. Lütfen başka bir gün seçiniz.');
-          customDateInput.value = '';
-          hiddenNativeDate.value = '';
-          if (customTimeInput) customTimeInput.value = '';
-          if (hiddenNativeTime) hiddenNativeTime.value = '';
-          return;
-        }
-
-        const [year, month, day] = e.target.value.split('-');
-        customDateInput.value = `${day}.${month}.${year}`;
-
-        if (hiddenNativeTime) {
-          hiddenNativeTime.max = (dayOfWeek === 5 || dayOfWeek === 6) ? "23:00" : "22:00";
-          if (customTimeInput) customTimeInput.value = '';
-          hiddenNativeTime.value = '';
-        }
-        if (typeof updateTicketPreview === 'function') updateTicketPreview();
-      }
-    });
-  }
-
-  // Saat alanına tıklanırsa
-  if (customTimeInput && hiddenNativeTime) {
-    customTimeInput.addEventListener('click', () => {
-      if (!adimKontrol(4)) return;
-      hiddenNativeTime.showPicker();
-    });
-
-    hiddenNativeTime.addEventListener('change', (e) => {
-      if (!adimKontrol(4)) {
-        e.target.value = '';
-        return;
-      }
-      const selectedTime = e.target.value;
-      if (!selectedTime) return;
-
-      alanHatasiniTemizle(customTimeInput);
-      const [hours, minutes] = selectedTime.split(':').map(Number);
-      const totalMinutes = hours * 60 + minutes;
-      const minMinutes = 10 * 60; 
-
-      const selectedDateVal = hiddenNativeDate ? hiddenNativeDate.value : '';
-      const selectedDate = selectedDateVal ? new Date(selectedDateVal + 'T00:00:00') : new Date();
-      const dayOfWeek = selectedDate.getDay();
-
-      const isWeekendHeader = (dayOfWeek === 5 || dayOfWeek === 6);
-      const maxMinutes = isWeekendHeader ? (23 * 60) : (22 * 60);
-      const maxTimeStr = isWeekendHeader ? '23:00' : '22:00';
-
-      if (totalMinutes < minMinutes) {
-        hataGoster(customTimeInput, `Çalışma saatlerimiz 10:00 ile ${maxTimeStr} arasındadır. Saat 10:00 olarak ayarlandı.`);
-        customTimeInput.value = '10:00';
-        hiddenNativeTime.value = '10:00';
-      } else if (totalMinutes > maxMinutes) {
-        hataGoster(customTimeInput, `Seçtiğiniz günde çalışma saatlerimiz ${maxTimeStr}'a kadardır. Saat ${maxTimeStr} olarak ayarlandı.`);
-        customTimeInput.value = maxTimeStr;
-        hiddenNativeTime.value = maxTimeStr;
+  const openTimePicker = () => {
+    if (!hiddenNativeTime) return;
+    try {
+      if (typeof hiddenNativeTime.showPicker === 'function') {
+        hiddenNativeTime.showPicker();
       } else {
-        customTimeInput.value = selectedTime;
+        hiddenNativeTime.focus();
+        hiddenNativeTime.click();
       }
-    });
-  }
+    } catch (e) {
+      hiddenNativeTime.focus();
+      hiddenNativeTime.click();
+    }
+  };
 
   let lastSubmittedTicketData = null;
 
-  // --- FORM SUBMIT (DETAYLI DOĞRULAMA: BOŞ ALAN, TELEFON, GEÇMİŞ TARİH, KAPALI SAAT) ---
   if (reservationForm) {
     reservationForm.addEventListener('submit', (e) => {
       e.preventDefault();
-
-      // Önceki tüm hataları temizle
       hatalariTemizle();
 
-      let formGecerli = true;
-
-      const nameInput = document.getElementById('resName');
-      const phoneInput = document.getElementById('resPhone');
-      const dateInput = document.getElementById('resDate');
-      const hiddenDateInput = document.getElementById('hiddenNativeDate');
-      const timeInput = document.getElementById('resTime');
-      const hiddenTimeInput = document.getElementById('hiddenNativeTime');
-      const guestsInput = document.getElementById('resGuests');
-      const notesInput = document.getElementById('resNotes');
-
-      // 1. Ad Soyad Kontrolü (Boş alan ve min hane)
-      if (!nameInput || !nameInput.value.trim()) {
+      // --- SIRALI DOĞRULAMA (SEQUENTIAL VALIDATION) ---
+      // 1. Adınız Soyadınız
+      if (!nameInput || !nameInput.value.trim() || nameInput.value.trim().length < 3) {
         hataGoster(nameInput, 'Lütfen adınızı ve soyadınızı giriniz.');
-        formGecerli = false;
-      } else if (nameInput.value.trim().length < 3) {
-        hataGoster(nameInput, 'Ad Soyad en az 3 karakter olmalıdır.');
-        formGecerli = false;
-      }
-
-      // 2. Telefon Numarası Kontrolü (05XXXXXXXXX formatı)
-      const phoneRegex = /^05[0-9]{9}$/;
-      const temizTelefon = phoneInput ? phoneInput.value.replace(/\s+/g, '') : '';
-      if (!temizTelefon) {
-        hataGoster(phoneInput, 'Lütfen telefon numaranızı giriniz.');
-        formGecerli = false;
-      } else if (!phoneRegex.test(temizTelefon)) {
-        hataGoster(phoneInput, 'Geçersiz telefon numarası. (Örn: 05XXXXXXXXX)');
-        formGecerli = false;
-      }
-
-      // 3. Geçmiş Tarih Kontrolü
-      const secilenTarihMetni = hiddenDateInput && hiddenDateInput.value ? hiddenDateInput.value : (dateInput ? dateInput.value : '');
-      if (!secilenTarihMetni) {
-        hataGoster(dateInput, 'Lütfen bir rezervasyon tarihi seçiniz.');
-        formGecerli = false;
-      } else {
-        const bugun = new Date();
-        bugun.setHours(0, 0, 0, 0);
-
-        const secilenTarih = new Date(secilenTarihMetni);
-        secilenTarih.setHours(0, 0, 0, 0);
-
-        if (secilenTarih < bugun) {
-          hataGoster(dateInput, 'Geçmiş bir tarih için rezervasyon yapılamaz.');
-          formGecerli = false;
-        }
-      }
-
-      // 4. Kapalı Saat Kontrolü (Açık Saatler: 10:00 - 22:00)
-      const secilenSaatMetni = hiddenTimeInput && hiddenTimeInput.value ? hiddenTimeInput.value : (timeInput ? timeInput.value : '');
-      if (!secilenSaatMetni) {
-        hataGoster(timeInput, 'Lütfen bir rezervasyon saati seçiniz.');
-        formGecerli = false;
-      } else {
-        const [saat, dakika] = secilenSaatMetni.split(':').map(Number);
-        const toplamDakika = saat * 60 + dakika;
-
-        const acilisDakika = 10 * 60; // 10:00
-        const kapanisDakika = 22 * 60; // 22:00
-
-        if (toplamDakika < acilisDakika || toplamDakika > kapanisDakika) {
-          hataGoster(timeInput, 'Restoranımız bu saatte kapalıdır. (Açık saatler: 10:00 - 22:00)');
-          formGecerli = false;
-        }
-      }
-
-      // 5. Kişi Sayısı Kontrolü
-      if (!guestsInput || !guestsInput.value || guestsInput.value < 1) {
-        hataGoster(guestsInput, 'Lütfen kişi sayısını belirtiniz.');
-        formGecerli = false;
-      } else if (guestsInput.value > 10) {
-        hataGoster(guestsInput, 'Online en fazla 10 kişilik rezervasyon kabul edilmektedir.');
-        formGecerli = false;
-      }
-
-      // Eğer formda hata varsa gönderimi durdur
-      if (!formGecerli) {
-        const ilkHata = document.querySelector('.has-error');
-        if (ilkHata) {
-          yumusakKaydir(ilkHata);
-        }
+        nameInput.focus();
         return;
       }
 
-      // BİLGİLERİ FORM SIFIRLANMADAN ÖNCE (formGonderimSimuleEt ÖNCESİNDE) YAKALA
+      // 2. Telefon Numaranız (05XXXXXXXXX)
+      const phoneClean = phoneInput ? phoneInput.value.trim() : '';
+      const phoneRegex = /^05[0-9]{9}$/;
+      if (!phoneInput || !phoneClean || !phoneRegex.test(phoneClean)) {
+        hataGoster(phoneInput, 'Lütfen 05 ile başlayan 11 haneli cep telefonunuzu giriniz.');
+        phoneInput.focus();
+        return;
+      }
+
+      // 3. Rezervasyon Tarihi
+      if (!dateInput || !dateInput.value.trim()) {
+        hataGoster(dateInput, 'Lütfen rezervasyon tarihini seçiniz.');
+        openDatePicker();
+        return;
+      }
+
+      // 4. Rezervasyon Saati
+      const timeValCheck = (hiddenTimeInput && hiddenTimeInput.value) ? hiddenTimeInput.value : (timeInput ? timeInput.value.trim() : '');
+      if (!timeInput || !timeValCheck) {
+        hataGoster(timeInput, 'Lütfen rezervasyon saatini seçiniz.');
+        openTimePicker();
+        return;
+      }
+
+      // 5. Kişi Sayısı
+      if (!guestsInput || !guestsInput.value.trim()) {
+        hataGoster(guestsInput, 'Lütfen kişi sayısını giriniz.');
+        guestsInput.focus();
+        return;
+      }
+
       const nameVal = nameInput ? nameInput.value.trim() : '';
       const phoneVal = phoneInput ? phoneInput.value.trim() : '';
       const dateVal = dateInput ? dateInput.value.trim() : '';
@@ -835,43 +458,50 @@ document.addEventListener("DOMContentLoaded", () => {
       const guestsVal = guestsInput ? guestsInput.value.trim() : '1';
       const notesVal = notesInput ? notesInput.value.trim() : '';
 
-      lastSubmittedTicketData = {
-        name: nameVal,
-        phone: phoneVal,
-        date: dateVal,
-        time: timeVal,
-        guests: guestsVal,
-        notes: notesVal
-      };
+      lastSubmittedTicketData = { name: nameVal, phone: phoneVal, date: dateVal, time: timeVal, guests: guestsVal, notes: notesVal };
 
-      // Form Geçerliyse Ortak Simülatörle Gönderim (800ms sonra yeşil bildirim görünür)
-      formGonderimSimuleEt(reservationForm, resFormAlert, 'Talebiniz İşleniyor...', 800);
+      formGonderimSimuleEt(reservationForm, resFormAlert, 'Restorana İletiliyor...', 800);
 
-      // Kullanıcının yeşil başarı mesajını rahatça okuması için 5.0 saniye sonra bilete kay
-      setTimeout(() => {
-        const ticketContainer = document.getElementById('resTicketContainer');
-        const masaNo = String(Math.floor(1 + Math.random() * 18)).padStart(2, '0');
-        const konumlar = ['(Geleneksel Odun Ateşi Katı)', '(Tarihi Avlu Tarafı)', '(Taş Fırın Yanı)', '(Üst Kat Balkon)', '(VIP Salon)'];
-        const rastgeleKonum = konumlar[Math.floor(Math.random() * konumlar.length)];
-
-        const ticketData = {
-          masaNo,
-          konum: rastgeleKonum,
+      // --- EXPRESS BACKEND API'YE POST İSTEĞİ (REZERVASYON KAYDI) ---
+      fetch('/api/rezervasyon', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
           name: nameVal,
           phone: phoneVal,
-          dateTime: `${dateVal} • ${timeVal}`,
-          guests: `${guestsVal} Kişilik Masa`,
+          date: dateVal,
+          time: timeVal,
+          guests: guestsVal,
           notes: notesVal
-        };
-
-        displayTicketData(ticketData);
-        if (ticketContainer) {
-          ticketContainer.style.display = 'block';
+        })
+      })
+      .then(res => res.json())
+      .then(result => {
+        if (result && result.success && result.data) {
+          const sunucuData = result.data;
+          const ticketContainer = document.getElementById('resTicketContainer');
+          const ticketData = {
+            masaNo: sunucuData.masaNo,
+            konum: sunucuData.konum,
+            name: sunucuData.name,
+            phone: sunucuData.phone,
+            dateTime: `${sunucuData.date} • ${sunucuData.time}`,
+            guests: `${sunucuData.guests} Kişilik Masa`,
+            notes: sunucuData.notes
+          };
+          setTimeout(() => {
+            displayTicketData(ticketData);
+            if (ticketContainer) ticketContainer.style.display = 'block';
+          }, 1200);
         }
-      }, 1250);
+      })
+      .catch(err => {
+        console.error('Rezervasyon POST Hatası:', err);
+      });
     });
 
-    // --- BİLET BİLGİLERİNİ EKRANA YAZDIRMA FONKSİYONU ---
     function displayTicketData(data) {
       const cardTableNumber = document.getElementById('cardTableNumber');
       const cardTicketName = document.getElementById('cardTicketName');
@@ -902,12 +532,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
 
-    // --- SEÇENEK B: SAYFA YENİLENDİĞİNDE (F5) TERTEMİZ BAŞLA ---
-    try {
-      localStorage.removeItem('lm_lastReservationTicket');
-    } catch(e) {}
-
-    // --- BİLGİLERİ DÜZENLE (FORMA GERİ DÖN VE BİLGİLERİ DOLDUR) BUTONU ---
     const btnEditReservation = document.getElementById('btnEditReservation');
     if (btnEditReservation) {
       btnEditReservation.addEventListener('click', () => {
@@ -945,249 +569,412 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
 
-    // --- 1932 MASA MÜHRÜ KAYIT KARTI CANLI ÖNİZLEME (LIVE PREVIEW SYNC) ---
-    function updateTicketPreview() {
-      const cardTicketName = document.getElementById('cardTicketName');
-      const cardTicketPhone = document.getElementById('cardTicketPhone');
-      const cardTicketDateTime = document.getElementById('cardTicketDateTime');
-      const cardTicketGuests = document.getElementById('cardTicketGuests');
-      const cardTicketNotes = document.getElementById('cardTicketNotes');
-      const cardTicketNotesRow = document.getElementById('cardTicketNotesRow');
+    // --- NATIVE DATE & TIME PICKER İŞLEYİCİLERİ ---
+    const resDateInput = document.getElementById('resDate');
+    const hiddenNativeDate = document.getElementById('hiddenNativeDate');
+    const resTimeInput = document.getElementById('resTime');
+    const hiddenNativeTime = document.getElementById('hiddenNativeTime');
 
-      const nameVal = document.getElementById('resName')?.value.trim();
-      const phoneVal = document.getElementById('resPhone')?.value.trim();
-      const dateVal = document.getElementById('resDate')?.value.trim();
-      const timeVal = document.getElementById('resTime')?.value.trim();
-      const guestsVal = document.getElementById('resGuests')?.value.trim();
-      const notesVal = document.getElementById('resNotes')?.value.trim();
-
-      if (cardTicketName) cardTicketName.textContent = nameVal || 'Girilmedi';
-      if (cardTicketPhone) cardTicketPhone.textContent = phoneVal || '---';
-      if (cardTicketGuests) cardTicketGuests.textContent = (guestsVal && guestsVal > 0) ? `${guestsVal} Kişi` : '-- Kişi';
-
-      if (cardTicketDateTime) {
-        if (dateVal && timeVal) {
-          cardTicketDateTime.textContent = `${dateVal} • ${timeVal}`;
-        } else if (dateVal) {
-          cardTicketDateTime.textContent = `${dateVal} • Saat Seçiniz`;
-        } else if (timeVal) {
-          cardTicketDateTime.textContent = `Tarih Seçiniz • ${timeVal}`;
-        } else {
-          cardTicketDateTime.textContent = 'Tarih ve Saat Seçiniz';
-        }
-      }
-
-      if (cardTicketNotes && cardTicketNotesRow) {
-        if (notesVal) {
-          cardTicketNotes.textContent = notesVal;
-          cardTicketNotesRow.style.display = 'flex';
-        } else {
-          cardTicketNotesRow.style.display = 'none';
-        }
-      }
+    if (hiddenNativeDate) {
+      const today = new Date().toISOString().split('T')[0];
+      hiddenNativeDate.setAttribute('min', today);
     }
 
-    // Tüm İnputlara Canlı Dinleyici Bağla (Form doldurulurken canlı güncellensin)
-    ['resName', 'resPhone', 'resDate', 'resTime', 'resGuests', 'resNotes'].forEach(id => {
-      const el = document.getElementById(id);
-      if (el) {
-        ['input', 'change', 'keyup', 'blur'].forEach(evt => {
-          el.addEventListener(evt, updateTicketPreview);
+    if (resDateInput && hiddenNativeDate) {
+      const openDatePicker = () => {
+        try {
+          if (typeof hiddenNativeDate.showPicker === 'function') {
+            hiddenNativeDate.showPicker();
+          } else {
+            hiddenNativeDate.focus();
+            hiddenNativeDate.click();
+          }
+        } catch (e) {
+          hiddenNativeDate.focus();
+          hiddenNativeDate.click();
+        }
+      };
+
+      resDateInput.addEventListener('click', openDatePicker);
+      if (resDateInput.parentElement) {
+        resDateInput.parentElement.addEventListener('click', (e) => {
+          if (e.target !== hiddenNativeDate) openDatePicker();
         });
       }
-    });
-  }
 
-  // ==========================================
-  // 4. HAMBURGER MENÜ (NAVBAR MOBO)
-  // ==========================================
-  const hamburgerBtn = document.getElementById("hamburgerBtn");
-  const mainNavbar = document.querySelector(".main-navbar");
-
-  if (hamburgerBtn && mainNavbar) {
-    
-    function openMenu() {
-      mainNavbar.classList.add("active");
-      document.body.classList.add("no-scroll");
-    }
-
-    function closeMenu() {
-      mainNavbar.classList.remove("active");
-      document.body.classList.remove("no-scroll");
-    }
-
-    function toggleMenu(e) {
-      e.preventDefault();
-      e.stopPropagation();
-      
-      if (mainNavbar.classList.contains("active")) {
-        closeMenu();
-      } else {
-        openMenu();
-      }
-    }
-
-    // Tıklama ve Sağ Tık / Uzun Basma Koruması
-    hamburgerBtn.addEventListener("click", toggleMenu);
-    hamburgerBtn.addEventListener("contextmenu", (e) => e.preventDefault());
-
-    const navLinks = mainNavbar.querySelectorAll("a");
-    navLinks.forEach((link) => {
-      // Uzun basmada açılan mobil kısayol menüsünü engelle
-      link.addEventListener("contextmenu", (e) => e.preventDefault());
-
-      link.addEventListener("click", () => {
-        closeMenu();
-      });
-
-      link.addEventListener("touchend", () => {
-        closeMenu();
-      });
-    });
-
-    // Menü açıkken arka alanın kaydırılmasını tamamen engelle
-    document.addEventListener("touchmove", (e) => {
-      if (mainNavbar.classList.contains("active") && !mainNavbar.contains(e.target)) {
-        e.preventDefault();
-      }
-    }, { passive: false });
-
-    document.addEventListener("click", (e) => {
-      if (
-        mainNavbar.classList.contains("active") &&
-        !mainNavbar.contains(e.target) &&
-        !hamburgerBtn.contains(e.target)
-      ) {
-        closeMenu();
-      }
-    });
-
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape" && mainNavbar.classList.contains("active")) {
-        closeMenu();
-      }
-    });
-  }
-
-  // ==========================================
-  // 5. İLETİŞİM FORMU (CONTACT FORM)
-  // ==========================================
-  const contactForm = document.getElementById('contactForm');
-  const formAlert = document.getElementById('formAlert');
-
-  if (contactForm) {
-    contactForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-
-      if (!contactForm.checkValidity()) {
-        const ilkGecersiz = contactForm.querySelector(':invalid');
-        if (ilkGecersiz) {
-          hataGoster(ilkGecersiz, 'Lütfen bu alanı doğru bir şekilde doldurunuz.');
-          yumusakKaydir(ilkGecersiz);
+      hiddenNativeDate.addEventListener('change', (e) => {
+        if (e.target.value) {
+          const parts = e.target.value.split('-');
+          if (parts.length === 3) {
+            resDateInput.value = `${parts[2]}.${parts[1]}.${parts[0]}`;
+            resDateInput.classList.remove('input-error');
+          }
         }
-        return;
-      }
-
-      formGonderimSimuleEt(contactForm, formAlert, 'Gönderiliyor...', 1500);
-    });
-  }
-
-  // ==========================================
-  // 6. CANLI ÇALIŞMA SAATİ KONTROLÜ (LIVE STATUS BADGE)
-  // ==========================================
-  function calismaSaatleriniKontrolEt() {
-    const simdikiZaman = new Date();
-    const gun = simdikiZaman.getDay(); // 0: Pazar, 1-4: Pzt-Prş, 5-6: Cum-Cmt
-    const saat = simdikiZaman.getHours();
-    const dakika = simdikiZaman.getMinutes();
-    const toplamDakika = saat * 60 + dakika;
-
-    let acik = false;
-    let kapanisSaati = "22:00";
-
-    if (gun === 0) {
-      // Pazar Kapalı
-      acik = false;
-    } else if (gun === 5 || gun === 6) {
-      // Cuma - Cumartesi: 10:00 - 23:00
-      kapanisSaati = "23:00";
-      acik = (toplamDakika >= 10 * 60 && toplamDakika < 23 * 60);
-    } else {
-      // Pazartesi - Perşembe: 10:00 - 22:00
-      kapanisSaati = "22:00";
-      acik = (toplamDakika >= 10 * 60 && toplamDakika < 22 * 60);
+      });
     }
 
-    const badgeElements = document.querySelectorAll('.live-status-badge');
-    badgeElements.forEach(badge => {
-      if (acik) {
-        badge.className = 'live-status-badge status-open';
-        badge.innerHTML = `<span class="pulse-dot green"></span> <span class="status-text">Şu An Açığız <small>(${kapanisSaati}'a kadar)</small></span>`;
-      } else {
-        badge.className = 'live-status-badge status-closed';
-        badge.innerHTML = `<span class="pulse-dot red"></span> <span class="status-text">Şu An Kapalıyız <small>(Açılış 10:00)</small></span>`;
+    if (resTimeInput && hiddenNativeTime) {
+      const openTimePicker = () => {
+        try {
+          if (typeof hiddenNativeTime.showPicker === 'function') {
+            hiddenNativeTime.showPicker();
+          } else {
+            hiddenNativeTime.focus();
+            hiddenNativeTime.click();
+          }
+        } catch (e) {
+          hiddenNativeTime.focus();
+          hiddenNativeTime.click();
+        }
+      };
+
+      resTimeInput.addEventListener('click', openTimePicker);
+      if (resTimeInput.parentElement) {
+        resTimeInput.parentElement.addEventListener('click', (e) => {
+          if (e.target !== hiddenNativeTime) openTimePicker();
+        });
       }
-    });
+
+      hiddenNativeTime.addEventListener('change', (e) => {
+        if (e.target.value) {
+          resTimeInput.value = e.target.value;
+          resTimeInput.classList.remove('input-error');
+        }
+      });
+    }
   }
 
-  // Sayfa yüklenince canlı durumu çalıştır
-  calismaSaatleriniKontrolEt();
+  function hataGoster(inputEl, mesaj) {
+    if (!inputEl) return;
+    inputEl.classList.add('input-error');
+    let parent = inputEl.parentElement;
+    if (parent) {
+      let errSpan = parent.querySelector('.error-msg');
+      if (!errSpan) {
+        errSpan = document.createElement('span');
+        errSpan.className = 'error-msg';
+        parent.appendChild(errSpan);
+      }
+      errSpan.textContent = mesaj;
+    }
+  }
+
+  function hatalariTemizle() {
+    const errorInputs = document.querySelectorAll('.input-error');
+    errorInputs.forEach(el => el.classList.remove('input-error'));
+    const errorSpans = document.querySelectorAll('.error-msg');
+    errorSpans.forEach(el => el.remove());
+  }
 
   // ==========================================
-  // 7. MÜŞTERİ YORUMLARI İNTERAKTİF SLIDER
+  // ⭐ MÜŞTERİ YORUMLARI İNTERAKTİF SLIDER İŞLEYİCİSİ
   // ==========================================
   const testimonialsTrack = document.getElementById('testimonialsTrack');
   const btnTestimonialPrev = document.getElementById('btnTestimonialPrev');
   const btnTestimonialNext = document.getElementById('btnTestimonialNext');
   const testimonialDots = document.getElementById('testimonialDots');
 
-  if (testimonialsTrack && btnTestimonialPrev && btnTestimonialNext) {
+  if (testimonialsTrack) {
     const slides = testimonialsTrack.querySelectorAll('.testimonial-card-slide');
     let currentSlide = 0;
-    let autoSlideTimer = null;
+    const totalSlides = slides.length;
 
-    if (testimonialDots && slides.length > 0) {
+    if (testimonialDots && totalSlides > 0) {
       testimonialDots.innerHTML = '';
-      slides.forEach((_, index) => {
-        const dot = document.createElement('div');
-        dot.className = `slider-dot ${index === 0 ? 'active' : ''}`;
-        dot.addEventListener('click', () => goToSlide(index));
+      for (let i = 0; i < totalSlides; i++) {
+        const dot = document.createElement('span');
+        dot.className = i === 0 ? 'dot active' : 'dot';
+        dot.addEventListener('click', () => goToSlide(i));
         testimonialDots.appendChild(dot);
-      });
+      }
     }
 
-    function goToSlide(index) {
-      if (index < 0) index = slides.length - 1;
-      if (index >= slides.length) index = 0;
-      currentSlide = index;
-      testimonialsTrack.style.transform = `translateX(-${currentSlide * 100}%)`;
-
+    function updateSlider() {
+      testimonialsTrack.style.transform = `translateX(calc(-${currentSlide} * (100% + 30px)))`;
       if (testimonialDots) {
-        const dots = testimonialDots.querySelectorAll('.slider-dot');
-        dots.forEach((d, i) => {
-          d.classList.toggle('active', i === currentSlide);
+        const dots = testimonialDots.querySelectorAll('.dot');
+        dots.forEach((d, idx) => {
+          if (idx === currentSlide) d.classList.add('active');
+          else d.classList.remove('active');
         });
       }
     }
 
-    function resetAutoSlide() {
-      if (autoSlideTimer) clearInterval(autoSlideTimer);
-      autoSlideTimer = setInterval(() => {
-        goToSlide(currentSlide + 1);
-      }, 5500);
+    function goToSlide(index) {
+      currentSlide = index;
+      if (currentSlide < 0) currentSlide = totalSlides - 1;
+      if (currentSlide >= totalSlides) currentSlide = 0;
+      updateSlider();
     }
 
-    btnTestimonialPrev.addEventListener('click', () => {
-      goToSlide(currentSlide - 1);
-      resetAutoSlide();
-    });
+    if (btnTestimonialNext) {
+      btnTestimonialNext.addEventListener('click', (e) => {
+        e.preventDefault();
+        goToSlide(currentSlide + 1);
+      });
+    }
 
-    btnTestimonialNext.addEventListener('click', () => {
+    if (btnTestimonialPrev) {
+      btnTestimonialPrev.addEventListener('click', (e) => {
+        e.preventDefault();
+        goToSlide(currentSlide - 1);
+      });
+    }
+
+    setInterval(() => {
       goToSlide(currentSlide + 1);
-      resetAutoSlide();
-    });
-
-    resetAutoSlide();
+    }, 5000);
   }
 
+  // ==========================================
+  // 🖼️ GALERİ GÖRSEL BÜYÜTME (LIGHTBOX MODAL) MANTIĞI
+  // ==========================================
+  const galleryItems = document.querySelectorAll('.gallery-item');
+  const imageModal = document.getElementById('imageModal');
+  const modalImg = document.getElementById('modalImg');
+  const modalCaption = document.getElementById('modalCaption');
+  const modalCounter = document.getElementById('modalCounter');
+  const modalClose = document.querySelector('.modal-close');
+  const modalPrev = document.getElementById('modalPrev');
+  const modalNext = document.getElementById('modalNext');
+
+  if (galleryItems.length > 0 && imageModal) {
+    let currentGalleryIndex = 0;
+    const galleryArray = Array.from(galleryItems);
+
+    function openGalleryModal(index) {
+      currentGalleryIndex = index;
+      const item = galleryArray[currentGalleryIndex];
+      const img = item.querySelector('img');
+      const captionText = item.querySelector('.gallery-overlay span') ? item.querySelector('.gallery-overlay span').textContent : (img ? img.alt : '');
+
+      if (img && modalImg) {
+        modalImg.src = img.src;
+        modalImg.alt = img.alt || captionText;
+      }
+      if (modalCaption) {
+        modalCaption.textContent = captionText;
+      }
+      if (modalCounter) {
+        modalCounter.textContent = `${currentGalleryIndex + 1} / ${galleryArray.length}`;
+      }
+
+      imageModal.classList.add('active');
+      imageModal.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeGalleryModal() {
+      imageModal.classList.remove('active');
+      imageModal.style.display = 'none';
+      document.body.style.overflow = '';
+    }
+
+    galleryArray.forEach((item, idx) => {
+      item.addEventListener('click', (e) => {
+        e.preventDefault();
+        openGalleryModal(idx);
+      });
+    });
+
+    if (modalClose) {
+      modalClose.addEventListener('click', closeGalleryModal);
+    }
+
+    if (modalNext) {
+      modalNext.addEventListener('click', (e) => {
+        e.stopPropagation();
+        currentGalleryIndex = (currentGalleryIndex + 1) % galleryArray.length;
+        openGalleryModal(currentGalleryIndex);
+      });
+    }
+
+    if (modalPrev) {
+      modalPrev.addEventListener('click', (e) => {
+        e.stopPropagation();
+        currentGalleryIndex = (currentGalleryIndex - 1 + galleryArray.length) % galleryArray.length;
+        openGalleryModal(currentGalleryIndex);
+      });
+    }
+
+    imageModal.addEventListener('click', (e) => {
+      if (e.target === imageModal || e.target.classList.contains('modal-wrapper')) {
+        closeGalleryModal();
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (!imageModal.classList.contains('active')) return;
+      if (e.key === 'Escape') closeGalleryModal();
+      if (e.key === 'ArrowRight') modalNext && modalNext.click();
+      if (e.key === 'ArrowLeft') modalPrev && modalPrev.click();
+    });
+  }
+
+  // ==========================================
+  // 🔥 [2'uygula] GERÇEK ODUN KÖZÜ, KIVILCIM & BAHARAT YAPRAĞI ANIMASYONU
+  // ==========================================
+  function initEmberParticles() {
+    let canvas = document.getElementById('emberCanvas');
+    if (!canvas) {
+      canvas = document.createElement('canvas');
+      canvas.id = 'emberCanvas';
+      document.body.prepend(canvas);
+    }
+
+    const ctx = canvas.getContext('2d');
+    let width = (canvas.width = window.innerWidth);
+    let height = (canvas.height = window.innerHeight);
+
+    window.addEventListener('resize', () => {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    });
+
+    const particles = [];
+    const particleCount = Math.min(Math.floor(window.innerWidth / 16), 70);
+
+    const colors = [
+      { r: 255, g: 179, b: 0   }, // Amber Altın
+      { r: 231, g: 76,  b: 60  }, // Kiremit Odun Kırmızı
+      { r: 255, g: 112, b: 67  }, // Kor Ateş Turuncusu
+      { r: 241, g: 196, b: 15  }, // Antep Fıstığı Işıltısı
+      { r: 255, g: 87,  b: 34  }  // Mangal Alev Kıvılcımı
+    ];
+
+    const types = ['spark', 'ember', 'leaf', 'spark', 'ember'];
+
+    for (let i = 0; i < particleCount; i++) {
+      particles.push({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        type: types[Math.floor(Math.random() * types.length)],
+        size: Math.random() * 4 + 1.5,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        alpha: Math.random() * 0.75 + 0.2,
+        speedY: Math.random() * 1.1 + 0.4,
+        speedX: (Math.random() - 0.5) * 0.6,
+        rotation: Math.random() * Math.PI * 2,
+        rotationSpeed: (Math.random() - 0.5) * 0.04,
+        pulseSpeed: Math.random() * 0.02 + 0.01
+      });
+    }
+
+    function drawSpark(p) {
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rotation);
+      ctx.fillStyle = `rgba(${p.color.r}, ${p.color.g}, ${p.color.b}, ${p.alpha})`;
+      ctx.shadowBlur = 10;
+      ctx.shadowColor = `rgba(${p.color.r}, ${p.color.g}, ${p.color.b}, 0.8)`;
+      ctx.beginPath();
+      for (let i = 0; i < 4; i++) {
+        ctx.rotate(Math.PI / 2);
+        ctx.lineTo(0, p.size * 2);
+        ctx.lineTo(p.size * 0.3, p.size * 0.3);
+      }
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+    }
+
+    function drawEmberPebble(p) {
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rotation);
+      const radGrad = ctx.createRadialGradient(0, 0, 0, 0, 0, p.size * 2);
+      radGrad.addColorStop(0, `rgba(255, 245, 220, ${p.alpha})`);
+      radGrad.addColorStop(0.3, `rgba(${p.color.r}, ${p.color.g}, ${p.color.b}, ${p.alpha * 0.85})`);
+      radGrad.addColorStop(1, `rgba(120, 25, 10, 0)`);
+
+      ctx.beginPath();
+      ctx.ellipse(0, 0, p.size * 1.8, p.size * 1.1, p.rotation, 0, Math.PI * 2);
+      ctx.fillStyle = radGrad;
+      ctx.fill();
+      ctx.restore();
+    }
+
+    function drawSpiceLeaf(p) {
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rotation);
+      ctx.fillStyle = `rgba(212, 175, 55, ${p.alpha * 0.55})`;
+      ctx.beginPath();
+      ctx.ellipse(0, 0, p.size * 2.2, p.size * 0.8, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, width, height);
+
+      for (let i = 0; i < particles.length; i++) {
+        const p = particles[i];
+        p.y -= p.speedY;
+        p.x += Math.sin(p.y * 0.015) * 0.5 + p.speedX;
+        p.rotation += p.rotationSpeed;
+        p.alpha += Math.sin(p.y * 0.03) * p.pulseSpeed;
+
+        if (p.alpha < 0.15) p.alpha = 0.15;
+        if (p.alpha > 0.85) p.alpha = 0.85;
+
+        if (p.y < -20) {
+          p.y = height + 20;
+          p.x = Math.random() * width;
+        }
+
+        if (p.type === 'spark') {
+          drawSpark(p);
+        } else if (p.type === 'ember') {
+          drawEmberPebble(p);
+        } else {
+          drawSpiceLeaf(p);
+        }
+      }
+
+      requestAnimationFrame(animate);
+    }
+
+    animate();
+  }
+
+  initEmberParticles();
+
+  // ==========================================
+  // 🔥 ARKA PLAN FOTOĞRAFINDAKİ ALEVLERİ DALGALANDIRAN GERÇEK SVG FİLTRESİ
+  // ==========================================
+  if (!document.getElementById('fireWaveFilterSvg')) {
+    const svgNs = 'http://www.w3.org/2000/svg';
+    const svg = document.createElementNS(svgNs, 'svg');
+    svg.id = 'fireWaveFilterSvg';
+    svg.setAttribute('style', 'position:absolute; width:0; height:0; overflow:hidden; pointer-events:none;');
+    
+    const filter = document.createElementNS(svgNs, 'filter');
+    filter.id = 'fireWaveFilter';
+    
+    const feTurbulence = document.createElementNS(svgNs, 'feTurbulence');
+    feTurbulence.setAttribute('type', 'fractalNoise');
+    feTurbulence.setAttribute('baseFrequency', '0.012 0.022');
+    feTurbulence.setAttribute('numOctaves', '3');
+    feTurbulence.setAttribute('result', 'noise');
+    
+    const animate = document.createElementNS(svgNs, 'animate');
+    animate.setAttribute('attributeName', 'baseFrequency');
+    animate.setAttribute('dur', '4s');
+    animate.setAttribute('values', '0.01 0.02;0.022 0.045;0.01 0.02');
+    animate.setAttribute('repeatCount', 'indefinite');
+    feTurbulence.appendChild(animate);
+    
+    const feDisplacementMap = document.createElementNS(svgNs, 'feDisplacementMap');
+    feDisplacementMap.setAttribute('in', 'SourceGraphic');
+    feDisplacementMap.setAttribute('in2', 'noise');
+    feDisplacementMap.setAttribute('scale', '25');
+    feDisplacementMap.setAttribute('xChannelSelector', 'R');
+    feDisplacementMap.setAttribute('yChannelSelector', 'G');
+    
+    filter.appendChild(feTurbulence);
+    filter.appendChild(feDisplacementMap);
+    svg.appendChild(filter);
+    document.body.appendChild(svg);
+  }
 });
