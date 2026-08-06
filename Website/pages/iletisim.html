@@ -29,6 +29,11 @@
   <link rel="stylesheet" href="../public/css/style.css">
 </head>
 <body>
+    <video id="globalBgVideo" autoplay loop muted playsinline class="global-bg-video">
+        <source src="../public/images/video.mp4" type="video/mp4">
+        <source src="../public/images/bg-video.mp4" type="video/mp4">
+        <source src="public/images/video.mp4" type="video/mp4">
+    </video>
 
   <!-- Header -->
   <header class="main-header">
@@ -39,10 +44,10 @@
           <span class="brand-title">Lezzet Mührü</span>
           <span class="brand-subtitle">1932'den Beri</span>
         </div>
-      </div>
-      <div class="header-status-wrapper">
+        <div class="header-status-wrapper">
           <div class="header-divider"></div>
           <div class="live-status-badge"></div>
+        </div>
       </div>
        <button class="hamburger-btn" id="hamburgerBtn" aria-label="Menüyü Aç/Kapat">
               <i class="fa-solid fa-bars"></i>
@@ -104,7 +109,7 @@
                 <div class="text-box">
                   <strong>Çalışma Saatleri</strong>
                   <span>Pazartesi - Perşembe: 10:00 - 22:00</span>
-                  <span>Cuma - Cumartesi: 11:00 - 23:00 (Pazar Kapalı)</span>
+                  <span>Cuma - Cumartesi: 10:00 - 23:00 (Pazar Kapalı)</span>
                 </div>
               </li>
             </ul>
@@ -148,7 +153,7 @@
                             type="text"
                             id="contactName"
                             name="name"
-                            placeholder="Örn: Ahmet Demir"
+                            placeholder="Adınızı ve soyadınızı giriniz"
                             required
                             minlength="3"
                             maxlength="50"
@@ -164,7 +169,7 @@
                             type="email"
                             id="contactEmail"
                             name="email"
-                            placeholder="Örn: ahmet@example.com"
+                            placeholder="ornek@eposta.com"
                             required
                             title="Lütfen geçerli bir e-posta giriniz.">
                         </div>
@@ -178,7 +183,7 @@
                             type="text"
                             id="contactSubject"
                             name="subject"
-                            placeholder="Örn: Rezervasyon / Özel Etkinlik / Öneri"
+                            placeholder="Mesaj konusunu belirtiniz"
                             required
                             minlength="3"
                             maxlength="100">
@@ -193,7 +198,7 @@
                             id="contactMessage"
                             name="message"
                             rows="5"
-                            placeholder="Notunuzu veya sorunuzu buraya yazabilirsiniz..."
+                            placeholder="Görüş, istek veya sorunuzu buraya yazabilirsiniz..."
                             required
                             minlength="10"
                             maxlength="500"></textarea>

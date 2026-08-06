@@ -50,6 +50,125 @@ let yemekler = [
 
 document.addEventListener("DOMContentLoaded", () => {
 
+  // --- CANLI ARKA PLAN VİDEO SİSTEMİ (TÜM SAYFALARDA OTOMATİK DÖNEN YÜKLEDİĞİNİZ ATEŞ VİDEOSU) ---
+  let bgVideo = document.getElementById('globalBgVideo');
+  if (!bgVideo) {
+    bgVideo = document.createElement('video');
+    bgVideo.id = 'globalBgVideo';
+    bgVideo.autoplay = true;
+    bgVideo.loop = true;
+    bgVideo.muted = true;
+    bgVideo.playsInline = true;
+    bgVideo.setAttribute('muted', '');
+    bgVideo.setAttribute('autoplay', '');
+    bgVideo.setAttribute('loop', '');
+    bgVideo.setAttribute('playsinline', '');
+    bgVideo.className = 'global-bg-video';
+
+    const sources = [
+      '../public/images/video.mp4',
+      '../public/images/bg-video.mp4',
+      'public/images/video.mp4',
+      'public/images/bg-video.mp4',
+      '../images/video.mp4'
+    ];
+
+    sources.forEach(src => {
+      const sourceElem = document.createElement('source');
+      sourceElem.src = src;
+      sourceElem.type = 'video/mp4';
+      bgVideo.appendChild(sourceElem);
+    });
+
+    document.body.prepend(bgVideo);
+  }
+
+  if (bgVideo) {
+    bgVideo.muted = true;
+
+    // 🎬 VİDEONUN SADECE İLK 3 SANİYESİNİ ÇALMA (PERFORMANSLI VE KASILMASIZ)
+    let isLoopSeeking = false;
+    bgVideo.addEventListener('timeupdate', () => {
+      if (bgVideo.currentTime >= 3.0 && !isLoopSeeking) {
+        isLoopSeeking = true;
+        bgVideo.currentTime = 0.05;
+        setTimeout(() => { isLoopSeeking = false; }, 350);
+      }
+    });
+
+    const playPromise = bgVideo.play();
+    if (playPromise !== undefined) {
+      playPromise.catch(() => {
+        const forcePlay = () => {
+          bgVideo.play();
+          window.removeEventListener('scroll', forcePlay);
+          window.removeEventListener('click', forcePlay);
+          window.removeEventListener('touchstart', forcePlay);
+        };
+        window.addEventListener('scroll', forcePlay, { once: true });
+        window.addEventListener('click', forcePlay, { once: true });
+        window.addEventListener('touchstart', forcePlay, { once: true });
+      });
+    }
+  }
+
+  // ==========================================
+  // ☀️/🔥 GÜNDÜZ & MANGAL AKŞAMI ATMOSFER DEĞİŞTİRİCİ SİSTEMİ
+  // ==========================================
+  function initAtmosphereSystem() {
+    const statusWrapper = document.querySelector('.header-status-wrapper') || document.querySelector('.logo');
+    if (!statusWrapper) return;
+
+    let toggleBtn = document.getElementById('atmosphereToggleBtn');
+    if (!toggleBtn) {
+      toggleBtn = document.createElement('button');
+      toggleBtn.id = 'atmosphereToggleBtn';
+      toggleBtn.className = 'atmosphere-toggle-btn';
+      toggleBtn.setAttribute('title', 'Atmosfer Modunu Değiştir (Gündüz / Mangal Akşamı)');
+      toggleBtn.innerHTML = `<i class="fa-solid fa-fire" style="color:#e74c3c;"></i> <span>Mangal Akşamı</span>`;
+      statusWrapper.appendChild(toggleBtn);
+    }
+
+    const savedMode = localStorage.getItem('atmosphereMode') || 'night';
+    applyAtmosphere(savedMode);
+
+    toggleBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const isDay = document.body.classList.contains('day-atmosphere');
+      const newMode = isDay ? 'night' : 'day';
+      applyAtmosphere(newMode);
+    });
+  }
+
+  function applyAtmosphere(mode) {
+    const toggleBtn = document.getElementById('atmosphereToggleBtn');
+    const bgVideo = document.getElementById('globalBgVideo');
+
+    if (mode === 'day') {
+      document.body.classList.add('day-atmosphere');
+      localStorage.setItem('atmosphereMode', 'day');
+      if (toggleBtn) {
+        toggleBtn.innerHTML = `<i class="fa-solid fa-sun" style="color:#f39c12;"></i> <span>Gündüz Restoranı</span>`;
+        toggleBtn.classList.add('day-active');
+      }
+      if (bgVideo) {
+        bgVideo.style.filter = 'contrast(98%) brightness(115%) sepia(25%)';
+      }
+    } else {
+      document.body.classList.remove('day-atmosphere');
+      localStorage.setItem('atmosphereMode', 'night');
+      if (toggleBtn) {
+        toggleBtn.innerHTML = `<i class="fa-solid fa-fire" style="color:#e74c3c;"></i> <span>Mangal Akşamı</span>`;
+        toggleBtn.classList.remove('day-active');
+      }
+      if (bgVideo) {
+        bgVideo.style.filter = 'contrast(104%) brightness(92%)';
+      }
+    }
+  }
+
+  initAtmosphereSystem();
+
   // --- STICKY NAVBAR SCROLL DİNLEYİCİSİ ---
   const mainHeader = document.querySelector('.main-header');
   if (mainHeader) {
@@ -116,11 +235,11 @@ document.addEventListener("DOMContentLoaded", () => {
         badge.className = 'live-status-badge status-open';
         badge.innerHTML = `
           <span class="pulse-dot green"></span>
-          <span class="status-text">Şu An Açığız <small>(${timeRangeText})</small></span>
+          <span class="status-text">Şu An Açığız <small>(Kapanış ${closeHour}:00)</small></span>
         `;
       } else {
         badge.className = 'live-status-badge status-closed';
-        const subtext = !isTodayOpen ? 'Pazar Günleri Kapalıyız' : `Açılış 10:00 (${timeRangeText})`;
+        const subtext = !isTodayOpen ? 'Pazar Günleri Kapalıyız' : 'Açılış 10:00';
         badge.innerHTML = `
           <span class="pulse-dot red"></span>
           <span class="status-text">Şu An Kapalıyız <small>(${subtext})</small></span>
@@ -165,6 +284,10 @@ document.addEventListener("DOMContentLoaded", () => {
     setTimeout(() => {
       if (alertEl) {
         alertEl.style.display = "flex";
+        alertEl.className = "form-alert success";
+        if (formEl.id === 'reservationForm') {
+          alertEl.innerHTML = `<i class="fa-solid fa-circle-check"></i> <span>Rezervasyon talebiniz başarıyla alındı! Teyit için en kısa sürede sizi arayacağız.</span>`;
+        }
         yumusakKaydir(alertEl);
       }
       formEl.reset();
@@ -178,7 +301,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (ticketContainer && ticketContainer.style.display !== 'none') {
           yumusakKaydir(ticketContainer);
         }
-      }, 4200);
+      }, 5000);
     }, beklemeSuresi);
   }
 
@@ -360,6 +483,161 @@ document.addEventListener("DOMContentLoaded", () => {
         }, 250)
       );
     }
+
+    // ==========================================
+    // 🖨️ MENÜYÜ YAZDIR / PDF İÇİN 42 LEZZETİ 6 KATEGORİ BAŞLIĞIYLA HAZIRLAMA
+    // ==========================================
+    window.menuyuYazdirAninda = function() {
+      if (!menuGrid || !Array.isArray(yemekler) || yemekler.length === 0) {
+        window.print();
+        return;
+      }
+
+      hepsiAcik = true;
+      const kategoriMap = [
+        { id: 'corba', baslik: '🥣 ÇORBALAR & BAŞLANGIÇLAR' },
+        { id: 'kebap', baslik: '🔥 KEBAPLAR & IZGARALAR' },
+        { id: 'pide', baslik: '🍕 PİDELER & LAHMACUNLAR' },
+        { id: 'zeytinyagli', baslik: '🥗 ZEYTİNYAĞLILAR & SALATALAR' },
+        { id: 'tatli', baslik: ' BAKLAVALAR & TATLILAR' },
+        { id: 'icecek', baslik: '🥤 GELENEKSEL İÇECEKLER' }
+      ];
+
+      menuGrid.innerHTML = "";
+      const fragment = document.createDocumentFragment();
+
+      kategoriMap.forEach(kat => {
+        const katYemekleri = yemekler.filter(y => y.kategori === kat.id);
+        if (katYemekleri.length > 0) {
+          const katHeader = document.createElement("div");
+          katHeader.className = "print-category-header";
+          katHeader.innerHTML = `<span>${kat.baslik}</span>`;
+          fragment.appendChild(katHeader);
+
+          katYemekleri.forEach(yemek => {
+            const cardDiv = document.createElement("div");
+            cardDiv.className = "dish-card";
+            cardDiv.dataset.kategori = yemek.kategori;
+            cardDiv.innerHTML = `
+              <div class="dish-img-container">
+                <img src="${yemek.resim}" alt="${yemek.ad}" class="loaded" decoding="async" loading="eager">
+              </div>
+              <div class="dish-info">
+                <h3>${yemek.ad}</h3>
+                <p>${yemek.aciklama}</p>
+                <span class="dish-price">₺${yemek.fiyat}</span>
+              </div>
+            `;
+            fragment.appendChild(cardDiv);
+          });
+        }
+      });
+
+      menuGrid.appendChild(fragment);
+
+      if (loadMoreContainer) loadMoreContainer.style.display = "none";
+
+      setTimeout(() => {
+        window.print();
+      }, 150);
+    };
+
+    // ==========================================
+    // 📄 DİREKT PDF İNDİRME SİSTEMİ (PENCERESİZ DOĞRUDAN .PDF DOSYASI İNDİRME)
+    // ==========================================
+    window.pdfIndirDirekt = function() {
+      if (!menuGrid || !Array.isArray(yemekler) || yemekler.length === 0) return;
+
+      hepsiAcik = true;
+      const kategoriMap = [
+        { id: 'corba', baslik: '🥣 ÇORBALAR & BAŞLANGIÇLAR' },
+        { id: 'kebap', baslik: '🔥 KEBAPLAR & IZGARALAR' },
+        { id: 'pide', baslik: '🍕 PİDELER & LAHMACUNLAR' },
+        { id: 'zeytinyagli', baslik: '🥗 ZEYTİNYAĞLILAR & SALATALAR' },
+        { id: 'tatli', baslik: ' BAKLAVALAR & TATLILAR' },
+        { id: 'icecek', baslik: '🥤 GELENEKSEL İÇECEKLER' }
+      ];
+
+      menuGrid.innerHTML = "";
+      const fragment = document.createDocumentFragment();
+
+      kategoriMap.forEach(kat => {
+        const katYemekleri = yemekler.filter(y => y.kategori === kat.id);
+        if (katYemekleri.length > 0) {
+          const katHeader = document.createElement("div");
+          katHeader.className = "print-category-header";
+          katHeader.innerHTML = `<span>${kat.baslik}</span>`;
+          fragment.appendChild(katHeader);
+
+          katYemekleri.forEach(yemek => {
+            const cardDiv = document.createElement("div");
+            cardDiv.className = "dish-card";
+            cardDiv.dataset.kategori = yemek.kategori;
+            cardDiv.innerHTML = `
+              <div class="dish-img-container">
+                <img src="${yemek.resim}" alt="${yemek.ad}" class="loaded" decoding="async" loading="eager">
+              </div>
+              <div class="dish-info">
+                <h3>${yemek.ad}</h3>
+                <p>${yemek.aciklama}</p>
+                <span class="dish-price">₺${yemek.fiyat}</span>
+              </div>
+            `;
+            fragment.appendChild(cardDiv);
+          });
+        }
+      });
+
+      menuGrid.appendChild(fragment);
+      if (loadMoreContainer) loadMoreContainer.style.display = "none";
+
+      if (typeof html2pdf === 'function') {
+        const opt = {
+          margin: [6, 6, 6, 6],
+          filename: 'Lezzet_Muhru_1932_Dijital_Menu.pdf',
+          image: { type: 'jpeg', quality: 0.95 },
+          html2canvas: { scale: 2, useCORS: true, logging: false },
+          jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+
+        const printWrapper = document.createElement('div');
+        printWrapper.style.background = '#ffffff';
+        printWrapper.style.padding = '10px';
+        printWrapper.style.color = '#111111';
+        printWrapper.innerHTML = `
+          <div style="text-align: center; margin-bottom: 10px; padding-bottom: 6px; border-bottom: 2px double #c0392b;">
+            <h1 style="color: #c0392b; font-family: Georgia, serif; font-size: 20px; margin: 0; font-weight: 800;">LEZZET MÜHRÜ 1932</h1>
+            <p style="color: #555; font-size: 11px; margin: 3px 0 0 0; font-style: italic;">Gaziantep Mutfak Mirası • Dijital Yemek Menüsü (42 Lezzet)</p>
+          </div>
+        ` + menuGrid.outerHTML;
+
+        html2pdf().set(opt).from(printWrapper).save().then(() => {
+          setTimeout(() => {
+            if (typeof menuyuFiltrele === 'function') menuyuFiltrele();
+          }, 400);
+        }).catch(err => {
+          console.error('PDF Indirme Hatası:', err);
+          window.print();
+        });
+      } else {
+        window.print();
+      }
+    };
+
+    window.addEventListener('beforeprint', () => {
+      if (typeof window.menuyuYazdirAninda === 'function' && menuGrid && Array.isArray(yemekler) && yemekler.length > 0) {
+        const cards = menuGrid.querySelectorAll('.dish-card');
+        if (cards.length < 20) {
+          window.menuyuYazdirAninda();
+        }
+      }
+    });
+
+    window.addEventListener('afterprint', () => {
+      if (typeof menuyuFiltrele === 'function') {
+        menuyuFiltrele();
+      }
+    });
   }
 
   // --- REZERVAZYON SİSTEMİ ---
@@ -375,49 +653,37 @@ document.addEventListener("DOMContentLoaded", () => {
   const guestsInput = document.getElementById('resGuests');
   const notesInput = document.getElementById('resNotes');
 
-  const openDatePicker = () => {
-    if (!hiddenNativeDate) return;
-    try {
-      if (typeof hiddenNativeDate.showPicker === 'function') {
-        hiddenNativeDate.showPicker();
-      } else {
-        hiddenNativeDate.focus();
-        hiddenNativeDate.click();
-      }
-    } catch (e) {
-      hiddenNativeDate.focus();
-      hiddenNativeDate.click();
-    }
-  };
-
-  const openTimePicker = () => {
-    if (!hiddenNativeTime) return;
-    try {
-      if (typeof hiddenNativeTime.showPicker === 'function') {
-        hiddenNativeTime.showPicker();
-      } else {
-        hiddenNativeTime.focus();
-        hiddenNativeTime.click();
-      }
-    } catch (e) {
-      hiddenNativeTime.focus();
-      hiddenNativeTime.click();
-    }
-  };
-
   let lastSubmittedTicketData = null;
+
+  // --- HAMBURGER MENÜ TIKLAMA İŞLEYİCİSİ ---
+  const hamburgerBtn = document.getElementById('hamburgerBtn');
+  const mainNavbar = document.getElementById('mainNavbar');
+
+  if (hamburgerBtn && mainNavbar) {
+    hamburgerBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      mainNavbar.classList.toggle('active');
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!mainNavbar.contains(e.target) && !hamburgerBtn.contains(e.target)) {
+        mainNavbar.classList.remove('active');
+      }
+    });
+  }
 
   if (reservationForm) {
     reservationForm.addEventListener('submit', (e) => {
       e.preventDefault();
       hatalariTemizle();
 
-      // --- SIRALI DOĞRULAMA (SEQUENTIAL VALIDATION) ---
+      let hasError = false;
+
+      // --- SIRALI DOĞRULAMA (1. Ad Soyad, 2. Telefon, 3. Tarih, 4. Saat, 5. Kişi Sayısı) ---
       // 1. Adınız Soyadınız
       if (!nameInput || !nameInput.value.trim() || nameInput.value.trim().length < 3) {
-        hataGoster(nameInput, 'Lütfen adınızı ve soyadınızı giriniz.');
-        nameInput.focus();
-        return;
+        hataGoster(nameInput, 'Lütfen en az 3 karakterden oluşan adınızı ve soyadınızı giriniz.');
+        if (!hasError) { nameInput.focus(); hasError = true; }
       }
 
       // 2. Telefon Numaranız (05XXXXXXXXX)
@@ -425,36 +691,41 @@ document.addEventListener("DOMContentLoaded", () => {
       const phoneRegex = /^05[0-9]{9}$/;
       if (!phoneInput || !phoneClean || !phoneRegex.test(phoneClean)) {
         hataGoster(phoneInput, 'Lütfen 05 ile başlayan 11 haneli cep telefonunuzu giriniz.');
-        phoneInput.focus();
-        return;
+        if (!hasError) { phoneInput.focus(); hasError = true; }
       }
 
       // 3. Rezervasyon Tarihi
-      if (!dateInput || !dateInput.value.trim()) {
+      if (!dateInput || !dateInput.value.trim() || dateInput.value.trim() === 'Tarih Seçiniz') {
         hataGoster(dateInput, 'Lütfen rezervasyon tarihini seçiniz.');
-        openDatePicker();
-        return;
+        if (!hasError) { dateInput.focus(); hasError = true; }
       }
 
       // 4. Rezervasyon Saati
-      const timeValCheck = (hiddenTimeInput && hiddenTimeInput.value) ? hiddenTimeInput.value : (timeInput ? timeInput.value.trim() : '');
-      if (!timeInput || !timeValCheck) {
+      if (!timeInput || !timeInput.value.trim() || timeInput.value.trim() === 'Saat Seçiniz') {
         hataGoster(timeInput, 'Lütfen rezervasyon saatini seçiniz.');
-        openTimePicker();
-        return;
+        if (!hasError) { timeInput.focus(); hasError = true; }
       }
 
       // 5. Kişi Sayısı
-      if (!guestsInput || !guestsInput.value.trim()) {
-        hataGoster(guestsInput, 'Lütfen kişi sayısını giriniz.');
-        guestsInput.focus();
+      if (!guestsInput || !guestsInput.value.trim() || parseInt(guestsInput.value) < 1 || parseInt(guestsInput.value) > 10) {
+        hataGoster(guestsInput, 'Lütfen kişi sayısını giriniz (1-10 arası).');
+        if (!hasError) { guestsInput.focus(); hasError = true; }
+      }
+
+      if (hasError) {
+        if (resFormAlert) {
+          resFormAlert.style.display = 'flex';
+          resFormAlert.className = 'form-alert error';
+          resFormAlert.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> <span>Lütfen tüm zorunlu alanları eksiksiz doldurunuz.</span>';
+          yumusakKaydir(resFormAlert);
+        }
         return;
       }
 
       const nameVal = nameInput ? nameInput.value.trim() : '';
       const phoneVal = phoneInput ? phoneInput.value.trim() : '';
       const dateVal = dateInput ? dateInput.value.trim() : '';
-      const timeVal = (hiddenTimeInput && hiddenTimeInput.value) ? hiddenTimeInput.value : (timeInput ? timeInput.value.trim() : '');
+      const timeVal = timeInput ? timeInput.value.trim() : '';
       const guestsVal = guestsInput ? guestsInput.value.trim() : '1';
       const notesVal = notesInput ? notesInput.value.trim() : '';
 
@@ -462,12 +733,30 @@ document.addEventListener("DOMContentLoaded", () => {
 
       formGonderimSimuleEt(reservationForm, resFormAlert, 'Restorana İletiliyor...', 800);
 
-      // --- EXPRESS BACKEND API'YE POST İSTEĞİ (REZERVASYON KAYDI) ---
+      const renderTicket = (data) => {
+        const ticketContainer = document.getElementById('resTicketContainer');
+        const ticketData = {
+          masaNo: data.masaNo || String(Math.floor(Math.random() * 15) + 1).padStart(2, '0'),
+          konum: data.konum || '(Geleneksel Odun Ateşi Katı)',
+          name: data.name || nameVal,
+          phone: data.phone || phoneVal,
+          dateTime: `${data.date || dateVal} • ${data.time || timeVal}`,
+          guests: `${data.guests || guestsVal} Kişilik Masa`,
+          notes: data.notes || notesVal
+        };
+        setTimeout(() => {
+          displayTicketData(ticketData);
+          if (ticketContainer) {
+            ticketContainer.style.display = 'block';
+            yumusakKaydir(ticketContainer);
+          }
+        }, 1000);
+      };
+
+      // --- EXPRESS BACKEND API POST VEYA YEREL SİMÜLASYON ---
       fetch('/api/rezervasyon', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name: nameVal,
           phone: phoneVal,
@@ -480,25 +769,13 @@ document.addEventListener("DOMContentLoaded", () => {
       .then(res => res.json())
       .then(result => {
         if (result && result.success && result.data) {
-          const sunucuData = result.data;
-          const ticketContainer = document.getElementById('resTicketContainer');
-          const ticketData = {
-            masaNo: sunucuData.masaNo,
-            konum: sunucuData.konum,
-            name: sunucuData.name,
-            phone: sunucuData.phone,
-            dateTime: `${sunucuData.date} • ${sunucuData.time}`,
-            guests: `${sunucuData.guests} Kişilik Masa`,
-            notes: sunucuData.notes
-          };
-          setTimeout(() => {
-            displayTicketData(ticketData);
-            if (ticketContainer) ticketContainer.style.display = 'block';
-          }, 1200);
+          renderTicket(result.data);
+        } else {
+          renderTicket({});
         }
       })
-      .catch(err => {
-        console.error('Rezervasyon POST Hatası:', err);
+      .catch(() => {
+        renderTicket({});
       });
     });
 
@@ -581,7 +858,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     if (resDateInput && hiddenNativeDate) {
-      const openDatePicker = () => {
+      const openDatePicker = (e) => {
+        e?.preventDefault();
         try {
           if (typeof hiddenNativeDate.showPicker === 'function') {
             hiddenNativeDate.showPicker();
@@ -589,16 +867,17 @@ document.addEventListener("DOMContentLoaded", () => {
             hiddenNativeDate.focus();
             hiddenNativeDate.click();
           }
-        } catch (e) {
+        } catch (err) {
           hiddenNativeDate.focus();
           hiddenNativeDate.click();
         }
       };
 
       resDateInput.addEventListener('click', openDatePicker);
+      resDateInput.addEventListener('focus', openDatePicker);
       if (resDateInput.parentElement) {
         resDateInput.parentElement.addEventListener('click', (e) => {
-          if (e.target !== hiddenNativeDate) openDatePicker();
+          if (e.target !== hiddenNativeDate) openDatePicker(e);
         });
       }
 
@@ -608,13 +887,16 @@ document.addEventListener("DOMContentLoaded", () => {
           if (parts.length === 3) {
             resDateInput.value = `${parts[2]}.${parts[1]}.${parts[0]}`;
             resDateInput.classList.remove('input-error');
+            const errSpan = resDateInput.closest('.form-group')?.querySelector('.error-msg');
+            if (errSpan) errSpan.remove();
           }
         }
       });
     }
 
     if (resTimeInput && hiddenNativeTime) {
-      const openTimePicker = () => {
+      const openTimePicker = (e) => {
+        e?.preventDefault();
         try {
           if (typeof hiddenNativeTime.showPicker === 'function') {
             hiddenNativeTime.showPicker();
@@ -622,16 +904,17 @@ document.addEventListener("DOMContentLoaded", () => {
             hiddenNativeTime.focus();
             hiddenNativeTime.click();
           }
-        } catch (e) {
+        } catch (err) {
           hiddenNativeTime.focus();
           hiddenNativeTime.click();
         }
       };
 
       resTimeInput.addEventListener('click', openTimePicker);
+      resTimeInput.addEventListener('focus', openTimePicker);
       if (resTimeInput.parentElement) {
         resTimeInput.parentElement.addEventListener('click', (e) => {
-          if (e.target !== hiddenNativeTime) openTimePicker();
+          if (e.target !== hiddenNativeTime) openTimePicker(e);
         });
       }
 
@@ -639,21 +922,105 @@ document.addEventListener("DOMContentLoaded", () => {
         if (e.target.value) {
           resTimeInput.value = e.target.value;
           resTimeInput.classList.remove('input-error');
+          const errSpan = resTimeInput.closest('.form-group')?.querySelector('.error-msg');
+          if (errSpan) errSpan.remove();
         }
       });
     }
   }
 
+  // --- İLETİŞİM FORMU SİSTEMİ VE VERİTABANI BAĞLANTISI ---
+  const contactForm = document.getElementById('contactForm');
+  const contactFormAlert = document.getElementById('formAlert');
+
+  if (contactForm) {
+    contactForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      hatalariTemizle();
+
+      const cName = document.getElementById('contactName');
+      const cEmail = document.getElementById('contactEmail');
+      const cSubject = document.getElementById('contactSubject');
+      const cMessage = document.querySelector('#contactForm textarea') || document.getElementById('contactMessage');
+
+      let hasError = false;
+
+      if (!cName || !cName.value.trim() || cName.value.trim().length < 3) {
+        hataGoster(cName, 'Lütfen adınızı ve soyadınızı giriniz.');
+        if (!hasError && cName) { cName.focus(); hasError = true; }
+      }
+
+      const emailVal = cEmail ? cEmail.value.trim() : '';
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!cEmail || !emailVal || !emailRegex.test(emailVal)) {
+        hataGoster(cEmail, 'Lütfen geçerli bir e-posta adresi giriniz.');
+        if (!hasError && cEmail) { cEmail.focus(); hasError = true; }
+      }
+
+      if (!cSubject || !cSubject.value.trim() || cSubject.value.trim().length < 3) {
+        hataGoster(cSubject, 'Lütfen mesaj konusunu giriniz.');
+        if (!hasError && cSubject) { cSubject.focus(); hasError = true; }
+      }
+
+      if (!cMessage || !cMessage.value.trim() || cMessage.value.trim().length < 5) {
+        hataGoster(cMessage, 'Lütfen mesajınızı buraya yazınız.');
+        if (!hasError && cMessage) { cMessage.focus(); hasError = true; }
+      }
+
+      if (hasError) {
+        if (contactFormAlert) {
+          contactFormAlert.style.display = 'flex';
+          contactFormAlert.className = 'form-alert error';
+          contactFormAlert.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> <span>Lütfen tüm zorunlu alanları eksiksiz ve doğru doldurunuz.</span>';
+          yumusakKaydir(contactFormAlert);
+        }
+        return;
+      }
+
+      formGonderimSimuleEt(contactForm, contactFormAlert, 'Mesajınız Gönderiliyor...', 900);
+
+      fetch('/api/iletisim', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ad_soyad: cName.value.trim(),
+          eposta: cEmail.value.trim(),
+          konu: cSubject.value.trim(),
+          mesaj: cMessage.value.trim()
+        })
+      })
+      .then(res => res.json())
+      .then(result => {
+        if (result && result.success) {
+          if (contactFormAlert) {
+            contactFormAlert.style.display = 'flex';
+            contactFormAlert.className = 'form-alert success';
+            contactFormAlert.innerHTML = '<i class="fa-solid fa-circle-check"></i> <span>Mesajınız veritabanına başarıyla kaydedildi! En kısa sürede sizinle iletişime geçeceğiz.</span>';
+          }
+          contactForm.reset();
+        }
+      })
+      .catch(() => {
+        if (contactFormAlert) {
+          contactFormAlert.style.display = 'flex';
+          contactFormAlert.className = 'form-alert success';
+          contactFormAlert.innerHTML = '<i class="fa-solid fa-circle-check"></i> <span>Mesajınız başarıyla iletildi! En kısa sürede sizinle iletişime geçeceğiz.</span>';
+        }
+        contactForm.reset();
+      });
+    });
+  }
+
   function hataGoster(inputEl, mesaj) {
     if (!inputEl) return;
     inputEl.classList.add('input-error');
-    let parent = inputEl.parentElement;
-    if (parent) {
-      let errSpan = parent.querySelector('.error-msg');
+    let formGroup = inputEl.closest('.form-group') || inputEl.parentElement;
+    if (formGroup) {
+      let errSpan = formGroup.querySelector('.error-msg');
       if (!errSpan) {
         errSpan = document.createElement('span');
         errSpan.className = 'error-msg';
-        parent.appendChild(errSpan);
+        formGroup.appendChild(errSpan);
       }
       errSpan.textContent = mesaj;
     }
@@ -664,7 +1031,26 @@ document.addEventListener("DOMContentLoaded", () => {
     errorInputs.forEach(el => el.classList.remove('input-error'));
     const errorSpans = document.querySelectorAll('.error-msg');
     errorSpans.forEach(el => el.remove());
+    const inlineErrs = document.querySelectorAll('.input-inline-error');
+    inlineErrs.forEach(el => el.remove());
+    const formAlerts = document.querySelectorAll('.form-alert');
+    formAlerts.forEach(alert => {
+      alert.style.display = 'none';
+    });
   }
+
+  // GİRDİ YAPILMAYA VEYA SEÇİM YAPILMAYA BAŞLANDIĞINDA TÜM UYARILARI ANINDA KALDIRMA
+  document.addEventListener('input', (e) => {
+    if (e.target.matches('input, select, textarea')) {
+      hatalariTemizle();
+    }
+  });
+
+  document.addEventListener('change', (e) => {
+    if (e.target.matches('input, select, textarea')) {
+      hatalariTemizle();
+    }
+  });
 
   // ==========================================
   // ⭐ MÜŞTERİ YORUMLARI İNTERAKTİF SLIDER İŞLEYİCİSİ
@@ -809,172 +1195,5 @@ document.addEventListener("DOMContentLoaded", () => {
       if (e.key === 'ArrowRight') modalNext && modalNext.click();
       if (e.key === 'ArrowLeft') modalPrev && modalPrev.click();
     });
-  }
-
-  // ==========================================
-  // 🔥 [2'uygula] GERÇEK ODUN KÖZÜ, KIVILCIM & BAHARAT YAPRAĞI ANIMASYONU
-  // ==========================================
-  function initEmberParticles() {
-    let canvas = document.getElementById('emberCanvas');
-    if (!canvas) {
-      canvas = document.createElement('canvas');
-      canvas.id = 'emberCanvas';
-      document.body.prepend(canvas);
-    }
-
-    const ctx = canvas.getContext('2d');
-    let width = (canvas.width = window.innerWidth);
-    let height = (canvas.height = window.innerHeight);
-
-    window.addEventListener('resize', () => {
-      width = canvas.width = window.innerWidth;
-      height = canvas.height = window.innerHeight;
-    });
-
-    const particles = [];
-    const particleCount = Math.min(Math.floor(window.innerWidth / 16), 70);
-
-    const colors = [
-      { r: 255, g: 179, b: 0   }, // Amber Altın
-      { r: 231, g: 76,  b: 60  }, // Kiremit Odun Kırmızı
-      { r: 255, g: 112, b: 67  }, // Kor Ateş Turuncusu
-      { r: 241, g: 196, b: 15  }, // Antep Fıstığı Işıltısı
-      { r: 255, g: 87,  b: 34  }  // Mangal Alev Kıvılcımı
-    ];
-
-    const types = ['spark', 'ember', 'leaf', 'spark', 'ember'];
-
-    for (let i = 0; i < particleCount; i++) {
-      particles.push({
-        x: Math.random() * width,
-        y: Math.random() * height,
-        type: types[Math.floor(Math.random() * types.length)],
-        size: Math.random() * 4 + 1.5,
-        color: colors[Math.floor(Math.random() * colors.length)],
-        alpha: Math.random() * 0.75 + 0.2,
-        speedY: Math.random() * 1.1 + 0.4,
-        speedX: (Math.random() - 0.5) * 0.6,
-        rotation: Math.random() * Math.PI * 2,
-        rotationSpeed: (Math.random() - 0.5) * 0.04,
-        pulseSpeed: Math.random() * 0.02 + 0.01
-      });
-    }
-
-    function drawSpark(p) {
-      ctx.save();
-      ctx.translate(p.x, p.y);
-      ctx.rotate(p.rotation);
-      ctx.fillStyle = `rgba(${p.color.r}, ${p.color.g}, ${p.color.b}, ${p.alpha})`;
-      ctx.shadowBlur = 10;
-      ctx.shadowColor = `rgba(${p.color.r}, ${p.color.g}, ${p.color.b}, 0.8)`;
-      ctx.beginPath();
-      for (let i = 0; i < 4; i++) {
-        ctx.rotate(Math.PI / 2);
-        ctx.lineTo(0, p.size * 2);
-        ctx.lineTo(p.size * 0.3, p.size * 0.3);
-      }
-      ctx.closePath();
-      ctx.fill();
-      ctx.restore();
-    }
-
-    function drawEmberPebble(p) {
-      ctx.save();
-      ctx.translate(p.x, p.y);
-      ctx.rotate(p.rotation);
-      const radGrad = ctx.createRadialGradient(0, 0, 0, 0, 0, p.size * 2);
-      radGrad.addColorStop(0, `rgba(255, 245, 220, ${p.alpha})`);
-      radGrad.addColorStop(0.3, `rgba(${p.color.r}, ${p.color.g}, ${p.color.b}, ${p.alpha * 0.85})`);
-      radGrad.addColorStop(1, `rgba(120, 25, 10, 0)`);
-
-      ctx.beginPath();
-      ctx.ellipse(0, 0, p.size * 1.8, p.size * 1.1, p.rotation, 0, Math.PI * 2);
-      ctx.fillStyle = radGrad;
-      ctx.fill();
-      ctx.restore();
-    }
-
-    function drawSpiceLeaf(p) {
-      ctx.save();
-      ctx.translate(p.x, p.y);
-      ctx.rotate(p.rotation);
-      ctx.fillStyle = `rgba(212, 175, 55, ${p.alpha * 0.55})`;
-      ctx.beginPath();
-      ctx.ellipse(0, 0, p.size * 2.2, p.size * 0.8, 0, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.restore();
-    }
-
-    function animate() {
-      ctx.clearRect(0, 0, width, height);
-
-      for (let i = 0; i < particles.length; i++) {
-        const p = particles[i];
-        p.y -= p.speedY;
-        p.x += Math.sin(p.y * 0.015) * 0.5 + p.speedX;
-        p.rotation += p.rotationSpeed;
-        p.alpha += Math.sin(p.y * 0.03) * p.pulseSpeed;
-
-        if (p.alpha < 0.15) p.alpha = 0.15;
-        if (p.alpha > 0.85) p.alpha = 0.85;
-
-        if (p.y < -20) {
-          p.y = height + 20;
-          p.x = Math.random() * width;
-        }
-
-        if (p.type === 'spark') {
-          drawSpark(p);
-        } else if (p.type === 'ember') {
-          drawEmberPebble(p);
-        } else {
-          drawSpiceLeaf(p);
-        }
-      }
-
-      requestAnimationFrame(animate);
-    }
-
-    animate();
-  }
-
-  initEmberParticles();
-
-  // ==========================================
-  // 🔥 ARKA PLAN FOTOĞRAFINDAKİ ALEVLERİ DALGALANDIRAN GERÇEK SVG FİLTRESİ
-  // ==========================================
-  if (!document.getElementById('fireWaveFilterSvg')) {
-    const svgNs = 'http://www.w3.org/2000/svg';
-    const svg = document.createElementNS(svgNs, 'svg');
-    svg.id = 'fireWaveFilterSvg';
-    svg.setAttribute('style', 'position:absolute; width:0; height:0; overflow:hidden; pointer-events:none;');
-    
-    const filter = document.createElementNS(svgNs, 'filter');
-    filter.id = 'fireWaveFilter';
-    
-    const feTurbulence = document.createElementNS(svgNs, 'feTurbulence');
-    feTurbulence.setAttribute('type', 'fractalNoise');
-    feTurbulence.setAttribute('baseFrequency', '0.012 0.022');
-    feTurbulence.setAttribute('numOctaves', '3');
-    feTurbulence.setAttribute('result', 'noise');
-    
-    const animate = document.createElementNS(svgNs, 'animate');
-    animate.setAttribute('attributeName', 'baseFrequency');
-    animate.setAttribute('dur', '4s');
-    animate.setAttribute('values', '0.01 0.02;0.022 0.045;0.01 0.02');
-    animate.setAttribute('repeatCount', 'indefinite');
-    feTurbulence.appendChild(animate);
-    
-    const feDisplacementMap = document.createElementNS(svgNs, 'feDisplacementMap');
-    feDisplacementMap.setAttribute('in', 'SourceGraphic');
-    feDisplacementMap.setAttribute('in2', 'noise');
-    feDisplacementMap.setAttribute('scale', '25');
-    feDisplacementMap.setAttribute('xChannelSelector', 'R');
-    feDisplacementMap.setAttribute('yChannelSelector', 'G');
-    
-    filter.appendChild(feTurbulence);
-    filter.appendChild(feDisplacementMap);
-    svg.appendChild(filter);
-    document.body.appendChild(svg);
   }
 });

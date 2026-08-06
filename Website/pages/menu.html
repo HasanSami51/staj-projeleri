@@ -3,34 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lezzet Mührü 1932 | Gaziantep Geleneksel Menü & Izgara Çeşitleri</title>
+    <meta name="description" content="Lezzet Mührü 1932 Gaziantep menüsü: Meşhur Adana kebap, taş fırın pide, çıtır lahmacun, zeytinyağlılar, katmer ve 42 lezzet çeşidi. Online inceleyin ve PDF indirin.">
+    <meta name="keywords" content="Gaziantep menüsü, Lezzet Mührü 1932, Adana kebap, lahmacun, pide, künefe, zeytinyağlılar, dijital menü PDF">
+    <meta name="author" content="Lezzet Mührü 1932">
+    <meta name="theme-color" content="#1a252f">
+    
+    <!-- OpenGraph (WhatsApp, Instagram, Facebook) -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Lezzet Mührü 1932">
+    <meta property="og:title" content="Lezzet Mührü 1932 | Gaziantep Menüsü">
+    <meta property="og:description" content="Lezzet Mührü zengin menüsü: Adana kebap, taş fırın pide, Gaziantep lahmacunu ve geleneksel tatlılar.">
+    <meta property="og:image" content="../public/images/logo.png">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Lezzet Mührü 1932 | Gaziantep Menüsü">
+    <meta name="twitter:description" content="Lezzet Mührü zengin menüsü ve geleneksel Gaziantep ızgara çeşitleri.">
+    <meta name="twitter:image" content="../public/images/logo.png">
+    
+    <!-- 50% Dairesel Kesimli Gerçek Logo Favicon -->
+    <link rel="icon" type="image/png" href="../public/images/favicon-round.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="preload" as="image" href="../public/images/mercimek-corbasi.jpg" fetchpriority="high">
     <link rel="preload" as="image" href="../public/images/patlican-corbasi.jpg" fetchpriority="high">
-    <title>Lezzet Mührü 1932 - Gaziantep Menüsü</title>
-    <meta name="description" content="Lezzet Mührü zengin menüsü: Adana kebap, taş fırın pide, Gaziantep lahmacunu, çorbalar, katmer ve tatlılar.">
-    <meta name="theme-color" content="#1a252f">
-    
-    <!-- OpenGraph (WhatsApp, Instagram, Facebook) -->
-    <meta property="og:type" content="website">
-    <meta property="og:site_name" content="Lezzet Mührü 1932">
-    <meta property="og:title" content="Lezzet Mührü 1932 &#10; Gaziantep Menüsü">
-    <meta property="og:description" content="Lezzet Mührü zengin menüsü: Adana kebap, taş fırın pide, Gaziantep lahmacunu ve geleneksel tatlılar.">
-    <meta property="og:image" content="../public/images/logo.png">
-    
-    <!-- Twitter Card -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Lezzet Mührü 1932 &#10; Gaziantep Menüsü">
-    <meta name="twitter:description" content="Lezzet Mührü zengin menüsü ve geleneksel Gaziantep ızgara çeşitleri.">
-    <meta name="twitter:image" content="../public/images/logo.png">
-    
-    <!-- 50% Dairesel Kesimli Gerçek Logo Favicon -->
-    <link rel="icon" type="image/png" href="../public/images/favicon-round.png">
     <link rel="stylesheet" href="../public/css/style.css">
+
+    <!-- Structured Data JSON-LD Schema -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Menu",
+      "name": "Lezzet Mührü 1932 Gaziantep Menüsü",
+      "description": "42 Çeşit Geleneksel Gaziantep Lezzeti",
+      "hasMenuSection": [
+        { "@type": "MenuSection", "name": "Çorbalar & Başlangıçlar" },
+        { "@type": "MenuSection", "name": "Kebaplar & Izgaralar" },
+        { "@type": "MenuSection", "name": "Pideler & Lahmacunlar" },
+        { "@type": "MenuSection", "name": "Zeytinyağlılar & Salatalar" },
+        { "@type": "MenuSection", "name": "Baklavalar & Tatlılar" },
+        { "@type": "MenuSection", "name": "Geleneksel İçecekler" }
+      ]
+    }
+    </script>
 </head>
 <body>
+    <video id="globalBgVideo" autoplay loop muted playsinline class="global-bg-video">
+        <source src="../public/images/video.mp4" type="video/mp4">
+    </video>
     <header class="main-header">
         <div class="container header-container">
   <div class="logo">
@@ -39,10 +62,10 @@
          <span class="brand-title">Lezzet Mührü</span>
          <span class="brand-subtitle">1932'den Beri</span>
      </div>
-  </div>
-  <div class="header-status-wrapper">
-      <div class="header-divider"></div>
-      <div class="live-status-badge"></div>
+     <div class="header-status-wrapper">
+         <div class="header-divider"></div>
+         <div class="live-status-badge"></div>
+     </div>
   </div>
    <button class="hamburger-btn" id="hamburgerBtn" aria-label="Menüyü Aç/Kapat">
                <i class="fa-solid fa-bars"></i>
@@ -80,8 +103,8 @@
     <div class="container">
         <div class="search-container" style="margin-bottom: 25px; text-align:center; display: flex; justify-content: center; align-items: center; gap: 15px; flex-wrap: wrap;">
             <div style="position: relative; width: 100%; max-width:460px;">
-                <input type="text" id="menuSearchInput" placeholder="Lezzetlerde ara... (Örn: Adana, Künefe, Mercimek)" style="width: 100%; padding: 13px 20px 13px 45px; border-radius: 30px; border: 2px solid var(--primary-kiremit); font-size: 0.95rem; outline: none; transition: all 0.3s ease;">
-                <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 18px; top: 50%; transform: translateY(-50%); color: var(--primary-kiremit); font-size: 1.1rem;"></i>     
+                <input type="text" id="menuSearchInput" placeholder="Lezzetlerde ara... (Örn: Adana, Künefe, Mercimek)" style="width: 100%; padding: 13px 20px 13px 48px; border-radius: 30px; border: 1.5px solid #f39c12; font-size: 0.95rem; outline: none; transition: all 0.3s ease; background: rgba(20, 10, 5, 0.9); color: #ffffff;">
+                <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 18px; top: 50%; transform: translateY(-50%); color: #f39c12 !important; font-size: 1.15rem !important; z-index: 10 !important; pointer-events: none !important;"></i>     
             </div>
             <button type="button" id="btnPrintMenu" class="btn-print-menu" onclick="if(typeof window.menuyuYazdirAninda==='function'){window.menuyuYazdirAninda();}else{window.print();}" title="42 Lezzetin Tamamını Renkli PDF Olarak İndirin Veya Yazdırın">
                 <i class="fa-solid fa-print"></i> Menüyü Yazdır / PDF (42 Lezzet)
@@ -131,7 +154,7 @@
           <strong>Dijital Menü PDF</strong>
           <span>Telefonunuza indirmek için tıklayın</span>
         </div>
-        <a href="#" class="btn-service-action" onclick="alert('Dijital Menü PDF formatında indiriliyor...'); return false;">PDF İndir</a>
+        <a href="../public/pdf/Lezzet_Muhru_1932_Menu.pdf" download="Lezzet_Muhru_1932_Dijital_Menu.pdf" target="_blank" class="btn-service-action">PDF İndir</a>
       </div>
       <div class="service-box">
         <i class="fa-solid fa-phone-volume"></i>

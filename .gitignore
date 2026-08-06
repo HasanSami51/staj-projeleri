@@ -1,0 +1,21 @@
+# Node.js Bağımlılıkları
+node_modules/
+npm-debug.log*
+
+# Hassas Güvenlik ve Ayar Dosyaları
+.env
+.env.local
+.env.development
+.env.production
+
+# Veritabanı Dosyaları (Kişisel/Yerel Veriler)
+*.db
+*.sqlite
+*.sqlite3
+lezzet_muhru.db
+
+# Sistem ve IDE Dosyaları
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
