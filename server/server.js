@@ -9,6 +9,13 @@ const db = require('./db'); // SQLite Veritabanı Modülü
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// CORS Desteği (Farklı Portlardan veya Live Server Üzerinden Gelen Fetch İstekleri İçin)
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  next();
+});
+
 // JSON Gönderim Desteği (Body Parser)
 app.use(express.json());
 
@@ -43,6 +50,7 @@ app.get('/api/menu', (req, res) => {
       u.id, 
       u.ad, 
       k.slug AS kategori, 
+      k.ad AS kategoriAdi,
       u.fiyat, 
       u.aciklama, 
       u.resim, 

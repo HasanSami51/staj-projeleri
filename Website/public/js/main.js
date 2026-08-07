@@ -2,51 +2,8 @@
 // 🏛️ 1932 LEZZET MÜHRÜ - FULL-STACK MAIN.JS
 // ==========================================
 
-// --- YEMEK VERİLERİ (VARSAYILAN & API DİNAMİK YÜKLEME) ---
-let yemekler = [
-  { id: 35, ad: "Geleneksel Süzme Mercimek Çorbası", kategori: "corba", fiyat: 200, aciklama: "Taş değirmen mercimeği, taze tereyağı ve özel baharatlı kıtır ekmekler ile.", resim: "../public/images/mercimek-corbasi.webp", loading: "eager", oneCikan: false, sefinOnerisi: false, vejetaryen: true },
-  { id: 36, ad: "Köz Patlıcanlı Süt Çorbası", kategori: "corba", fiyat: 220, aciklama: "Odun ateşinde közlenmiş patlıcanların süt ve taze otlarla pişirilmesiyle hazırlanan 1930'lar klasiği.", resim: "../public/images/patlican-corbasi.webp", loading: "eager", oneCikan: false, sefinOnerisi: true, vejetaryen: true },
-  { id: 37, ad: "Mahluta Çorbası", kategori: "corba", fiyat: 210, aciklama: "Kırmızı mercimek, kişniş, kimyon ve zeytinyağında sotelenmiş soğan sosuyla Güneydoğu'nun kadim çorbası.", resim: "../public/images/mahluta.webp", loading: "eager", oneCikan: false, sefinOnerisi: false, vejetaryen: true },
-  { id: 38, ad: "Süzme Ezogelin Çorbası", kategori: "corba", fiyat: 200, aciklama: "İnce bulgur, pirinç ve domates salçasıyla harmanlanmış, nane yağlı geleneksel lezzet.", resim: "../public/images/ezogelin.webp", loading: "lazy", oneCikan: false, sefinOnerisi: false, vejetaryen: true },
-  { id: 39, ad: "Düğün Çorbası ", kategori: "corba", fiyat: 230, aciklama: "Yoğurt, yumurta sarısı ve un meyhanesiyle bağlanan, üzeri pul biberli kızgın tereyağlı süzme çorba.", resim: "../public/images/dugun-corbasi.jpg", loading: "lazy", oneCikan: false, sefinOnerisi: false, vejetaryen: false },
-  { id: 1, ad: "Meşhur Adana Kebap", kategori: "kebap", fiyat: 350, aciklama: "İnce ince zırhlanmış kıyma ve meşe kömürü ızgarasında leziz baharatlarla önünüzde", resim: "../public/images/Adana-Kebab.jpg", loading: "eager", oneCikan: true, sefinOnerisi: true, vejetaryen: false },
-  { id: 4, ad: "Geleneksel Urfa Kebap", kategori: "kebap", fiyat: 340, aciklama: "Zırh kıymasından acısız ızgara lezzet, közlenmiş domates ve biber eşliğinde", resim: "../public/images/urfa-kebap.jpg", loading: "lazy", oneCikan: false, sefinOnerisi: false, vejetaryen: false },
-  { id: 5, ad: "Sarma Beyti Kebap", kategori: "kebap", fiyat: 380, aciklama: "Özel lavaşa sarılı ızgara zırh kıyması, süzme yoğurt ve tereyağlı domates sosuyla", resim: "../public/images/beyti.jpg", loading: "lazy", oneCikan: false, sefinOnerisi: false, vejetaryen: false },
-  { id: 6, ad: "Ali Nazik Kebabı", kategori: "kebap", fiyat: 400, aciklama: "Közlenmiş patlıcanlı süzme yoğurt yatağında lokum gibi ızgara zırh kebabı", resim: "../public/images/alinazik.jpg", loading: "lazy", oneCikan: false, sefinOnerisi: false, vejetaryen: false },
-  { id: 7, ad: "Antep Fıstıklı Kebap", kategori: "kebap", fiyat: 390, aciklama: "Özel kıyma harcına harmanlanmış bol taze Antep fıstıklı ızgara kebap", resim: "../public/images/fistikli-kebap.jpg", loading: "lazy", oneCikan: false, sefinOnerisi: false, vejetaryen: false },
-  { id: 3, ad: "Kuşbaşılı Kaşarlı Pide", kategori: "pide", fiyat: 280, aciklama: "Ağızda sünen eti yumuşacık, güzel mi güzel kuşbaşılı kaşarlı pidemiz", resim: "../public/images/pide.jpg", loading: "lazy", oneCikan: true, sefinOnerisi: false, vejetaryen: false },
-  { id: 8, ad: "Çıtır Kıymalı Pide", kategori: "pide", fiyat: 250, aciklama: "Özel kavrulmuş kıymalı harç, domates, biber ve çıtır kenarlar", resim: "../public/images/kiymali-pide.jpg", loading: "lazy", oneCikan: false, sefinOnerisi: false, vejetaryen: false },
-  { id: 9, ad: "Kavurmalı Kaşarlı Pide", kategori: "pide", fiyat: 310, aciklama: "Geleneksel dana kavurma ve uzayan kaşar peynirinin muazzam uyumu", resim: "../public/images/kavurmali-pide.jpg", loading: "eager", oneCikan: false, sefinOnerisi: true, vejetaryen: false },
-  { id: 10, ad: "Taş Fırında Peynirli & Otlu Ege Pidesi", kategori: "pide", fiyat: 310, aciklama: "Lor peyniri, ısırgan otu, maydanoz ve zeytinyağı harcıyla odun fırınından çıkan geleneksel kıtır pide.", resim: "../public/images/ege-pidesi.jpg", loading: "eager", oneCikan: false, sefinOnerisi: true, vejetaryen: true },
-  { id: 11, ad: "Kasap Sucuklu Pide", kategori: "pide", fiyat: 270, aciklama: "%100 dana kasap sucuğu ve bol kaşar peyniriyle", resim: "../public/images/sucuklu-pide.jpg", loading: "lazy", oneCikan: false, sefinOnerisi: false, vejetaryen: false },
-  { id: 12, ad: "Trabzon Yağlı Pidesi", kategori: "pide", fiyat: 290, aciklama: "Yerel kolot peyniri, ortasına köy yumurtası ve has tereyağı ile", resim: "../public/images/trabzon-pide.jpg", loading: "lazy", oneCikan: false, sefinOnerisi: false, vejetaryen: true },
-  { id: 13, ad: "Terbiye Kuzu Şiş", kategori: "kebap", fiyat: 390, aciklama: "Süt kuzusundan özel marine edilmiş, meşe kömürü ızgarasında pişen lokum etler", resim: "../public/images/kuzu-sis.jpeg", loading: "lazy", oneCikan: false, sefinOnerisi: false, vejetaryen: false },
-  { id: 14, ad: "Meşhur Çöp Şiş", kategori: "kebap", fiyat: 370, aciklama: "Küçük kesim kuzu etleri ve kuyruk yağının ızgarada kekiğe doyduğu lezzet", resim: "../public/images/cop-sis.webp", loading: "lazy", oneCikan: false, sefinOnerisi: false, vejetaryen: false },
-  { id: 15, ad: "Lokum Tavuk Şiş", kategori: "kebap", fiyat: 260, aciklama: "Süt ve özel baharatlarla marine edilmiş ızgarada pişmiş yumuşacık tavuk eti", resim: "../public/images/tavuk-sis.webp", loading: "lazy", oneCikan: false, sefinOnerisi: false, vejetaryen: false },
-  { id: 16, ad: "Antep Usulü Ciğer Şiş", kategori: "kebap", fiyat: 340, aciklama: "Taze kuzu ciğeri ve kuyruk yağı ızgara, kimyon ve sumaklı soğan eşliğinde", resim: "../public/images/ciger-sis.jpg", loading: "eager", oneCikan: false, sefinOnerisi: true, vejetaryen: false },
-  { id: 2, ad: "Çıtır Lahmacun", kategori: "pide", fiyat: 150, aciklama: "Kıymayı, domatesi, soğanı mükemmel derecede pişen ağızda dağılan mükemmel bir lezzet", resim: "../public/images/lahmacun.jpg", loading: "lazy", oneCikan: true, sefinOnerisi: false, vejetaryen: false },
-  { id: 17, ad: "Fındık Lahmacun (3'lü)", kategori: "pide", fiyat: 180, aciklama: "Özel baharatlı harcı ve çıtır hamuruyla geleneksel mini atıştırmalık", resim: "../public/images/findik-lahmacun.jpg", loading: "lazy", oneCikan: false, sefinOnerisi: false, vejetaryen: false },
-  { id: 18, ad: "Antep Usulü Sarımsaklı Lahmacun", kategori: "pide", fiyat: 170, aciklama: "Zırh kıyması, bol taze sarımsak, maydanoz ve nar ekşisinin çıtır hamurla buluşması", resim: "../public/images/sarimsakli-lahmacun.jpg", loading: "eager", oneCikan: false, sefinOnerisi: true, vejetaryen: false },
-  { id: 40, ad: "Zeytinyağlı Enginar Dolması", kategori: "zeytinyagli", fiyat: 340, aciklama: "Osmanlı saray mutfağından günümüze; dereotu, dolmalık fıstık ve kuş üzümlü iç pilavla doldurulmuş Ege enginarı.", resim: "../public/images/enginar.jpg", loading: "eager", oneCikan: false, sefinOnerisi: true, vejetaryen: true },
-  { id: 41, ad: "Kuru Patlıcan ve Biber Dolması", kategori: "zeytinyagli", fiyat: 320, aciklama: "Antep usulü yazdan kurutulmuş sebzelerin nar ekşili, sumaklı ve bol baharatlı pirinç harcıyla demlenmesi.", resim: "../public/images/kuru-dolma.jpg", loading: "lazy", oneCikan: false, sefinOnerisi: false, vejetaryen: true },
-  { id: 42, ad: "Müceddere Pilavı & Süzme Yoğurt", kategori: "zeytinyagli", fiyat: 290, aciklama: "Orta Doğu ve Doğu Anadolu mutfağının asırlık lezzeti; yeşil mercimek, karamelize soğan ve baharatlı bulgur.", resim: "../public/images/muceddere.jpg", loading: "lazy", oneCikan: false, sefinOnerisi: false, vejetaryen: true },
-  { id: 19, ad: "Gavurdağı Salatası", kategori: "zeytinyagli", fiyat: 140, aciklama: "İnce kıyılmış domates, salatalık, bol ceviz, nar ekşisi ve sızma zeytinyağı ile", resim: "../public/images/gavurdagi.webp", loading: "eager", oneCikan: false, sefinOnerisi: true, vejetaryen: true },
-  { id: 20, ad: "Acılı Ezme Salata", kategori: "zeytinyagli", fiyat: 120, aciklama: "Taze domates, biber, sarımsak, maydanoz ve özel baharatlarla harmanlanmış acı lezzet", resim: "../public/images/acili-ezme.jpg", loading: "lazy", oneCikan: false, sefinOnerisi: false, vejetaryen: true },
-  { id: 21, ad: "Klasik Çoban Salatası", kategori: "zeytinyagli", fiyat: 110, aciklama: "Küp doğranmış domates, salatalık, sivri biber, kuru soğan, limon ve zeytinyağı sosuyla", resim: "../public/images/coban-salata.jpg", loading: "lazy", oneCikan: false, sefinOnerisi: false, vejetaryen: true },
-  { id: 22, ad: "Tulum Peynirli Roka Salatası", kategori: "zeytinyagli", fiyat: 150, aciklama: "Taze körpe roka yaprakları, Erzincan tulum peyniri, ceviz ve nar ekşisi eşliğinde", resim: "../public/images/roka-salata.jpg", loading: "lazy", oneCikan: false, sefinOnerisi: false, vejetaryen: true },
-  { id: 23, ad: "Urfa Usulü Bostana", kategori: "zeytinyagli", fiyat: 130, aciklama: "Zar gibi incecik kıyılmış sebzeler, buzlu soğuk sunumu ve bol sumak ekşisiyle", resim: "../public/images/bostana.webp", loading: "lazy", oneCikan: false, sefinOnerisi: false, vejetaryen: true },
-  { id: 24, ad: "Fıstıklı Künefe", kategori: "tatli", fiyat: 160, aciklama: "Özel Hatay peyniri, çıtır kadayıf ve bol Antep fıstığı ile sıcacık", resim: "../public/images/kunefe.png", loading: "eager", oneCikan: false, sefinOnerisi: true, vejetaryen: true },
-  { id: 25, ad: "Havuç Dilim Baklava", kategori: "tatli", fiyat: 180, aciklama: "İncecik yufkalar, bol fıstık ile karşınızda", resim: "../public/images/havuc-dilim.jpg", loading: "lazy", oneCikan: false, sefinOnerisi: false, vejetaryen: true },
-  { id: 26, ad: "Geleneksel Katmer", kategori: "tatli", fiyat: 190, aciklama: "Zar gibi açılmış hamur içerisinde kaymak ve taze çekilmiş Antep fıstığı", resim: "../public/images/katmer.webp", loading: "lazy", oneCikan: false, sefinOnerisi: false, vejetaryen: true },
-  { id: 27, ad: "Fırın Sütlaç", kategori: "tatli", fiyat: 110, aciklama: "Toprak güveçte nar gibi kızarmış geleneksel lezzet", resim: "../public/images/sutlac.jpg", loading: "lazy", oneCikan: false, sefinOnerisi: false, vejetaryen: true },
-  { id: 28, ad: "Dondurmalı İrmik Helvası", kategori: "tatli", fiyat: 120, aciklama: "Tereyağında kavrulmuş sıcak irmik helvası ortasında keçi sütlü dondurma ile", resim: "../public/images/irmik.jpg", loading: "lazy", oneCikan: false, sefinOnerisi: false, vejetaryen: true },
-  { id: 29, ad: "Köpüklü Yayık Ayranı", kategori: "icecek", fiyat: 50, aciklama: "Bakır maşrapada servis edilen, köy yoğurdundan ev yapımı ayran", resim: "../public/images/ayran.jpg", loading: "lazy", oneCikan: false, sefinOnerisi: false, vejetaryen: true },
-  { id: 30, ad: "Acılı / Acısız Şalgam", kategori: "icecek", fiyat: 45, aciklama: "Geleneksel Adana usulü, havuç taneleriyle servis edilen şalgam suyu", resim: "../public/images/salgam.jpeg", loading: "lazy", oneCikan: false, sefinOnerisi: false, vejetaryen: true },
-  { id: 31, ad: "Ev Yapımı Limonata", kategori: "icecek", fiyat: 60, aciklama: "Taze sıkılmış limon, nane yaprakları ve az şekerli serinletici lezzet", resim: "../public/images/limonata.webp", loading: "lazy", oneCikan: false, sefinOnerisi: false, vejetaryen: true },
-  { id: 32, ad: "Niğde Gazozu", kategori: "icecek", fiyat: 45, aciklama: "Ahududu aromalı, geleneksel Türk gazozu lezzeti", resim: "../public/images/gazoz.png", loading: "lazy", oneCikan: false, sefinOnerisi: false, vejetaryen: true },
-  { id: 33, ad: "Türk Kahvesi", kategori: "icecek", fiyat: 60, aciklama: "Çifte kavrulmuş kahve çekirdeklerinden, lokum meşe aromalı su ikramıyla", resim: "../public/images/kahve.jpg", loading: "lazy", oneCikan: false, sefinOnerisi: false, vejetaryen: true },
-  { id: 34, ad: "Taze Demleme Çay", kategori: "icecek", fiyat: 25, aciklama: "İnce belli bardakta, Karadeniz'in en seçkin yapraklarından taze demleme", resim: "../public/images/cay.jpg", loading: "lazy", oneCikan: false, sefinOnerisi: false, vejetaryen: true }
-];
+// --- YEMEK VERİLERİ (DİNAMİK REST API / VERİTABANI İLE YÜKLENİR - SABİT DİZİ KALDIRILDI) ---
+let yemekler = [];
 
 document.addEventListener("DOMContentLoaded", () => {
 
@@ -85,16 +42,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (bgVideo) {
     bgVideo.muted = true;
-
-    // 🎬 VİDEONUN SADECE İLK 3 SANİYESİNİ ÇALMA (PERFORMANSLI VE KASILMASIZ)
-    let isLoopSeeking = false;
-    bgVideo.addEventListener('timeupdate', () => {
-      if (bgVideo.currentTime >= 3.0 && !isLoopSeeking) {
-        isLoopSeeking = true;
-        bgVideo.currentTime = 0.05;
-        setTimeout(() => { isLoopSeeking = false; }, 350);
-      }
-    });
 
     const playPromise = bgVideo.play();
     if (playPromise !== undefined) {
@@ -144,15 +91,19 @@ document.addEventListener("DOMContentLoaded", () => {
     const toggleBtn = document.getElementById('atmosphereToggleBtn');
     const bgVideo = document.getElementById('globalBgVideo');
 
+    // Sayfa dizin derinliğine göre dinamik video yolu belirleme
+    const isPagesDir = window.location.pathname.includes('/pages/') || document.querySelector('script[src*="../public/js"]');
+    const basePath = isPagesDir ? '../public/images/' : 'public/images/';
+    const dayVideoName = 'day-video.mp4';
+    const nightVideoName = 'video.mp4';
+    const targetSrc = basePath + (mode === 'day' ? dayVideoName : nightVideoName);
+
     if (mode === 'day') {
       document.body.classList.add('day-atmosphere');
       localStorage.setItem('atmosphereMode', 'day');
       if (toggleBtn) {
-        toggleBtn.innerHTML = `<i class="fa-solid fa-sun" style="color:#f39c12;"></i> <span>Gündüz Restoranı</span>`;
+        toggleBtn.innerHTML = `<i class="fa-solid fa-sun" style="color:#f39c12;"></i> <span>Gündüz Sefası</span>`;
         toggleBtn.classList.add('day-active');
-      }
-      if (bgVideo) {
-        bgVideo.style.filter = 'contrast(98%) brightness(115%) sepia(25%)';
       }
     } else {
       document.body.classList.remove('day-atmosphere');
@@ -161,8 +112,28 @@ document.addEventListener("DOMContentLoaded", () => {
         toggleBtn.innerHTML = `<i class="fa-solid fa-fire" style="color:#e74c3c;"></i> <span>Mangal Akşamı</span>`;
         toggleBtn.classList.remove('day-active');
       }
-      if (bgVideo) {
-        bgVideo.style.filter = 'contrast(104%) brightness(92%)';
+    }
+
+    if (bgVideo) {
+      bgVideo.style.filter = mode === 'day' ? 'contrast(100%) brightness(108%)' : 'contrast(104%) brightness(92%)';
+
+      const currentSrc = bgVideo.currentSrc || bgVideo.src || '';
+      const isCurrentlyDay = currentSrc.includes('day-video.mp4');
+      const isCurrentlyNight = !isCurrentlyDay && currentSrc.includes('video.mp4');
+
+      const needsSwitch = (mode === 'day' && !isCurrentlyDay) || (mode === 'night' && !isCurrentlyNight);
+
+      if (needsSwitch) {
+        // HTML5 Video kuralı: İçteki eski <source> etiketlerini temizleyip doğrudan video.src atama
+        while (bgVideo.firstChild) {
+          bgVideo.removeChild(bgVideo.firstChild);
+        }
+        bgVideo.src = targetSrc;
+        bgVideo.load();
+        const playPromise = bgVideo.play();
+        if (playPromise !== undefined) {
+          playPromise.catch(() => {});
+        }
       }
     }
   }
@@ -446,22 +417,73 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
 
-    // --- EXPRESS BACKEND API'DEN CANLI VERİ ÇEKME (FETCH API) ---
+    // --- 1. YÜKLENİYOR (LOADING) SKELETON EKRANI ---
+    function gosterYukleniyorState() {
+      if (!menuGrid) return;
+      let skeletonCardsHTML = '';
+      for (let i = 0; i < 6; i++) {
+        skeletonCardsHTML += `
+          <div class="dish-card skeleton-card" style="pointer-events: none; opacity: 0.85; border: 1px solid rgba(243,156,18,0.15);">
+            <div class="dish-img-container skeleton-loading" style="height: 200px; background: linear-gradient(90deg, #2b1f17 25%, #3b2b20 50%, #2b1f17 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite;"></div>
+            <div class="dish-info" style="padding: 16px;">
+              <div style="height: 20px; width: 70%; background: #3b2b20; border-radius: 4px; margin-bottom: 10px; animation: pulse 1.5s infinite;"></div>
+              <div style="height: 14px; width: 90%; background: #33241b; border-radius: 4px; margin-bottom: 6px;"></div>
+              <div style="height: 14px; width: 60%; background: #33241b; border-radius: 4px; margin-bottom: 16px;"></div>
+              <div style="height: 22px; width: 35%; background: #4a3424; border-radius: 4px;"></div>
+            </div>
+          </div>
+        `;
+      }
+      menuGrid.innerHTML = skeletonCardsHTML;
+    }
+
+    // --- 2. HATA (ERROR) VE TEKRAR DENE EKRANI ---
+    function gosterHataState(mesaj = "Menü verileri yüklenirken bir bağlantı hatası oluştu.") {
+      if (!menuGrid) return;
+      menuGrid.innerHTML = `
+        <div style="grid-column: 1/-1; text-align: center; padding: 45px 20px; background: rgba(30, 20, 15, 0.95); border: 1.5px solid rgba(231, 76, 60, 0.5); border-radius: 16px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); margin: 20px 0;">
+          <i class="fa-solid fa-triangle-exclamation" style="font-size: 2.8rem; color: #e74c3c; margin-bottom: 16px;"></i>
+          <h3 style="color: #f39c12; font-size: 1.3rem; margin-bottom: 8px;">Veri Yükleme Hatası</h3>
+          <p style="color: #ddd; font-size: 1rem; max-width: 500px; margin: 0 auto 20px auto; line-height: 1.5;">${mesaj}</p>
+          <button id="retryFetchBtn" class="btn-service-action" style="background: linear-gradient(135deg, #e74c3c, #c0392b); color: #fff; border: none; padding: 12px 28px; border-radius: 30px; font-weight: 600; cursor: pointer; transition: all 0.3s ease;">
+            <i class="fa-solid fa-rotate-right"></i> Tekrar Deneyin
+          </button>
+        </div>
+      `;
+
+      const retryBtn = document.getElementById('retryFetchBtn');
+      if (retryBtn) {
+        retryBtn.addEventListener('click', () => {
+          backendMenuyuGetir();
+        });
+      }
+    }
+
+    // --- 3. EXPRESS BACKEND API'DEN CANLI VERİ ÇEKME (FETCH API) ---
     async function backendMenuyuGetir() {
+      gosterYukleniyorState();
       try {
-        const response = await fetch('/api/menu');
+        const isLocalHost3000 = window.location.origin.includes(':3000');
+        const apiUrl = isLocalHost3000 ? '/api/menu' : 'http://localhost:3000/api/menu';
+
+        const response = await fetch(apiUrl);
+        if (!response.ok) {
+          throw new Error(`Sunucu Yanıt Hatası: ${response.status} ${response.statusText}`);
+        }
         const result = await response.json();
         if (result && result.success && Array.isArray(result.data)) {
           yemekler = result.data;
           menuyuFiltrele();
+        } else {
+          throw new Error(result.message || 'Geçersiz menü verisi alındı.');
         }
       } catch (err) {
         console.error('Backend API Fetch Hatası:', err);
+        gosterHataState('Veritabanından menü verileri çekilemedi. Lütfen arka plan sunucusunun (Express & SQLite) aktif olduğunu kontrol edin.');
       }
     }
 
     // İlk Yükleme
-    menuyuFiltrele();
     backendMenuyuGetir();
 
     // Kategori Butonları
