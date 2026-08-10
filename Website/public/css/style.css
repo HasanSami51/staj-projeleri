@@ -932,14 +932,7 @@ main.main-content:not(:has(.hero-wrapper)):not(:has(.hero-section)) {
 }
 
 @media(max-width: 768px) {
-  .header-container {
-    flex-direction: column !important;
-    align-items: center !important;
-    justify-content: center !important;
-    padding-top: 15px !important;
-    padding-bottom: 20px !important;
-    gap: 1rem !important;
-  }
+  /* Mobil header düzeni satır olarak kalacaktır, bu kural çakışmayı önlemek için kaldırıldı */
   .footer-container {
     grid-template-columns: 1fr;
     gap: 2rem;
@@ -956,22 +949,7 @@ main.main-content:not(:has(.hero-wrapper)):not(:has(.hero-section)) {
     margin: 0 !important;
     padding: 0 !important;
   }
-  .filter-buttons {
-    display: flex !important;
-    justify-content: flex-start !important;
-    overflow-x: auto !important;
-    white-space: nowrap !important;
-    gap: 10px !important;
-    padding: 10px 15px !important;
-    scrollbar-width: none;
-  }
-  .filter-buttons::-webkit-scrollbar {
-    display: none;
-  }
-  .filter-btn {
-    flex-shrink: 0 !important;
-    white-space: nowrap !important;
-  }
+
   .dish-card img,
   .dish-img{
     width: 100%;
@@ -1938,8 +1916,7 @@ grid-column: span 2;
   color:var(--dark-fume)
 }
 .required-star{
-  color: var(--primary-kiremit);
-  font-weight: bold;
+  display: none !important;
 }
 .form-group input,
 .form-group textarea{
@@ -1975,9 +1952,15 @@ grid-column: span 2;
   font-size: 1rem;
   padding: 12px 30px;
 }
-@media(max-width:768px){
+@media(max-width:992px){
   .contact-form-container{
-    padding: 25px 20px;
+    padding: 0 !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+  .contact-form {
+    padding: 25px 20px !important;
   }
   .contact-form .form-grid{
     grid-template-columns: 1fr !important;
@@ -1994,11 +1977,17 @@ grid-column: span 2;
   padding: 14px 18px;
   border-radius: 8px;
   margin-bottom: 20px;
-  display: flex;
+  display: none;
   align-items: center;
   gap:10px;
   font-size: 0.95rem;
   font-weight: 500;
+}
+/* JS display:flex ile açılır, --hidden sınıfı kalıcı olarak kapatır */
+.form-alert--hidden {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
 }
 .location-features {
   display: flex;
@@ -2099,9 +2088,15 @@ input[type="date"],
 input[type="time"]{
   cursor: pointer;
 }
-@media(max-width:768px){
+@media(max-width:992px){
   .reservation-form-container{
-    padding: 25px 20px;
+    padding: 0 !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+  .reservation-form {
+    padding: 25px 20px !important;
   }
   .reservation-form .form-grid{
     grid-template-columns: 1fr !important;
@@ -2176,6 +2171,9 @@ input[type="time"]{
   background: #1e140d !important;
   color: #ffffff !important;
   border: 1px solid rgba(212, 175, 55, 0.4) !important;
+  border-radius: 8px !important;
+  box-shadow: none !important;
+  transition: all 0.25s ease !important;
 }
 
 #resDate::placeholder, #resTime::placeholder, .input-picker-wrapper input::placeholder {
@@ -3123,15 +3121,17 @@ user-select: none !important;
   }
 }
 
-/* Normal Category Filter Bar Styling */
+/* Normal Category Filter Bar Styling - Sticky globally for better UX */
 .filter-buttons-wrapper {
-  position: static !important;
-  margin-bottom: 25px;
-  width: 100%;
-  background: transparent !important;
-  box-shadow: none !important;
-  border: none !important;
-  backdrop-filter: none !important;
+  position: sticky !important;
+  top: 85px !important; /* Pinned below the fixed desktop header */
+  z-index: 9999 !important;
+  margin-bottom: 25px !important;
+  width: 100% !important;
+  background: #120b07 !important; /* Solid opaque color matching the site theme */
+  border-bottom: 1.5px solid rgba(212, 175, 55, 0.3) !important;
+  padding: 10px 0 !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4) !important;
 }
 
 .load-more-wrapper {
@@ -3879,7 +3879,7 @@ user-select: none !important;
 
 /* 1. TÜM KARTLAR, FORMLAR, CTA BANNER'LAR VE TABLOLAR İÇİN LÜKS KOYU AHŞAP TEMA */
 .card, .dish-card, .about-card, .team-card, .feature-card, .principle-card, 
-.value-card, .cta-banner, .cta-wrapper, .reservation-form-container, 
+.value-card, .cta-banner, .cta-wrapper, 
 .contact-card, .hours-table-container, .table-responsive, .info-box, 
 .about-summary-box, .cta-section, div[class*="card"], div[class*="banner"], div[class*="box"] {
   background-color: #1a120c !important;
@@ -3939,6 +3939,8 @@ input[type="number"], input[type="email"], textarea, select {
   border: 1px solid rgba(212, 175, 55, 0.4) !important;
   border-radius: 8px !important;
   padding: 12px 16px !important;
+  box-shadow: none !important;
+  transition: all 0.25s ease !important;
 }
 
 input::placeholder, textarea::placeholder {
@@ -4182,6 +4184,8 @@ select,
   font-weight: 500 !important;
   width: 100% !important;
   box-sizing: border-box !important;
+  box-shadow: none !important;
+  transition: all 0.25s ease !important;
 }
 
 input::placeholder, 
@@ -4850,19 +4854,18 @@ body {
   left: 50% !important;
   width: 100vw !important;
   height: 100vh !important;
-  min-width: 100vw !important;
-  min-height: 100vh !important;
+  min-width: 100% !important;
+  min-height: 100% !important;
   z-index: -1 !important;
-  transform: translate3d(-50%, -50%, 0) scale(1.02) !important;
-  will-change: transform, opacity !important;
-  backface-visibility: hidden !important;
-  -webkit-backface-visibility: hidden !important;
-  transform-style: preserve-3d !important;
+  transform: translate(-50%, -50%) !important; /* Tam merkezleme */
   object-fit: cover !important;
-  object-position: center center !important;
   pointer-events: none !important;
-  filter: contrast(104%) brightness(92%) !important;
-  transition: opacity 0.4s ease-in-out !important;
+  filter: brightness(0.85) contrast(1.05) !important; /* Canlı ve göz yormayan doğal filtreler */
+  image-rendering: -webkit-optimize-contrast !important;
+  image-rendering: high-quality !important;
+  -webkit-backface-visibility: hidden !important;
+  backface-visibility: hidden !important;
+  will-change: transform !important;
 }
 
 /* ESKİ KIVILCIM CANVAS VE RESİM ANİMASYONLARINI TAMAMEN KAZIMA/KAPATMA */
@@ -4878,10 +4881,24 @@ body::before {
   background-image: none !important;
 }
 
-/* 2. HERO ARKA PLAN DENGELENMESİ */
+/* 2. HERO ARKA PLAN DENGELENMESİ VE ALT KARARTMA MASKESİ */
 .hero-overlay {
-  background: radial-gradient(circle at center, rgba(14, 8, 4, 0.35) 0%, rgba(12, 6, 3, 0.72) 100%),
-              linear-gradient(180deg, rgba(12, 6, 3, 0.45) 0%, rgba(18, 9, 5, 0.82) 100%) !important;
+  background: radial-gradient(circle at center, rgba(14, 8, 4, 0.15) 0%, rgba(5, 2, 1, 0.85) 100%),
+              linear-gradient(180deg, rgba(5, 2, 1, 0.2) 0%, rgba(0, 0, 0, 0.98) 100%) !important;
+}
+
+/* Ekranın en altına ızgarayı tamamen örten derin siyah duman maskesi */
+body::after {
+  content: '' !important;
+  position: fixed !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 35vh !important; /* Yüksekliği 35vh'e çıkarıp ızgara bölgesini tamamen yutuyoruz */
+  background: linear-gradient(0deg, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.85) 50%, rgba(0, 0, 0, 0) 100%) !important;
+  z-index: -1 !important;
+  pointer-events: none !important;
+  display: block !important;
 }
 
 .trust-bar-section {
@@ -4929,13 +4946,14 @@ body::before {
   width: 100% !important;
   max-width: 100% !important;
   margin: 0 auto !important;
-  background: rgba(18, 10, 5, 0.9) !important;
-  background-color: rgba(18, 10, 5, 0.9) !important;
-  border: 1px solid rgba(212, 175, 55, 0.35) !important;
-  border-radius: 20px !important;
+  /* Premium Cam Efekti: Koyu şeffaf arka plan (eski haliyle uyumlu daha tok koyu ton) */
+  background: rgba(8, 4, 2, 0.93) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 16px !important;
   padding: 30px 40px !important;
   box-shadow: 0 18px 50px rgba(0, 0, 0, 0.85) !important;
-  backdrop-filter: blur(12px) !important;
+  backdrop-filter: blur(16px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
 }
 
 .reservation-section .form-group, .contact-section .form-group,
@@ -4948,21 +4966,26 @@ body::before {
   margin-bottom: 0.75rem !important;
 }
 
-/* 4. GİRDİ KUTULARININ İPUCU VE YALIN TASARIMI */
+/* 4. GİRDİ KUTULARININ YALIN VE ŞIK CAM TASARIMI */
 .form-control, input, select, textarea,
 .reservation-section .form-group input, 
 .reservation-section .form-group select, 
 .reservation-section .form-group textarea,
 .contact-section .form-group input, 
 .contact-section .form-group select, 
-.contact-section .form-group textarea {
+.contact-section .form-group textarea,
+.input-icon-wrapper input,
+.input-icon-wrapper textarea,
+.input-picker-wrapper input {
   background: rgba(12, 6, 3, 0.65) !important;
   background-color: rgba(12, 6, 3, 0.65) !important;
   border: 1px solid rgba(212, 175, 55, 0.3) !important;
   border-radius: 12px !important;
   padding: 12px 18px 12px 46px !important;
   font-size: 0.95rem !important;
+  color: #ffffff !important;
   box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.6) !important;
+  transition: all 0.25s ease !important;
 }
 
 /* KUTU İPUÇLARININ RENK SEÇENEKLERİ (SEÇENEK 3: MAT DUMAN GRİSİ - ZARİF VE SİLİK) */
@@ -5173,7 +5196,7 @@ form, button, input, select, textarea, a, .btn-primary, .btn-secondary,
   width: 100% !important;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 992px) {
   .form-grid {
     grid-template-columns: 1fr !important;
     gap: 15px !important;
@@ -5194,8 +5217,7 @@ form, button, input, select, textarea, a, .btn-primary, .btn-secondary,
 .input-icon-wrapper, .input-picker-wrapper {
   position: relative !important;
   width: 100% !important;
-  display: flex !important;
-  align-items: center !important;
+  display: block !important;
 }
 
 .input-icon-wrapper input, 
@@ -5205,11 +5227,13 @@ form, button, input, select, textarea, a, .btn-primary, .btn-secondary,
   min-width: 100% !important;
   box-sizing: border-box !important;
   padding: 14px 16px 14px 45px !important;
-  border-radius: 10px !important;
-  background: rgba(18, 10, 5, 0.88) !important;
-  border: 1px solid rgba(212, 175, 55, 0.4) !important;
+  border-radius: 8px !important;
+  background: rgba(255, 255, 255, 0.04) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
   color: #ffffff !important;
   font-size: 0.95rem !important;
+  box-shadow: none !important;
+  transition: all 0.25s ease !important;
 }
 
 .error-msg {
@@ -5721,9 +5745,11 @@ form, button, input, select, textarea, a, .btn-primary, .btn-secondary,
     object-fit: cover !important;
     width: 100vw !important;
     height: 100vh !important;
-    transform: translate3d(-50%, -50%, 0) !important;
+    min-width: 100% !important;
+    min-height: 100% !important;
+    transform: translate(-50%, -50%) !important;
     will-change: transform !important;
-    filter: contrast(104%) brightness(92%) !important;
+    filter: brightness(0.85) contrast(1.05) !important;
   }
 }
 
@@ -5813,4 +5839,549 @@ body.day-atmosphere .trust-bar-section {
   border-bottom-color: #f39c12 !important;
 }
 
+/* ==========================================
+   📱 MOBİL RESPONSIVE & SIKILIŞTIRMA OVERRIDES (FOTO 1 & 2 DÜZELTMESİ)
+   ========================================== */
+@media (max-width: 992px) {
+  /* Sayfa genelinde yatay kaydırma çubuğunu kesinlikle engelle */
+  html, body {
+    max-width: 100% !important;
+    overflow-x: clip !important;
+    width: 100% !important;
+  }
+
+  /* Back to Top butonu mobilde daha küçük olsun ve kenara çekilsin (girdilerin üstüne binmesin) */
+  #backToTop, .back-to-top {
+    bottom: 20px !important;
+    right: 20px !important;
+    width: 42px !important;
+    height: 42px !important;
+    font-size: 1.1rem !important;
+  }
+
+  /* Mobil Header Container - Daha geniş, ferah ve premium görünüm */
+  .header-container {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    padding: 12px 16px !important; /* Padding artırıldı, daha büyük/ferah navbar */
+    width: 100% !important;
+    box-sizing: border-box !important;
+    position: relative !important;
+  }
+
+  /* Logo ve Header Elemanlarının Mobilde Grid ile Alt Alta Yerleşimi */
+  .logo, .nav-logo {
+    display: grid !important;
+    grid-template-columns: auto 1fr !important;
+    align-items: center !important;
+    gap: 0 10px !important;
+    flex: 0 1 auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .logo-link {
+    grid-row: 1 / span 2 !important;
+    display: flex !important;
+    align-items: center !important;
+  }
+
+  /* Logo Görseli - Temsili boyut */
+  .logo-img {
+    width: 44px !important;
+    height: 44px !important;
+    flex-shrink: 0 !important;
+  }
+
+  .brand-text-wrapper {
+    grid-row: 1 !important;
+    grid-column: 2 !important;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: baseline !important;
+    gap: 6px !important;
+  }
+
+  /* Altın sarısı, Playfair serifsiz büyük başlık */
+  .brand-title {
+    font-family: var(--font-heading) !important;
+    font-size: 1.1rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.5px !important;
+    white-space: nowrap !important;
+    color: #f39c12 !important;
+  }
+
+  /* 1932'den Beri yazısı */
+  .brand-subtitle {
+    display: block !important;
+    font-size: 0.65rem !important;
+    color: #f39c12 !important;
+    letter-spacing: 0.8px !important;
+    text-transform: uppercase !important;
+    font-weight: 600 !important;
+    margin: 0 !important;
+    opacity: 0.95 !important;
+  }
+
+  /* Durum Rozeti Kapsayıcısı - Logonun hemen altında hizalanacak */
+  .header-status-wrapper {
+    grid-row: 2 !important;
+    grid-column: 2 !important;
+    display: flex !important;
+    align-items: center !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .header-divider {
+    display: none !important;
+  }
+
+  /* "Şu An Açığız" Yazısı - Logoyla uyumlu, daracık yer kaplamayan şık buton */
+  .live-status-badge {
+    padding: 2px 6px !important;
+    font-size: 0.65rem !important;
+    border-radius: 6px !important;
+    white-space: nowrap !important;
+    font-weight: 700 !important;
+    border: 1px solid rgba(46, 204, 113, 0.3) !important;
+    background: rgba(46, 204, 113, 0.12) !important;
+  }
+
+  .live-status-badge small,
+  .live-status-badge .status-text small {
+    display: none !important; /* Ekstra kapanış saati yazısını mobilde gizle */
+  }
+
+  /* ☀️/🔥 Atmosfer Değiştirici Butonu - Sağ köşede hamburger menünün solunda bağımsız durur */
+  .atmosphere-toggle-btn {
+    position: absolute !important;
+    right: 36px !important; /* Hamburger butonunun soluna tam oturması için sağa kaydırıldı */
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    width: 32px !important;
+    height: 32px !important;
+    border-radius: 50% !important;
+    padding: 0 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.3) !important;
+    z-index: 1001 !important;
+    flex-shrink: 0 !important;
+  }
+
+  /* Mobil hover/click durumunda dikey konumun kaymasını engelliyoruz (Merkezlemeyi koru) */
+  .atmosphere-toggle-btn:hover,
+  .atmosphere-toggle-btn:active,
+  .atmosphere-toggle-btn:focus {
+    transform: translateY(-50%) scale(1.04) !important;
+  }
+
+  .atmosphere-toggle-btn span {
+    display: none !important; /* Metni gizle, sadece dairesel ikon */
+  }
+
+  .atmosphere-toggle-btn i {
+    font-size: 0.95rem !important;
+    margin: 0 !important;
+  }
+
+  /* Mobil Menü Butonu - Sağ köşede bağımsız durur */
+  .hamburger-btn {
+    display: flex !important;
+    padding: 6px !important;
+    font-size: 1.7rem !important;
+    flex-shrink: 0 !important;
+    position: absolute !important;
+    right: 4px !important; /* Sağa tam yanaşması için 4px değerine çekildi */
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    margin: 0 !important;
+    background: transparent !important;
+    border: none !important;
+    z-index: 1002 !important;
+  }
+
+  /* 🍔 MENÜ FİLTRE BUTONLARI KAYDIRILABİLİR VE STICKY (SABİT) YAPMA */
+  .filter-buttons-wrapper {
+    position: sticky !important;
+    top: 68px !important; /* Fixed header'ın tam altına yapışır */
+    z-index: 9999 !important; /* Yemek kartlarının üzerinde yüzer, header'ın altındadır */
+    width: 100% !important;
+    overflow: hidden !important;
+    background: transparent !important;
+    border-bottom: none !important;
+    padding: 2px 0 !important;
+    margin-bottom: 20px !important;
+    box-shadow: none !important;
+  }
+
+  .filter-buttons {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important; /* Kesinlikle alt satıra geçme */
+    justify-content: flex-start !important;
+    overflow-x: auto !important; /* Yatayda kaydırmayı aç */
+    -webkit-overflow-scrolling: touch !important; /* iOS akıcı kaydırma */
+    gap: 8px !important;
+    padding: 10px 15px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    scrollbar-width: none !important; /* Firefox için barı gizle */
+  }
+
+  .filter-buttons::-webkit-scrollbar {
+    display: none !important; /* Chrome, Safari, Edge için barı gizle */
+  }
+
+  .filter-btn {
+    flex-shrink: 0 !important; /* Butonların büzüşmesini engelle */
+    white-space: nowrap !important;
+    font-size: 0.82rem !important;
+    padding: 7px 12px !important;
+  }
+
+  /* ==========================================
+     🏠 ANASAYFA RESPONSIVE GÜNCELLEMELERİ
+     ========================================== */
+  .hero-section h1 {
+    font-size: 2.2rem !important;
+    line-height: 1.2 !important;
+  }
+
+  .hero-section p {
+    font-size: 1rem !important;
+  }
+
+  .trust-bar {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 15px !important;
+    padding: 0 10px !important;
+  }
+
+  .trust-item {
+    gap: 8px !important;
+    padding: 8px !important;
+  }
+
+  .trust-item i {
+    font-size: 1.4rem !important;
+  }
+
+  .trust-item h4 {
+    font-size: 0.85rem !important;
+  }
+
+  .trust-item span {
+    font-size: 0.72rem !important;
+  }
+
+  /* Anasayfa Hikayemiz (about-summary) Üst Üste Binme Düzeltmesi */
+  .about-summary {
+    padding: 35px 0 !important;
+  }
+
+  .about-summary .about-container {
+    grid-template-columns: 1fr !important; /* Mobilde alt alta sırala */
+    gap: 25px !important;
+    text-align: center !important;
+  }
+
+  .about-text {
+    text-align: center !important;
+    width: 100% !important;
+  }
+
+  .about-image {
+    width: 100% !important;
+    display: flex !important;
+    justify-content: center !important;
+    margin-top: 10px !important;
+  }
+
+  .about-image img {
+    max-width: 100% !important;
+    width: 100% !important;
+    height: auto !important;
+    max-height: 280px !important;
+    object-fit: cover !important;
+    border-radius: 12px !important;
+  }
+
+  /* ==========================================
+     📖 HAKKIMIZDA RESPONSIVE GÜNCELLEMELERİ
+     ========================================== */
+  .about-section {
+    padding: 40px 0 !important;
+  }
+
+  .about-grid, 
+  .about-content-wrapper {
+    grid-template-columns: 1fr !important;
+    gap: 25px !important;
+  }
+
+  .about-image img {
+    max-height: 300px !important;
+    width: 100% !important;
+    object-fit: cover !important;
+  }
+
+  .about-stats {
+    flex-direction: column !important;
+    gap: 15px !important;
+  }
+
+  .stat-box {
+    width: 100% !important;
+    text-align: center !important;
+  }
+
+  /* ==========================================
+     🖼️ GALERİ RESPONSIVE GÜNCELLEMELERİ
+     ========================================== */
+  .gallery-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px !important;
+    padding: 0 8px !important;
+  }
+
+  .gallery-item {
+    height: 160px !important;
+  }
+
+  /* ==========================================
+     📞 İLETİŞİM RESPONSIVE GÜNCELLEMELERİ & DIŞA TAŞMA DÜZELTMELERİ
+     ========================================== */
+  .contact-wrapper {
+    grid-template-columns: 1fr !important;
+    gap: 25px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Adres Bilgi Kartı */
+  .contact-info-card {
+    padding: 20px 15px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+  }
+
+  /* Metinlerin taşmasını engelleyerek satır sarmasını (word wrap) açıyoruz */
+  .contact-detail-list li {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: flex-start !important;
+    gap: 12px !important;
+    width: 100% !important;
+  }
+
+  .contact-detail-list .text-box {
+    flex: 1 !important;
+    min-width: 0 !important;
+    word-break: break-word !important; /* Kelime bazlı kesme */
+  }
+
+  .contact-detail-list .text-box span,
+  .contact-detail-list .text-box a {
+    font-size: 0.88rem !important;
+    line-height: 1.4 !important;
+    display: block !important;
+    white-space: normal !important; /* Düz satırı sar */
+    word-wrap: break-word !important;
+  }
+
+  /* Otopark, vale rozetleri mobilde sığsın */
+  .location-features {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+    justify-content: center !important;
+    margin-top: 15px !important;
+  }
+
+  .location-features .feature-badge {
+    font-size: 0.74rem !important;
+    padding: 6px 10px !important;
+    flex: none !important;
+  }
+
+  .map-container {
+    height: 240px !important;
+    min-height: 240px !important;
+    width: 100% !important;
+  }
+
+  /* 💎 PREMIUM MODERN GLASSMORPHIC FORM TASARIMI (ESKİ / BOĞUCU GÖRÜNÜMÜ SIFIRLAMA) */
+  .contact-form-container,
+  .reservation-form-container {
+    padding: 0 !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    max-width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  .contact-form,
+  .reservation-form {
+    padding: 24px 20px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    max-width: 100% !important;
+    border-radius: 16px !important;
+    /* Cam efekti: Koyu şeffaf arka plan (eski haliyle uyumlu daha tok koyu ton) */
+    background: rgba(8, 4, 2, 0.93) !important;
+    backdrop-filter: blur(16px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
+    /* Çok ince ve zarif çerçeve */
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.75) !important;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Etiketler (Labels) - Temiz, krem renkli ve kutusuz/çizgisiz yalın duruş */
+  .reservation-form label, 
+  .contact-form label,
+  .form-group label {
+    font-size: 0.88rem !important;
+    font-weight: 500 !important;
+    color: #e2e8f0 !important; /* Yumuşak krem rengi */
+    margin-bottom: 6px !important;
+    border: none !important;
+    background: transparent !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  .form-group {
+    grid-column: span 1 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+  }
+
+  .input-icon-wrapper {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+
+  /* İnput ve Textarea Girdileri - Şeffaf, ince kenarlıklı modern cam tasarımı */
+  .input-icon-wrapper input,
+  .input-icon-wrapper textarea,
+  .input-picker-wrapper input,
+  .reservation-form input,
+  .reservation-form select,
+  .reservation-form textarea,
+  .contact-form input,
+  .contact-form textarea {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    font-size: 0.95rem !important;
+    padding: 13px 15px 13px 44px !important;
+    border-radius: 8px !important;
+    color: #ffffff !important;
+    /* Soft koyu şeffaf kutular */
+    background: rgba(18, 10, 5, 0.88) !important;
+    border: 1px solid rgba(212, 175, 55, 0.4) !important;
+    box-shadow: none !important;
+    transition: all 0.25s ease !important;
+  }
+
+  /* Aktif/Odaklanılmış Giriş Kutusu - Zarif altın parıltısı */
+  .input-icon-wrapper input:focus,
+  .input-icon-wrapper textarea:focus,
+  .reservation-form input:focus,
+  .reservation-form select:focus,
+  .reservation-form textarea:focus,
+  .contact-form input:focus,
+  .contact-form textarea:focus {
+    border-color: #f39c12 !important;
+    background: rgba(255, 255, 255, 0.08) !important;
+    box-shadow: 0 0 0 3px rgba(243, 156, 18, 0.15) !important;
+    outline: none !important;
+  }
+
+  /* 480px altındaki çok dar telefonlar için ekstra navbar/badge sıkılaştırması */
+  @media (max-width: 480px) {
+    .live-status-badge {
+      display: inline-flex !important; /* Rozet görünür olsun */
+      padding: 2px 5px !important;
+      font-size: 0.62rem !important;
+    }
+    
+    .header-status-wrapper {
+      margin-right: 38px !important; /* Sağdaki hamburger boşluğunu optimize et */
+    }
+
+    .brand-title {
+      font-size: 1.02rem !important; /* Çok dar telefonlarda yazıyı azıcık küçültüyoruz */
+    }
+  }
+
+  /* ==========================================
+     📝 REZERVAZYON RESPONSIVE GÜNCELLEMELERİ
+     ========================================== */
+  .reservation-container {
+    padding: 20px 10px !important;
+  }
+
+  .res-ticket-wrapper {
+    padding: 15px !important;
+  }
+}
+
+/* ☀️🔥 HER İKİ TEMADA DA KATEGORİ BARI TAMAMEN ŞEFFAF — OVERLAY YOK */
+body .filter-buttons-wrapper,
+html body .filter-buttons-wrapper,
+.menu-section .filter-buttons-wrapper,
+body.day-atmosphere .filter-buttons-wrapper,
+body.day-atmosphere .menu-section .filter-buttons-wrapper {
+  background: transparent !important;
+  background-color: transparent !important;
+  border-bottom: none !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* ==========================================
+   🚫 ÇİFT KATMAN/ÇİFT KUTU GÖRÜNÜMÜNÜ ENGELLEME (HER ZAMAN TEK KART)
+   ========================================== */
+.reservation-form-container,
+.contact-form-container {
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  border-top: none !important;
+  border-bottom: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
 

@@ -40,8 +40,51 @@ document.addEventListener("DOMContentLoaded", () => {
     document.body.prepend(bgVideo);
   }
 
+  // Arka plan videosunun döngü başlarında zıplama/kesinti yapmasını önleyen pürüzsüz geçiş sistemi
+  function makeVideoLoopSeamless(video) {
+    if (!video) return;
+    
+    // Geçiş efekti ekle
+    video.style.transition = 'opacity 0.6s ease-in-out';
+    
+    let isFadingOut = false;
+    
+    video.addEventListener('timeupdate', () => {
+      const duration = video.duration;
+      if (!duration || isNaN(duration)) return;
+      
+      const timeLeft = duration - video.currentTime;
+      
+      // Video bitimine 0.8 saniye kala yavaşça karart
+      if (timeLeft <= 0.8 && !isFadingOut) {
+        isFadingOut = true;
+        video.style.opacity = '0';
+      }
+      
+      // Video yeniden başladığında (döngü başı) geri parlat
+      if (video.currentTime < 0.2 && isFadingOut) {
+        isFadingOut = false;
+        video.style.opacity = '1';
+      }
+    });
+    
+    // Güvenlik önlemleri (olası seek ve oynatma durumlarında karartıyı sıfırlama)
+    video.addEventListener('seeked', () => {
+      if (video.currentTime < 0.5) {
+        isFadingOut = false;
+        video.style.opacity = '1';
+      }
+    });
+    
+    video.addEventListener('play', () => {
+      isFadingOut = false;
+      video.style.opacity = '1';
+    });
+  }
+
   if (bgVideo) {
     bgVideo.muted = true;
+    makeVideoLoopSeamless(bgVideo);
 
     const playPromise = bgVideo.play();
     if (playPromise !== undefined) {
@@ -253,26 +296,11 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     setTimeout(() => {
-      if (alertEl) {
-        alertEl.style.display = "flex";
-        alertEl.className = "form-alert success";
-        if (formEl.id === 'reservationForm') {
-          alertEl.innerHTML = `<i class="fa-solid fa-circle-check"></i> <span>Rezervasyon talebiniz başarıyla alındı! Teyit için en kısa sürede sizi arayacağız.</span>`;
-        }
-        yumusakKaydir(alertEl);
-      }
-      formEl.reset();
+      // ⚠️ Alert manipülasyonu kaldırıldı — alertGoster() fonksiyonu kendi yönetir
       if (submitBtn) {
         submitBtn.disabled = false;
         submitBtn.innerHTML = originalText;
       }
-      setTimeout(() => {
-        if (alertEl) alertEl.style.display = "none";
-        const ticketContainer = document.getElementById('resTicketContainer');
-        if (ticketContainer && ticketContainer.style.display !== 'none') {
-          yumusakKaydir(ticketContainer);
-        }
-      }, 5000);
     }, beklemeSuresi);
   }
 
@@ -493,6 +521,11 @@ document.addEventListener("DOMContentLoaded", () => {
         btn.classList.add("active");
         aktifKategori = btn.dataset.kategori;
         menuyuFiltrele();
+        // Mobilde veya derindeyken kategori değiştiğinde kullanıcıyı listenin en başına çıkarıyoruz
+        const target = document.querySelector(".menu-section") || document.getElementById("menu-grid");
+        if (target) {
+          yumusakKaydir(target, 130); // Header + Yapışkan bar yüksekliğini hesaba katıyoruz
+        }
       });
     });
 
@@ -717,15 +750,58 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       // 3. Rezervasyon Tarihi
+      let isSunday = false;
+      let selectedDayOfWeek = -1;
       if (!dateInput || !dateInput.value.trim() || dateInput.value.trim() === 'Tarih Seçiniz') {
         hataGoster(dateInput, 'Lütfen rezervasyon tarihini seçiniz.');
         if (!hasError) { dateInput.focus(); hasError = true; }
+      } else {
+        const dateVal = dateInput.value.trim();
+        const parts = dateVal.split('.');
+        if (parts.length === 3) {
+          const day = parseInt(parts[0], 10);
+          const month = parseInt(parts[1], 10) - 1;
+          const year = parseInt(parts[2], 10);
+          const localDate = new Date(year, month, day);
+          selectedDayOfWeek = localDate.getDay();
+          
+          if (selectedDayOfWeek === 0) {
+            isSunday = true;
+            hataGoster(dateInput, 'Pazar günleri kapalıyız. Lütfen başka bir gün seçiniz.');
+            if (!hasError) { dateInput.focus(); hasError = true; }
+          }
+        }
       }
 
       // 4. Rezervasyon Saati
       if (!timeInput || !timeInput.value.trim() || timeInput.value.trim() === 'Saat Seçiniz') {
         hataGoster(timeInput, 'Lütfen rezervasyon saatini seçiniz.');
         if (!hasError) { timeInput.focus(); hasError = true; }
+      } else if (!isSunday && selectedDayOfWeek !== -1) {
+        const timeVal = timeInput.value.trim();
+        const timeParts = timeVal.split(':');
+        if (timeParts.length === 2) {
+          const hours = parseInt(timeParts[0], 10);
+          const minutes = parseInt(timeParts[1], 10);
+          const totalMinutes = hours * 60 + minutes;
+
+          // Pazartesi - Perşembe (1-4): 10:00 - 22:00 (600 - 1320 dakika)
+          // Cuma - Cumartesi (5-6): 10:00 - 23:00 (600 - 1380 dakika)
+          let minTime = "10:00";
+          let maxTime = "22:00";
+          let minLimit = 600;
+          let maxLimit = 1320;
+
+          if (selectedDayOfWeek === 5 || selectedDayOfWeek === 6) {
+            maxTime = "23:00";
+            maxLimit = 1380;
+          }
+
+          if (totalMinutes < minLimit || totalMinutes > maxLimit) {
+            hataGoster(timeInput, `Seçilen gün için mesai saatlerimiz ${minTime} - ${maxTime} arasındadır.`);
+            if (!hasError) { timeInput.focus(); hasError = true; }
+          }
+        }
       }
 
       // 5. Kişi Sayısı
@@ -735,12 +811,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       if (hasError) {
-        if (resFormAlert) {
-          resFormAlert.style.display = 'flex';
-          resFormAlert.className = 'form-alert error';
-          resFormAlert.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> <span>Lütfen tüm zorunlu alanları eksiksiz doldurunuz.</span>';
-          yumusakKaydir(resFormAlert);
-        }
+        alertGoster(resFormAlert, 'error', '<i class="fa-solid fa-triangle-exclamation"></i> <span>Lütfen tüm zorunlu alanları eksiksiz doldurunuz.</span>');
         return;
       }
 
@@ -753,7 +824,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
       lastSubmittedTicketData = { name: nameVal, phone: phoneVal, date: dateVal, time: timeVal, guests: guestsVal, notes: notesVal };
 
-      formGonderimSimuleEt(reservationForm, resFormAlert, 'Restorana İletiliyor...', 800);
+      // Butonu yükleniyor moduna al (formGonderimSimuleEt yerine inline)
+      const submitBtn = reservationForm.querySelector('button[type="submit"]');
+      const originalBtnHtml = submitBtn ? submitBtn.innerHTML : '';
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Restorana İletiliyor...';
+      }
 
       const renderTicket = (data) => {
         const ticketContainer = document.getElementById('resTicketContainer');
@@ -790,16 +867,58 @@ document.addEventListener("DOMContentLoaded", () => {
       })
       .then(res => res.json())
       .then(result => {
+        // Butonu eski haline getir
+        if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = originalBtnHtml; }
+
         if (result && result.success && result.data) {
+          alertGoster(resFormAlert, 'success', '<i class="fa-solid fa-circle-check"></i> <span>Rezervasyon talebiniz alındı.</span>');
           renderTicket(result.data);
         } else {
+          const msg = (result && result.message) ? result.message : 'Rezervasyon gönderilemedi.';
+          alertGoster(resFormAlert, 'error', `<i class="fa-solid fa-triangle-exclamation"></i> <span>${msg}</span>`);
           renderTicket({});
         }
       })
-      .catch(() => {
+      .catch(err => {
+        if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = originalBtnHtml; }
+        alertGoster(resFormAlert, 'error', '<i class="fa-solid fa-triangle-exclamation"></i> <span>İşlem sırasında bir hata oluştu.</span>');
         renderTicket({});
       });
     });
+
+    // ==========================================
+    // 🔔 FORM ALERT YARDIMCI FONKSİYONU
+    // Her buton tıklamasında gösterilir, 5 sn sonra kaybolur.
+    // Kendi kendine geri dönmez (CSS --hidden class ile korunur).
+    // ==========================================
+    let alertHideTimer = null;
+
+    function alertGoster(el, type, html) {
+      if (!el) return;
+
+      // Önceki timer'ı iptal et + kalıcı gizleme class'ını kaldır (yeni tıklama geldi)
+      clearTimeout(alertHideTimer);
+      el.classList.remove('form-alert--hidden');
+
+      el.style.transition = 'none';
+      el.style.opacity = '1';
+      el.style.display = 'flex';
+      el.className = `form-alert ${type}`;
+      el.innerHTML = html;
+      yumusakKaydir(el);
+
+      alertHideTimer = setTimeout(() => {
+        el.style.transition = 'opacity 0.6s ease';
+        el.style.opacity = '0';
+        setTimeout(() => {
+          el.style.display = 'none';
+          el.style.opacity = '1';
+          el.style.transition = 'none';
+          // 5 sn sonra --hidden ekle → kendi kendine yeniden beliremez
+          el.classList.add('form-alert--hidden');
+        }, 650);
+      }, 5000);
+    }
 
     function displayTicketData(data) {
       const cardTableNumber = document.getElementById('cardTableNumber');
@@ -909,8 +1028,78 @@ document.addEventListener("DOMContentLoaded", () => {
           if (parts.length === 3) {
             resDateInput.value = `${parts[2]}.${parts[1]}.${parts[0]}`;
             resDateInput.classList.remove('input-error');
+
+            // Eski uyarı spanlarını temizle
             const errSpan = resDateInput.closest('.form-group')?.querySelector('.error-msg');
             if (errSpan) errSpan.remove();
+
+            // Eski pazar uyarı banner'ını ve yasak ikonunu temizle
+            const oldBanner = document.getElementById('sundayWarningBanner');
+            if (oldBanner) oldBanner.remove();
+            const oldBanIcon = document.getElementById('sundayBanIcon');
+            if (oldBanIcon) oldBanIcon.remove();
+
+            const year = parseInt(parts[0], 10);
+            const month = parseInt(parts[1], 10) - 1;
+            const day = parseInt(parts[2], 10);
+            const localDate = new Date(year, month, day);
+            const dayOfWeek = localDate.getDay();
+
+            if (dayOfWeek === 0) {
+              resDateInput.classList.add('input-error');
+
+              const formGroup = resDateInput.closest('.form-group');
+              if (formGroup) {
+                const banner = document.createElement('div');
+                banner.id = 'sundayWarningBanner';
+                banner.style.cssText = `
+                  margin-top: 8px;
+                  padding: 10px 14px;
+                  background: rgba(231, 76, 60, 0.13);
+                  border-left: 3px solid #e74c3c;
+                  border-radius: 0 8px 8px 0;
+                  color: #ff7675;
+                  font-size: 0.83rem;
+                  font-weight: 500;
+                  display: flex;
+                  align-items: center;
+                  gap: 8px;
+                  position: static;
+                  transition: opacity 0.6s ease;
+                  opacity: 1;
+                `;
+
+                const icon = document.createElement('span');
+                icon.textContent = '⚠️';
+                icon.style.cssText = 'font-size: 0.95rem; flex-shrink: 0; position: static; display: inline;';
+
+                const text = document.createElement('span');
+                text.textContent = 'Pazar günleri kapalıyız. Lütfen başka bir gün seçiniz.';
+                text.style.cssText = 'position: static; display: inline;';
+
+                banner.appendChild(icon);
+                banner.appendChild(text);
+                formGroup.appendChild(banner);
+
+                // 5 saniye sonra yavaşça kaybolur ve DOM'dan silinir
+                setTimeout(() => {
+                  banner.style.opacity = '0';
+                  setTimeout(() => banner.remove(), 650);
+                }, 5000);
+              }
+            } else {
+              // Pazar değil — saat inputunun min/max değerlerini güne göre ayarla
+              if (hiddenNativeTime) {
+                hiddenNativeTime.min = '10:00';
+                if (dayOfWeek === 5 || dayOfWeek === 6) {
+                  // Cuma - Cumartesi: 23:00'e kadar
+                  hiddenNativeTime.max = '23:00';
+                } else {
+                  // Pazartesi - Perşembe: 22:00'ye kadar
+                  hiddenNativeTime.max = '22:00';
+                }
+              }
+            }
           }
         }
       });
@@ -946,6 +1135,41 @@ document.addEventListener("DOMContentLoaded", () => {
           resTimeInput.classList.remove('input-error');
           const errSpan = resTimeInput.closest('.form-group')?.querySelector('.error-msg');
           if (errSpan) errSpan.remove();
+
+          // Seçilen saate göre mesai saati kontrolü
+          if (resDateInput.value && resDateInput.value !== 'Tarih Seçiniz') {
+            const dateParts = resDateInput.value.split('.');
+            if (dateParts.length === 3) {
+              const day = parseInt(dateParts[0], 10);
+              const month = parseInt(dateParts[1], 10) - 1;
+              const year = parseInt(dateParts[2], 10);
+              const localDate = new Date(year, month, day);
+              const dayOfWeek = localDate.getDay();
+
+              const timeParts = e.target.value.split(':');
+              if (timeParts.length === 2) {
+                const hours = parseInt(timeParts[0], 10);
+                const minutes = parseInt(timeParts[1], 10);
+                const totalMinutes = hours * 60 + minutes;
+
+                let minTime = "10:00";
+                let maxTime = "22:00";
+                let minLimit = 600;
+                let maxLimit = 1320;
+
+                if (dayOfWeek === 5 || dayOfWeek === 6) {
+                  maxTime = "23:00";
+                  maxLimit = 1380;
+                }
+
+                if (dayOfWeek === 0) {
+                  hataGoster(resTimeInput, 'Pazar günleri kapalıyız.');
+                } else if (totalMinutes < minLimit || totalMinutes > maxLimit) {
+                  hataGoster(resTimeInput, `Seçilen gün için mesai saatlerimiz ${minTime} - ${maxTime} arasındadır.`);
+                }
+              }
+            }
+          }
         }
       });
     }
@@ -954,6 +1178,30 @@ document.addEventListener("DOMContentLoaded", () => {
   // --- İLETİŞİM FORMU SİSTEMİ VE VERİTABANI BAĞLANTISI ---
   const contactForm = document.getElementById('contactForm');
   const contactFormAlert = document.getElementById('formAlert');
+
+  // Timer submit handler DIŞINDA tanımlanmalı — yoksa her tıklamada sıfırlanır
+  let contactAlertTimer = null;
+  function contactAlertGoster(type, html) {
+    if (!contactFormAlert) return;
+    clearTimeout(contactAlertTimer);
+    contactFormAlert.classList.remove('form-alert--hidden');
+    contactFormAlert.style.transition = 'none';
+    contactFormAlert.style.opacity = '1';
+    contactFormAlert.style.display = 'flex';
+    contactFormAlert.className = `form-alert ${type}`;
+    contactFormAlert.innerHTML = html;
+    yumusakKaydir(contactFormAlert);
+    contactAlertTimer = setTimeout(() => {
+      contactFormAlert.style.transition = 'opacity 0.6s ease';
+      contactFormAlert.style.opacity = '0';
+      setTimeout(() => {
+        contactFormAlert.style.display = 'none';
+        contactFormAlert.style.opacity = '1';
+        contactFormAlert.style.transition = 'none';
+        contactFormAlert.classList.add('form-alert--hidden');
+      }, 650);
+    }, 5000);
+  }
 
   if (contactForm) {
     contactForm.addEventListener('submit', (e) => {
@@ -990,12 +1238,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       if (hasError) {
-        if (contactFormAlert) {
-          contactFormAlert.style.display = 'flex';
-          contactFormAlert.className = 'form-alert error';
-          contactFormAlert.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> <span>Lütfen tüm zorunlu alanları eksiksiz ve doğru doldurunuz.</span>';
-          yumusakKaydir(contactFormAlert);
-        }
+        contactAlertGoster('error', '<i class="fa-solid fa-triangle-exclamation"></i> <span>Lütfen tüm zorunlu alanları eksiksiz ve doğru doldurunuz.</span>');
         return;
       }
 
@@ -1014,20 +1257,14 @@ document.addEventListener("DOMContentLoaded", () => {
       .then(res => res.json())
       .then(result => {
         if (result && result.success) {
-          if (contactFormAlert) {
-            contactFormAlert.style.display = 'flex';
-            contactFormAlert.className = 'form-alert success';
-            contactFormAlert.innerHTML = '<i class="fa-solid fa-circle-check"></i> <span>Mesajınız veritabanına başarıyla kaydedildi! En kısa sürede sizinle iletişime geçeceğiz.</span>';
-          }
+          contactAlertGoster('success', '<i class="fa-solid fa-circle-check"></i> <span>Mesajınız restorana başarıyla iletildi! En kısa sürede sizinle iletişime geçeceğiz.</span>');
           contactForm.reset();
+        } else {
+          contactAlertGoster('error', '<i class="fa-solid fa-triangle-exclamation"></i> <span>Mesaj gönderilemedi. Lütfen tekrar deneyiniz.</span>');
         }
       })
       .catch(() => {
-        if (contactFormAlert) {
-          contactFormAlert.style.display = 'flex';
-          contactFormAlert.className = 'form-alert success';
-          contactFormAlert.innerHTML = '<i class="fa-solid fa-circle-check"></i> <span>Mesajınız başarıyla iletildi! En kısa sürede sizinle iletişime geçeceğiz.</span>';
-        }
+        contactAlertGoster('success', '<i class="fa-solid fa-circle-check"></i> <span>Mesajınız başarıyla iletildi! En kısa sürede sizinle iletişime geçeceğiz.</span>');
         contactForm.reset();
       });
     });
@@ -1055,9 +1292,20 @@ document.addEventListener("DOMContentLoaded", () => {
     errorSpans.forEach(el => el.remove());
     const inlineErrs = document.querySelectorAll('.input-inline-error');
     inlineErrs.forEach(el => el.remove());
+
+    // Aktif çalışan timer'ları temizle ki sonradan tetiklenip alert'i açmasınlar
+    if (typeof alertHideTimer !== 'undefined' && alertHideTimer !== null) {
+      clearTimeout(alertHideTimer);
+    }
+    if (typeof contactAlertTimer !== 'undefined' && contactAlertTimer !== null) {
+      clearTimeout(contactAlertTimer);
+    }
+
     const formAlerts = document.querySelectorAll('.form-alert');
     formAlerts.forEach(alert => {
       alert.style.display = 'none';
+      alert.classList.add('form-alert--hidden');
+      alert.style.opacity = '1';
     });
   }
 

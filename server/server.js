@@ -87,30 +87,83 @@ app.get('/api/menu', (req, res) => {
 app.post('/api/rezervasyon', (req, res) => {
   const { name, phone, date, time, guests, notes } = req.body;
 
-  if (!name || !phone || !date || !time) {
-    return res.status(400).json({
-      success: false,
-      message: 'Lütfen ad, telefon, tarih ve saat alanlarını eksiksiz doldurunuz.'
-    });
+  // --- SUNUCU TARAFI DOĞRULAMA (İstemci doğrulaması güvenlik değildir) ---
+  const errors = [];
+
+  // 1. Ad Soyad
+  if (!name || typeof name !== 'string' || name.trim().length < 3) {
+    errors.push('Ad soyad en az 3 karakter olmalıdır.');
+  }
+
+  // 2. Telefon (05XXXXXXXXX)
+  const phoneRegex = /^05[0-9]{9}$/;
+  if (!phone || !phoneRegex.test(phone.trim())) {
+    errors.push('Telefon numarası 05 ile başlayan 11 haneli format olmalıdır.');
+  }
+
+  // 3. Tarih
+  if (!date || typeof date !== 'string') {
+    errors.push('Geçerli bir tarih giriniz.');
+  }
+
+  // 4. Saat
+  if (!time || typeof time !== 'string') {
+    errors.push('Geçerli bir saat giriniz.');
+  }
+
+  // 5. Kişi Sayısı
+  const guestCount = parseInt(guests, 10);
+  if (isNaN(guestCount) || guestCount < 1 || guestCount > 10) {
+    errors.push('Kişi sayısı 1 ile 10 arasında olmalıdır.');
+  }
+
+  if (errors.length > 0) {
+    return res.status(400).json({ success: false, message: errors.join(' | '), errors });
   }
 
   // Tarih Formatını Standartlaştırma (DD.MM.YYYY -> YYYY-MM-DD)
-  let formattedDate = date;
-  if (date && date.includes('.')) {
-    const parts = date.split('.');
+  let formattedDate = date.trim();
+  if (formattedDate.includes('.')) {
+    const parts = formattedDate.split('.');
     if (parts.length === 3) {
       formattedDate = `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
     }
   }
 
+  // 6. Geçmişe rezervasyon engellensin
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const selectedDate = new Date(formattedDate);
+  if (isNaN(selectedDate.getTime()) || selectedDate < today) {
+    return res.status(400).json({ success: false, message: 'Geçmiş bir tarihe rezervasyon yapılamaz.' });
+  }
+
+  // 7. Pazar günü kontrolü (0 = Pazar)
+  const dayOfWeek = selectedDate.getDay();
+  if (dayOfWeek === 0) {
+    return res.status(400).json({ success: false, message: 'Pazar günleri restoranımız kapalıdır.' });
+  }
+
+  // 8. Çalışma saatleri kontrolü
+  const [hours, minutes] = time.trim().split(':').map(Number);
+  const totalMinutes = hours * 60 + minutes;
+  const minMinutes = 10 * 60; // 10:00
+  const maxMinutes = (dayOfWeek === 5 || dayOfWeek === 6) ? 23 * 60 : 22 * 60; // Cum-Cmt: 23:00, diğer: 22:00
+
+  if (isNaN(hours) || isNaN(minutes) || totalMinutes < minMinutes || totalMinutes > maxMinutes) {
+    const maxStr = (dayOfWeek === 5 || dayOfWeek === 6) ? '23:00' : '22:00';
+    return res.status(400).json({ success: false, message: `Çalışma saatlerimiz bu gün için 10:00 - ${maxStr} arasındadır.` });
+  }
+
+  // --- VERİTABANINA KAYDET ---
   const sql = `
     INSERT INTO rezervasyonlar (ad_soyad, telefon, tarih, saat, kisi_sayisi, notlar)
     VALUES (?, ?, ?, ?, ?, ?)
   `;
 
-  db.run(sql, [name, phone, formattedDate, time, guests || 1, notes || ''], function(err) {
+  db.run(sql, [name.trim(), phone.trim(), formattedDate, time.trim(), guestCount, notes ? notes.trim() : ''], function(err) {
     if (err) {
-      return res.status(500).json({ success: false, message: 'Rezervasyon kaydı başarısız.', error: err.message });
+      return res.status(500).json({ success: false, message: 'Rezervasyon kaydı sırasında bir sunucu hatası oluştu.', error: err.message });
     }
 
     const masaNo = String(Math.floor(1 + Math.random() * 18)).padStart(2, '0');
@@ -119,15 +172,15 @@ app.post('/api/rezervasyon', (req, res) => {
 
     res.status(201).json({
       success: true,
-      message: 'Rezervasyonunuz başarıyla veritabanına kaydedildi!',
+      message: 'Rezervasyonunuz başarıyla alındı! En kısa sürede tarafınıza ulaşacağız.',
       data: {
         id: this.lastID,
-        name,
-        phone,
+        name: name.trim(),
+        phone: phone.trim(),
         date,
-        time,
-        guests: guests || 1,
-        notes: notes || '',
+        time: time.trim(),
+        guests: guestCount,
+        notes: notes ? notes.trim() : '',
         masaNo,
         konum: rastgeleKonum
       }

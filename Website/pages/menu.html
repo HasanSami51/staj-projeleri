@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lezzet Mührü 1932 | Gaziantep Geleneksel Menü & Izgara Çeşitleri</title>
+    <title>Geleneksel Gaziantep Menüsü | Lezzet Mührü 1932</title>
     <meta name="description" content="Lezzet Mührü 1932 Gaziantep menüsü: Meşhur Adana kebap, taş fırın pide, çıtır lahmacun, zeytinyağlılar, katmer ve 42 lezzet çeşidi. Online inceleyin ve PDF indirin.">
     <meta name="keywords" content="Gaziantep menüsü, Lezzet Mührü 1932, Adana kebap, lahmacun, pide, künefe, zeytinyağlılar, dijital menü PDF">
     <meta name="author" content="Lezzet Mührü 1932">
@@ -100,6 +100,7 @@
 
       
 <section class="menu-section" style="padding-bottom: 60px;">
+    <!-- 1. Arama kutusu için bağımsız konteyner (Merkezlenmiş) -->
     <div class="container">
         <div class="search-container" style="margin-bottom: 25px; text-align:center; display: flex; justify-content: center; align-items: center; gap: 15px; flex-wrap: wrap;">
             <div style="position: relative; width: 100%; max-width:460px;">
@@ -110,27 +111,26 @@
                 <i class="fa-solid fa-print"></i> Menüyü Yazdır / PDF (42 Lezzet)
             </button>
         </div>
+    </div>
 
-        <div class="filter-buttons-wrapper">
-          <div class="filter-buttons">
-              <button class="filter-btn active" data-kategori="tumu">Tüm Lezzetler <span class="badge-count">42</span></button>
-              <button class="filter-btn" data-kategori="corba">Çorbalar <span class="badge-count">5</span></button>
-              <button class="filter-btn" data-kategori="kebap">Izgaralar & Kebaplar <span class="badge-count">9</span></button>
-              <button class="filter-btn" data-kategori="pide">Pideler & Lahmacunlar <span class="badge-count">9</span></button>
-              <button class="filter-btn" data-kategori="zeytinyagli">Zeytinyağlı & Salatalar <span class="badge-count">8</span></button> 
-              <button class="filter-btn" data-kategori="tatli">Tatlılar <span class="badge-count">5</span></button>
-              <button class="filter-btn" data-kategori="icecek">İçecekler <span class="badge-count">6</span></button>
-          </div>
+    <!-- 2. Yapışkan Kategori Barı (Ekranda 100% genişlikte yayılan, kenarları açık kalmayan solid şerit) -->
+    <div class="filter-buttons-wrapper">
+      <div class="container" style="padding: 0 !important;">
+        <div class="filter-buttons">
+            <button class="filter-btn active" data-kategori="tumu">⭐ Şefin Seçtikleri <span class="badge-count">6</span></button>
+            <button class="filter-btn" data-kategori="corba">Çorbalar <span class="badge-count">5</span></button>
+            <button class="filter-btn" data-kategori="kebap">Izgaralar & Kebaplar <span class="badge-count">9</span></button>
+            <button class="filter-btn" data-kategori="pide">Pideler & Lahmacunlar <span class="badge-count">9</span></button>
+            <button class="filter-btn" data-kategori="zeytinyagli">Zeytinyağlı & Salatalar <span class="badge-count">8</span></button> 
+            <button class="filter-btn" data-kategori="tatli">Tatlılar <span class="badge-count">5</span></button>
+            <button class="filter-btn" data-kategori="icecek">İçecekler <span class="badge-count">6</span></button>
         </div>
+      </div>
+    </div>
 
+    <!-- 3. Yemek listesi ve diğer bloklar için bağımsız konteyner (Merkezlenmiş) -->
+    <div class="container">
         <div class="dishes-grid" id="menu-grid"></div>
-
-        <!-- Load More Button -->
-        <div id="loadMoreContainer" class="load-more-wrapper text-center">
-          <button id="loadMoreBtn" class="btn-load-more">
-            Tüm Lezzetleri İncele (42 Lezzet) <i class="fa-solid fa-chevron-down"></i>
-          </button>
-        </div>
 
         <!-- Chef's Recommendation Card (Menü Ortası) -->
         <div class="chef-special-card">
