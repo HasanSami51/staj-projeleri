@@ -128,8 +128,8 @@ document.addEventListener("DOMContentLoaded", () => {
       toggleBtn = document.createElement('button');
       toggleBtn.id = 'atmosphereToggleBtn';
       toggleBtn.className = 'atmosphere-toggle-btn';
-      toggleBtn.setAttribute('title', 'Atmosfer Modunu Değiştir (Tarihi Antep Gündüzü / Meşe Kömürü Akşamı)');
-      toggleBtn.innerHTML = `<i class="fa-solid fa-fire" style="color:#e74c3c;"></i> <span>Meşe Kömürü Akşamı</span>`;
+      toggleBtn.setAttribute('title', 'Atmosfer Modunu Değiştir (Sabah Sefası / Mangal Akşamı)');
+      toggleBtn.innerHTML = `<i class="fa-solid fa-fire" style="color:#e74c3c;"></i> <span>Mangal Akşamı</span>`;
       statusWrapper.appendChild(toggleBtn);
     }
 
@@ -159,14 +159,14 @@ document.addEventListener("DOMContentLoaded", () => {
       document.body.classList.add('day-atmosphere');
       localStorage.setItem('atmosphereMode', 'day');
       if (toggleBtn) {
-        toggleBtn.innerHTML = `<i class="fa-solid fa-sun" style="color:#f39c12;"></i> <span>Tarihi Antep Gündüzü</span>`;
+        toggleBtn.innerHTML = `<i class="fa-solid fa-sun" style="color:#f39c12;"></i> <span>Sabah Sefası</span>`;
         toggleBtn.classList.add('day-active');
       }
     } else {
       document.body.classList.remove('day-atmosphere');
       localStorage.setItem('atmosphereMode', 'night');
       if (toggleBtn) {
-        toggleBtn.innerHTML = `<i class="fa-solid fa-fire" style="color:#e74c3c;"></i> <span>Meşe Kömürü Akşamı</span>`;
+        toggleBtn.innerHTML = `<i class="fa-solid fa-fire" style="color:#e74c3c;"></i> <span>Mangal Akşamı</span>`;
         toggleBtn.classList.remove('day-active');
       }
     }
@@ -279,6 +279,9 @@ document.addEventListener("DOMContentLoaded", () => {
         `;
       }
     });
+
+    const activeLang = localStorage.getItem('language') || 'tr';
+    updateStatusBadgeTranslation(activeLang);
   }
 
   // 1. Ekranı Yumuşak Kaydırma (Smooth Scroll)
@@ -364,22 +367,22 @@ document.addEventListener("DOMContentLoaded", () => {
         const currentLang = localStorage.getItem('language') || 'tr';
         
         // Dinamik Yemek Çevirisi
-        const translatedAd = (window.translations && translations[currentLang] && translations[currentLang][yemek.ad]) 
-          ? translations[currentLang][yemek.ad] 
+        const translatedAd = (window.translations && window.translations[currentLang] && window.translations[currentLang][yemek.ad]) 
+          ? window.translations[currentLang][yemek.ad] 
           : yemek.ad;
-        const translatedAciklama = (window.translations && translations[currentLang] && translations[currentLang][yemek.aciklama]) 
-          ? translations[currentLang][yemek.aciklama] 
+        const translatedAciklama = (window.translations && window.translations[currentLang] && window.translations[currentLang][yemek.aciklama]) 
+          ? window.translations[currentLang][yemek.aciklama] 
           : yemek.aciklama;
         
         // Dinamik Rozet Çevirileri
-        const chefSpecialLabel = (window.translations && translations[currentLang] && translations[currentLang]['menu-chef-special']) 
-          ? translations[currentLang]['menu-chef-special'] 
+        const chefSpecialLabel = (window.translations && window.translations[currentLang] && window.translations[currentLang]['menu-chef-special']) 
+          ? window.translations[currentLang]['menu-chef-special'] 
           : 'Şefin Önerisi';
-        const vegLabel = (window.translations && translations[currentLang] && translations[currentLang]['menu-vegetarian']) 
-          ? translations[currentLang]['menu-vegetarian'] 
+        const vegLabel = (window.translations && window.translations[currentLang] && window.translations[currentLang]['menu-vegetarian']) 
+          ? window.translations[currentLang]['menu-vegetarian'] 
           : 'Veg';
-        const spicyLabel = (window.translations && translations[currentLang] && translations[currentLang]['menu-spicy']) 
-          ? translations[currentLang]['menu-spicy'] 
+        const spicyLabel = (window.translations && window.translations[currentLang] && window.translations[currentLang]['menu-spicy']) 
+          ? window.translations[currentLang]['menu-spicy'] 
           : 'Acılı';
 
         const sefinOnerisiHTML = yemek.sefinOnerisi ? `<span class="badge badge-chef">⭐ ${chefSpecialLabel}</span>` : '';
@@ -443,11 +446,11 @@ document.addEventListener("DOMContentLoaded", () => {
     function menuyuFiltrele() {
       const filtrelenmis = yemekler.filter((yemek) => {
         const currentLang = localStorage.getItem('language') || 'tr';
-        const translatedAd = (window.translations && translations[currentLang] && translations[currentLang][yemek.ad]) 
-          ? translations[currentLang][yemek.ad] 
+        const translatedAd = (window.translations && window.translations[currentLang] && window.translations[currentLang][yemek.ad]) 
+          ? window.translations[currentLang][yemek.ad] 
           : yemek.ad;
-        const translatedAciklama = (window.translations && translations[currentLang] && translations[currentLang][yemek.aciklama]) 
-          ? translations[currentLang][yemek.aciklama] 
+        const translatedAciklama = (window.translations && window.translations[currentLang] && window.translations[currentLang][yemek.aciklama]) 
+          ? window.translations[currentLang][yemek.aciklama] 
           : yemek.aciklama;
 
         const kategoriUyumlu = (aktifKategori === "tumu") || (yemek.kategori === aktifKategori);
@@ -619,8 +622,8 @@ document.addEventListener("DOMContentLoaded", () => {
           const currentLang = localStorage.getItem('language') || 'tr';
           
           // E.g. "menu-filter-corba" might map to "Soups" or similar, otherwise fallback to baslik
-          const translatedKatTitle = (window.translations && translations[currentLang] && translations[currentLang]['menu-filter-' + kat.id]) 
-            ? translations[currentLang]['menu-filter-' + kat.id] 
+          const translatedKatTitle = (window.translations && window.translations[currentLang] && window.translations[currentLang]['menu-filter-' + kat.id]) 
+            ? window.translations[currentLang]['menu-filter-' + kat.id] 
             : kat.baslik;
 
           const katHeader = document.createElement("div");
@@ -629,11 +632,11 @@ document.addEventListener("DOMContentLoaded", () => {
           fragment.appendChild(katHeader);
 
           katYemekleri.forEach(yemek => {
-            const translatedAd = (window.translations && translations[currentLang] && translations[currentLang][yemek.ad]) 
-              ? translations[currentLang][yemek.ad] 
+            const translatedAd = (window.translations && window.translations[currentLang] && window.translations[currentLang][yemek.ad]) 
+              ? window.translations[currentLang][yemek.ad] 
               : yemek.ad;
-            const translatedAciklama = (window.translations && translations[currentLang] && translations[currentLang][yemek.aciklama]) 
-              ? translations[currentLang][yemek.aciklama] 
+            const translatedAciklama = (window.translations && window.translations[currentLang] && window.translations[currentLang][yemek.aciklama]) 
+              ? window.translations[currentLang][yemek.aciklama] 
               : yemek.aciklama;
 
             const cardDiv = document.createElement("div");
@@ -687,8 +690,8 @@ document.addEventListener("DOMContentLoaded", () => {
         if (katYemekleri.length > 0) {
           const currentLang = localStorage.getItem('language') || 'tr';
           
-          const translatedKatTitle = (window.translations && translations[currentLang] && translations[currentLang]['menu-filter-' + kat.id]) 
-            ? translations[currentLang]['menu-filter-' + kat.id] 
+          const translatedKatTitle = (window.translations && window.translations[currentLang] && window.translations[currentLang]['menu-filter-' + kat.id]) 
+            ? window.translations[currentLang]['menu-filter-' + kat.id] 
             : kat.baslik;
 
           const katHeader = document.createElement("div");
@@ -697,11 +700,11 @@ document.addEventListener("DOMContentLoaded", () => {
           fragment.appendChild(katHeader);
 
           katYemekleri.forEach(yemek => {
-            const translatedAd = (window.translations && translations[currentLang] && translations[currentLang][yemek.ad]) 
-              ? translations[currentLang][yemek.ad] 
+            const translatedAd = (window.translations && window.translations[currentLang] && window.translations[currentLang][yemek.ad]) 
+              ? window.translations[currentLang][yemek.ad] 
               : yemek.ad;
-            const translatedAciklama = (window.translations && translations[currentLang] && translations[currentLang][yemek.aciklama]) 
-              ? translations[currentLang][yemek.aciklama] 
+            const translatedAciklama = (window.translations && window.translations[currentLang] && window.translations[currentLang][yemek.aciklama]) 
+              ? window.translations[currentLang][yemek.aciklama] 
               : yemek.aciklama;
 
             const cardDiv = document.createElement("div");
@@ -1736,12 +1739,21 @@ document.addEventListener("DOMContentLoaded", () => {
           </button>
         </div>
       `;
-      // Atmosfer butonunun yanına veya status badge'in soluna ekle
-      const toggleBtn = document.getElementById('atmosphereToggleBtn');
-      if (toggleBtn) {
-        statusWrapper.insertBefore(langSelector, toggleBtn);
+      // Anasayfa (Home) linkinin önüne, yani navbar listesinin en başına yerleştir
+      const mainNavbarUl = document.querySelector('#mainNavbar ul');
+      if (mainNavbarUl) {
+        const li = document.createElement('li');
+        li.className = 'lang-selector-nav-item';
+        li.appendChild(langSelector);
+        mainNavbarUl.insertBefore(li, mainNavbarUl.firstChild);
       } else {
-        statusWrapper.appendChild(langSelector);
+        // Fallback: Atmosfer butonunun yanına veya status badge'in soluna ekle
+        const toggleBtn = document.getElementById('atmosphereToggleBtn');
+        if (toggleBtn) {
+          statusWrapper.insertBefore(langSelector, toggleBtn);
+        } else {
+          statusWrapper.appendChild(langSelector);
+        }
       }
     }
 
@@ -1811,18 +1823,18 @@ document.addEventListener("DOMContentLoaded", () => {
     const translateElements = document.querySelectorAll('[data-translate]');
     translateElements.forEach(el => {
       const key = el.getAttribute('data-translate');
-      if (translations[lang] && translations[lang][key] !== undefined) {
+      if (window.translations[lang] && window.translations[lang][key] !== undefined) {
         // Metin düğümünü (Text Node) bozmadan değiştirme
         let textNodeFound = false;
         for (let node of el.childNodes) {
           if (node.nodeType === Node.TEXT_NODE && node.nodeValue.trim() !== '') {
-            node.nodeValue = translations[lang][key];
+            node.nodeValue = window.translations[lang][key];
             textNodeFound = true;
             break;
           }
         }
         if (!textNodeFound && el.children.length === 0) {
-          el.textContent = translations[lang][key];
+          el.textContent = window.translations[lang][key];
         }
       }
     });
@@ -1831,8 +1843,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const placeholders = document.querySelectorAll('[data-translate-placeholder]');
     placeholders.forEach(el => {
       const key = el.getAttribute('data-translate-placeholder');
-      if (translations[lang] && translations[lang][key] !== undefined) {
-        el.setAttribute('placeholder', translations[lang][key]);
+      if (window.translations[lang] && window.translations[lang][key] !== undefined) {
+        el.setAttribute('placeholder', window.translations[lang][key]);
       }
     });
 
@@ -1885,9 +1897,9 @@ document.addEventListener("DOMContentLoaded", () => {
       const span = toggleBtn.querySelector('span');
       if (span) {
         if (lang === 'en') {
-          span.textContent = isDay ? 'Historic Antep Day' : 'Oak Charcoal Night';
+          span.textContent = isDay ? 'Morning Delight' : 'Barbecue Evening';
         } else {
-          span.textContent = isDay ? 'Tarihi Antep Gündüzü' : 'Meşe Kömürü Akşamı';
+          span.textContent = isDay ? 'Sabah Sefası' : 'Mangal Akşamı';
         }
       }
     }

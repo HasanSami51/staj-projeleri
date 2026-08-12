@@ -6657,3 +6657,57 @@ body.day-atmosphere .menu-section .filter-buttons-wrapper {
   }
 }
 
+/* ==========================================
+   📅 RESERVATION TABS & BUTTONS STYLES
+   ========================================== */
+.reservation-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+  border-bottom: 1.5px dashed rgba(243, 156, 18, 0.2);
+  padding-bottom: 1.2rem;
+}
+
+.tab-btn {
+  background: rgba(30, 15, 8, 0.65) !important;
+  border: 1px solid rgba(243, 156, 18, 0.3) !important;
+  color: rgba(255, 255, 255, 0.75) !important;
+  padding: 0.8rem 1.8rem !important;
+  font-size: 0.95rem !important;
+  font-weight: 600 !important;
+  border-radius: 30px !important;
+  cursor: pointer !important;
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  letter-spacing: 0.5px;
+}
+
+.tab-btn:hover {
+  color: #ffffff !important;
+  border-color: rgba(243, 156, 18, 0.7) !important;
+  background: rgba(30, 15, 8, 0.85) !important;
+  transform: translateY(-2px);
+}
+
+.tab-btn.active {
+  background: linear-gradient(135deg, var(--primary-kiremit), #d35400) !important;
+  border-color: var(--primary-kiremit) !important;
+  color: #ffffff !important;
+  box-shadow: 0 6px 20px rgba(230, 126, 34, 0.45) !important;
+}
+
+.lang-selector-nav-item {
+  display: flex !important;
+  align-items: center !important;
+}
+
+.lang-selector-nav-item .lang-selector-container {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+

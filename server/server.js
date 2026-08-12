@@ -4,13 +4,15 @@
 
 const express = require('express');
 const path = require('path');
+const session = require('express-session');
+const bcrypt = require('bcryptjs');
 const db = require('./db'); // SQLite Veritabanı Modülü
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 // ==========================================
-// 🗄️ SUNUCU AÇILIŞINDA MESAJLAR TABLOSUNU KONTROL ET / OLUŞTUR
+// 🗄️ SUNUCU AÇILIŞINDA MESAJLAR TABLOSUNU KONTROL ET / OLUŞTUR VE ADMİN SEED ET
 // ==========================================
 db.run(`
   CREATE TABLE IF NOT EXISTS mesajlar (
@@ -30,6 +32,83 @@ db.run(`
   }
 });
 
+// Admin Tablosunu Kontrol Et ve Varsayılan Admin Hesabını Seed Et
+db.run(`
+  CREATE TABLE IF NOT EXISTS admin (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    kullanici_adi TEXT UNIQUE NOT NULL,
+    sifre_hash TEXT NOT NULL,
+    eposta TEXT NOT NULL DEFAULT 'admin@lezzetmuhru.com',
+    son_giris DATETIME
+  )
+`, (err) => {
+  if (err) {
+    console.error('❌ admin tablosu oluşturulamadı:', err.message);
+  } else {
+    console.log('✅ admin tablosu hazır.');
+    // Eğer tablo boş ise varsayılan admin hesabını oluştur
+    db.get("SELECT COUNT(*) as count FROM admin", [], (err, row) => {
+      if (!err) {
+        if (row.count === 0) {
+          const defaultUser = 'admin';
+          const defaultPass = 'admin1932';
+          const salt = bcrypt.genSaltSync(10);
+          const hashedPassword = bcrypt.hashSync(defaultPass, salt);
+          
+          // Hem yeni hem de eski şema kolonlarını destekleyecek şekilde seed et
+          db.run(
+            "INSERT INTO admin (kullanici_adi, sifre_hash, eposta) VALUES (?, ?, ?)",
+            [defaultUser, hashedPassword, 'admin@lezzetmuhru.com'],
+            (insertErr) => {
+              if (insertErr) {
+                // Eski şema fallback'i (sadece kullanici_adi ve sifre kolonları varsa)
+                db.run(
+                  "INSERT INTO admin (kullanici_adi, sifre) VALUES (?, ?)",
+                  [defaultUser, hashedPassword],
+                  (fallbackErr) => {
+                    if (fallbackErr) {
+                      console.error('❌ Varsayılan admin seed edilemedi:', fallbackErr.message);
+                    } else {
+                      console.log('🔑 Varsayılan admin seed edildi (eski şema): Kullanıcı adı: admin | Şifre: admin1932');
+                    }
+                  }
+                );
+              } else {
+                console.log('🔑 Varsayılan admin seed edildi (yeni şema): Kullanıcı adı: admin | Şifre: admin1932');
+              }
+            }
+          );
+        } else {
+          // Eğer veritabanında plain-text şifre varsa (örneğin init_db.js kaynaklı 'admin1932'), bunu bcrypt ile hashle!
+          db.all("SELECT * FROM admin", [], (selectErr, rows) => {
+            if (!selectErr && rows) {
+              rows.forEach(adminRow => {
+                const hash = adminRow.sifre_hash || adminRow.sifre;
+                const isBcrypt = typeof hash === 'string' && /^(\$2[ayb]\$.{56})$/.test(hash);
+                if (hash && !isBcrypt) {
+                  const salt = bcrypt.genSaltSync(10);
+                  const newHashedPassword = bcrypt.hashSync(hash, salt);
+                  const updateCol = adminRow.sifre_hash !== undefined ? 'sifre_hash' : 'sifre';
+                  
+                  db.run(
+                    `UPDATE admin SET ${updateCol} = ? WHERE id = ?`,
+                    [newHashedPassword, adminRow.id],
+                    (updateErr) => {
+                      if (!updateErr) {
+                        console.log(`🔑 Admin ID ${adminRow.id} için plain-text şifre başarıyla bcrypt ile güncellendi.`);
+                      }
+                    }
+                  );
+                }
+              });
+            }
+          });
+        }
+      }
+    });
+  }
+});
+
 // CORS Desteği (Farklı Portlardan veya Live Server Üzerinden Gelen Fetch İstekleri İçin)
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
@@ -39,6 +118,31 @@ app.use((req, res, next) => {
 
 // JSON Gönderim Desteği (Body Parser)
 app.use(express.json());
+
+// Express Session Yapılandırması
+app.use(session({
+  secret: '1932_lezzet_muhru_secret_key_98765',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    maxAge: 1000 * 60 * 60 * 2, // 2 saatlik oturum süresi
+    secure: false // Lokal geliştirme için false
+  }
+}));
+
+// Admin Rotalarının Oturum Kontrolü (Session Protection Middleware)
+app.use((req, res, next) => {
+  const url = req.path.toLowerCase();
+  
+  // Sadece /admin altındaki sayfa isteklerini koru, login.html veya statik css/js dosyalarını muaf tut
+  if (url.startsWith('/admin') && !url.includes('login.html') && (url.endsWith('.html') || url === '/admin' || url === '/admin/')) {
+    if (!req.session || !req.session.isAdmin) {
+      console.log(`⚠️ Yetkisiz admin paneli erişim denemesi: ${req.path} -> Giriş sayfasına yönlendiriliyor.`);
+      return res.redirect('/admin/login.html');
+    }
+  }
+  next();
+});
 
 // 1. STATİK DOSYA SUNUMU (Mevcut Frontend Sitemizi Express Üzerinden Yayımlama)
 app.use(express.static(path.join(__dirname, '../Website/pages')));
@@ -390,13 +494,152 @@ app.post('/api/iletisim', (req, res) => {
   }
 });
 
-// 5. TÜM REZERVASYONLARI VERİTABANINDAN ÇEKME (GET /api/rezervasyonlar)
+// 5. TÜM REZERVASYONLARI VERİTABANINDAN ÇEKME (GET /api/rezervasyonlar) - Korunmalı
 app.get('/api/rezervasyonlar', (req, res) => {
+  if (!req.session || !req.session.isAdmin) {
+    return res.status(401).json({ success: false, error: 'unauthorized', message: 'Yetkisiz erişim.' });
+  }
   db.all("SELECT * FROM rezervasyonlar ORDER BY id DESC", [], (err, rows) => {
     if (err) return res.status(500).json({ success: false, error: err.message });
     res.json({ success: true, count: rows.length, data: rows });
   });
 });
+
+// ADMİN YETKİLENDİRME VE YÖNETİM ENDPOINTS
+// 1. Admin Login (POST /api/admin/login)
+app.post('/api/admin/login', (req, res) => {
+  const { username, password } = req.body;
+  if (!username || !password) {
+    return res.status(400).json({ success: false, message: 'Kullanıcı adı ve şifre gereklidir.' });
+  }
+
+  db.get("SELECT * FROM admin WHERE kullanici_adi = ?", [username.trim()], (err, row) => {
+    if (err) {
+      console.error('❌ Login veritabanı hatası:', err.message);
+      return res.status(500).json({ success: false, message: 'Sunucu hatası oluştu.' });
+    }
+    if (!row) {
+      return res.status(401).json({ success: false, message: 'Kullanıcı adı veya şifre hatalı.' });
+    }
+
+    // Hem sifre hem de sifre_hash kolonlarını kontrol et
+    const hash = row.sifre_hash || row.sifre;
+    if (!hash) {
+      console.error('❌ Veritabanında admin şifresi bulunamadı (şema uyumsuzluğu).');
+      return res.status(401).json({ success: false, message: 'Kullanıcı adı veya şifre hatalı.' });
+    }
+
+    try {
+      // Hem bcrypt hem de plain-text şifre karşılaştırmasını destekle
+      const isBcrypt = typeof hash === 'string' && /^(\$2[ayb]\$.{56})$/.test(hash);
+      let match = false;
+      if (isBcrypt) {
+        match = bcrypt.compareSync(password, hash);
+      } else {
+        match = (password === hash);
+      }
+      
+      if (!match) {
+        return res.status(401).json({ success: false, message: 'Kullanıcı adı veya şifre hatalı.' });
+      }
+    } catch (bcryptErr) {
+      console.error('❌ Şifre doğrulama hatası:', bcryptErr.message);
+      return res.status(500).json({ success: false, message: 'Şifre doğrulama hatası.' });
+    }
+
+    // Oturumu başlat
+    req.session.isAdmin = true;
+    req.session.username = row.kullanici_adi;
+    console.log(`🔐 Admin girişi başarılı: ${row.kullanici_adi}`);
+    res.json({ success: true, message: 'Giriş başarılı.', username: row.kullanici_adi });
+  });
+});
+
+// 2. Admin Logout (POST /api/admin/logout)
+app.post('/api/admin/logout', (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      console.error('❌ Logout hatası:', err.message);
+      return res.status(500).json({ success: false, message: 'Oturum kapatılamadı.' });
+    }
+    res.clearCookie('connect.sid');
+    res.json({ success: true, message: 'Başarıyla çıkış yapıldı.' });
+  });
+});
+
+// 3. Admin Check Auth (GET /api/admin/check-auth)
+app.get('/api/admin/check-auth', (req, res) => {
+  if (req.session && req.session.isAdmin) {
+    res.json({ authenticated: true, username: req.session.username });
+  } else {
+    res.json({ authenticated: false });
+  }
+});
+
+// 4. Rezervasyon Sil (DELETE /api/rezervasyonlar/:id) - Korunmalı
+app.delete('/api/rezervasyonlar/:id', (req, res) => {
+  if (!req.session || !req.session.isAdmin) {
+    return res.status(401).json({ success: false, error: 'unauthorized', message: 'Yetkisiz erişim.' });
+  }
+  const { id } = req.params;
+  db.run("DELETE FROM rezervasyonlar WHERE id = ?", [id], function(err) {
+    if (err) return res.status(500).json({ success: false, error: err.message });
+    res.json({ success: true, message: 'Rezervasyon silindi.' });
+  });
+});
+
+// 5. Rezervasyon Durumu Güncelle (POST /api/rezervasyonlar/durum/:id) - Korunmalı
+app.post('/api/rezervasyonlar/durum/:id', (req, res) => {
+  if (!req.session || !req.session.isAdmin) {
+    return res.status(401).json({ success: false, error: 'unauthorized', message: 'Yetkisiz erişim.' });
+  }
+  const { id } = req.params;
+  const { durum } = req.body;
+  if (!durum) {
+    return res.status(400).json({ success: false, message: 'Durum bilgisi gereklidir.' });
+  }
+  db.run("UPDATE rezervasyonlar SET durum = ? WHERE id = ?", [durum, id], function(err) {
+    if (err) return res.status(500).json({ success: false, error: err.message });
+    res.json({ success: true, message: 'Rezervasyon durumu güncellendi.' });
+  });
+});
+
+// 6. Tüm İletişim Mesajlarını Getir (GET /api/mesajlar) - Korunmalı
+app.get('/api/mesajlar', (req, res) => {
+  if (!req.session || !req.session.isAdmin) {
+    return res.status(401).json({ success: false, error: 'unauthorized', message: 'Yetkisiz erişim.' });
+  }
+  db.all("SELECT * FROM mesajlar ORDER BY id DESC", [], (err, rows) => {
+    if (err) return res.status(500).json({ success: false, error: err.message });
+    res.json({ success: true, count: rows.length, data: rows });
+  });
+});
+
+// 7. İletişim Mesajı Durumu Güncelle (POST /api/mesajlar/durum/:id) - Korunmalı
+app.post('/api/mesajlar/durum/:id', (req, res) => {
+  if (!req.session || !req.session.isAdmin) {
+    return res.status(401).json({ success: false, error: 'unauthorized', message: 'Yetkisiz erişim.' });
+  }
+  const { id } = req.params;
+  const { durum } = req.body;
+  db.run("UPDATE mesajlar SET durum = ? WHERE id = ?", [durum, id], function(err) {
+    if (err) return res.status(500).json({ success: false, error: err.message });
+    res.json({ success: true, message: 'Mesaj durumu güncellendi.' });
+  });
+});
+
+// 8. İletişim Mesajı Sil (DELETE /api/mesajlar/:id) - Korunmalı
+app.delete('/api/mesajlar/:id', (req, res) => {
+  if (!req.session || !req.session.isAdmin) {
+    return res.status(401).json({ success: false, error: 'unauthorized', message: 'Yetkisiz erişim.' });
+  }
+  const { id } = req.params;
+  db.run("DELETE FROM mesajlar WHERE id = ?", [id], function(err) {
+    if (err) return res.status(500).json({ success: false, error: err.message });
+    res.json({ success: true, message: 'Mesaj silindi.' });
+  });
+});
+
 
 // 6. SUNUCU SAĞLIK DURUMU
 app.get('/api/status', (req, res) => {

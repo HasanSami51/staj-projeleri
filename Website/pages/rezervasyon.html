@@ -50,14 +50,15 @@
        <button class="hamburger-btn" id="hamburgerBtn" aria-label="Menüyü Aç/Kapat">
               <i class="fa-solid fa-bars"></i>
             </button>
+
       <nav class="main-navbar" id="mainNavbar">
         <ul>
-          <li><a href="index.html">Anasayfa</a></li>
-          <li><a href="menu.html">Menü</a></li>
-          <li><a href="rezervasyon.html" class="active">Rezervasyon</a></li>
-          <li><a href="hakkimizda.html">Hakkımızda</a></li>
-          <li><a href="galeri.html">Galeri</a></li>
-          <li><a href="iletisim.html" class="nav-btn">İletişim</a></li>
+          <li><a href="index.html" data-translate="nav-home">Anasayfa</a></li>
+          <li><a href="menu.html" data-translate="nav-menu">Menü</a></li>
+          <li><a href="rezervasyon.html" class="active" data-translate="nav-reservation">Rezervasyon</a></li>
+          <li><a href="hakkimizda.html" data-translate="nav-about">Hakkımızda</a></li>
+          <li><a href="galeri.html" data-translate="nav-gallery">Galeri</a></li>
+          <li><a href="iletisim.html" class="nav-btn" data-translate="nav-contact">İletişim</a></li>
         </ul>
       </nav>
     </div>
@@ -67,10 +68,19 @@
         <section class="reservation-section section-padding">
             <div class="container">
                 <div class="section-title text-center">
-                    <h2>Masa Rezervasyonu</h2>
-                    <p>Asırlık lezzetlerimizi yerinde deneyimlemek için masanızı şimdiden ayırtın</p>
+                    <h2 data-translate="res-hero-title">Masa Rezervasyonu</h2>
+                    <p data-translate="res-hero-desc">Asırlık lezzetlerimizi yerinde deneyimlemek için masanızı şimdiden ayırtın</p>
                 </div>
-                <div class="reservation-form-container">
+                    <!-- Rezervasyon Sekmeleri -->
+                    <div class="reservation-tabs">
+                      <button type="button" class="tab-btn active" id="toggleNewResBtn" data-translate="res-tab-new">
+                        <i class="fa-solid fa-calendar-plus"></i> Masa Rezervasyonu
+                      </button>
+                      <button type="button" class="tab-btn" id="toggleQueryResBtn" data-translate="res-tab-query">
+                        <i class="fa-solid fa-magnifying-glass"></i> Rezervasyon Bul
+                      </button>
+                    </div>
+
                     <form id="reservationForm" class="reservation-form" novalidate>
                       <div id="resFormAlert" class="form-alert" style="display: none;">
                         <i class="fa-solid fa-circle-check"></i>
@@ -79,44 +89,44 @@
 
                       <div class="form-grid">
                         <div class="form-group">
-                          <label for="resName">Adınız Soyadınız <span class="required-star">*</span></label>
+                          <label for="resName"><span data-translate="res-form-name-label">Adınız Soyadınız</span> <span class="required-star">*</span></label>
                           <div class="input-icon-wrapper">
                             <i class="fa-solid fa-user input-icon"></i>
-                            <input type="text" id="resName" name="name" placeholder="Adınızı ve soyadınızı giriniz" required minlength="3" maxlength="50" title="Lütfen en az 3 karakterden oluşan adınızı giriniz.">
+                            <input type="text" id="resName" name="name" placeholder="Adınızı ve soyadınızı giriniz" required minlength="3" maxlength="50" title="Lütfen en az 3 karakterden oluşan adınızı giriniz." data-translate-placeholder="res-form-name-ph">
                           </div>
                         </div>
 
                         <div class="form-group">
-                          <label for="resPhone">Telefon Numaranız <span class="required-star">*</span></label>
+                          <label for="resPhone"><span data-translate="res-form-phone-label">Telefon Numaranız</span> <span class="required-star">*</span></label>
                           <div class="input-icon-wrapper">
                             <i class="fa-solid fa-phone input-icon"></i>
-                            <input type="tel" id="resPhone" name="phone" placeholder="05XX XXX XX XX" required pattern="05[0-9]{9}" title="Lütfen 05 ile başlayan 11 haneli cep telefonunuzu giriniz.">
+                            <input type="tel" id="resPhone" name="phone" placeholder="05XX XXX XX XX" required pattern="05[0-9]{9}" title="Lütfen 05 ile başlayan 11 haneli cep telefonunuzu giriniz." data-translate-placeholder="res-form-phone-ph">
                           </div>
                         </div>
 
                         <div class="form-group">
-                          <label for="resDate">Rezervasyon Tarihi <span class="required-star">*</span></label>
+                          <label for="resDate"><span data-translate="res-form-date-label">Rezervasyon Tarihi</span> <span class="required-star">*</span></label>
                           <div class="input-icon-wrapper">
                             <i class="fa-solid fa-calendar-days input-icon"></i>
-                            <input type="text" id="resDate" name="date" placeholder="Tarih Seçiniz" readonly required class="custom-picker-input">
+                            <input type="text" id="resDate" name="date" placeholder="Tarih Seçiniz" readonly required class="custom-picker-input" data-translate-placeholder="res-form-date-ph">
                             <input type="date" id="hiddenNativeDate" class="hidden-picker-element">
                           </div>
                         </div>
 
                         <div class="form-group">
-                          <label for="resTime">Saat <span class="required-star">*</span></label>
+                          <label for="resTime"><span data-translate="res-form-time-label">Saat</span> <span class="required-star">*</span></label>
                           <div class="input-icon-wrapper">
                             <i class="fa-solid fa-clock input-icon"></i>
-                            <input type="text" id="resTime" name="time" placeholder="Saat Seçiniz" readonly required class="custom-picker-input">
+                            <input type="text" id="resTime" name="time" placeholder="Saat Seçiniz" readonly required class="custom-picker-input" data-translate-placeholder="res-form-time-ph">
                             <input type="time" id="hiddenNativeTime" min="10:00" max="22:00" step="900" class="hidden-picker-element">
                           </div>
                         </div>
 
                         <div class="form-group full-width">
-                          <label for="resGuests">Kişi Sayısı <span class="required-star">*</span></label>
+                          <label for="resGuests"><span data-translate="res-form-guests-label">Kişi Sayısı</span> <span class="required-star">*</span></label>
                           <div class="input-icon-wrapper">
                             <i class="fa-solid fa-user-group input-icon"></i>
-                            <input type="number" id="resGuests" name="guests" placeholder="Kişi sayısını belirtiniz (1-10)" required min="1" max="10" title="Tek seferde en fazla 10 kişilik rezervasyon yapılabilir.">
+                            <input type="number" id="resGuests" name="guests" placeholder="Kişi sayısını belirtiniz (1-10)" required min="1" max="10" title="Tek seferde en fazla 10 kişilik rezervasyon yapılabilir." data-translate-placeholder="res-form-guests-ph">
                           </div>
                         </div>
 
@@ -132,6 +142,25 @@
                       <div class="form-submit-btn text-center">
                         <button type="submit" class="btn-primary" data-translate="res-form-submit-new">
                           <i class="fa-solid fa-calendar-check"></i> Rezervasyon Yap
+                        </button>
+                      </div>
+                    </form>
+
+                    <!-- Rezervasyon Sorgulama Formu -->
+                    <form id="reservationQueryForm" class="reservation-form" style="display: none;" novalidate>
+                      <div id="resQueryAlert" class="form-alert" style="display: none;"></div>
+                      
+                      <div class="form-group full-width" style="max-width: 500px; margin: 0 auto 2rem auto;">
+                        <label for="queryPhone" data-translate="res-query-phone-label">Kayıtlı Telefon Numaranız</label>
+                        <div class="input-icon-wrapper">
+                          <i class="fa-solid fa-phone input-icon"></i>
+                          <input type="tel" id="queryPhone" name="phone" placeholder="05XX XXX XX XX" required pattern="05[0-9]{9}" data-translate-placeholder="res-form-phone-ph">
+                        </div>
+                      </div>
+
+                      <div class="form-submit-btn text-center">
+                        <button type="submit" class="btn-primary" data-translate="res-form-submit-query">
+                          <i class="fa-solid fa-magnifying-glass"></i> Rezervasyon Bul
                         </button>
                       </div>
                     </form>
@@ -196,37 +225,37 @@
   </button>
 
   
-  <footer class="main-footer">
+    <footer class="main-footer">
     <div class="container footer-container">
       <div class="footer-col">
         <a href="index.html" class="footer-logo-link"><img src="../public/images/logo.png" alt="Lezzet Mührü Logo" class="footer-logo-img"></a>
-        <p class="footer-text">Geleneksel tarifler, asırlık lezzet ve ızgara ustalığıyla 1932'den beri sofralarınıza mühür vuruyoruz.</p>
+        <p class="footer-text" data-translate="footer-desc">Geleneksel tarifler, asırlık lezzet ve ızgara ustalığıyla 1932'den beri sofralarınıza mühür vuruyoruz.</p>
       </div>
      
       <div class="footer-col">
-        <h3>Hızlı Menü</h3>
+        <h3 data-translate="footer-quick-links">Hızlı Menü</h3>
         <ul class="footer-links">
-          <li><a href="index.html">Anasayfa</a></li>
-          <li><a href="menu.html">Menü</a></li>
-          <li><a href="rezervasyon.html">Rezervasyon</a></li>
-          <li><a href="hakkimizda.html">Hakkımızda</a></li>
-          <li><a href="galeri.html">Galeri</a></li>
+          <li><a href="index.html" data-translate="nav-home">Anasayfa</a></li>
+          <li><a href="menu.html" data-translate="nav-menu">Menü</a></li>
+          <li><a href="rezervasyon.html" data-translate="nav-reservation">Rezervasyon</a></li>
+          <li><a href="hakkimizda.html" data-translate="nav-about">Hakkımızda</a></li>
+          <li><a href="galeri.html" data-translate="nav-gallery">Galeri</a></li>
         </ul>
       </div>
 
       <div class="footer-col">
-        <h3>Çalışma Saatleri</h3>
+        <h3 data-translate="footer-hours-title">Çalışma Saatleri</h3>
         <div class="working-hours">
-          <p><strong>Pazartesi - Perşembe:</strong> 10:00 - 22:00</p>
-          <p><strong>Cuma - Cumartesi:</strong> 10:00 - 23:00</p>
-          <p><strong>Pazar:</strong> <span class="status-badge closed">Kapalı</span></p>
+          <p><strong data-translate="day-monday-thursday">Pazartesi - Perşembe:</strong> 10:00 - 22:00</p>
+          <p><strong data-translate="day-friday-saturday">Cuma - Cumartesi:</strong> 10:00 - 23:00</p>
+          <p><strong data-translate="day-sunday-label">Pazar:</strong> <span class="status-badge closed" data-translate="status-closed-short">Kapalı</span></p>
         </div>
       </div>
 
       <div class="footer-col">
-        <h3>İletişim</h3>
+        <h3 data-translate="footer-contact-title">İletişim Bilgileri</h3>
         <ul class="footer-contact-list">
-          <li><i class="fa-solid fa-location-dot"></i><span>Akkent Mahallesi, Kemalpaşa Caddesi, No:77, Şahinbey / Gaziantep</span></li>
+          <li><i class="fa-solid fa-location-dot"></i><span data-translate="footer-address">Akkent Mahallesi, Kemalpaşa Caddesi, No:77, Şahinbey / Gaziantep</span></li>
           <li><i class="fa-solid fa-phone"></i><a href="tel:02325137567">0 232 513 75 67</a></li>
           <li><i class="fa-solid fa-envelope"></i><a href="mailto:info@lezzetmuhru.com">info@lezzetmuhru.com</a></li>
         </ul>
@@ -240,11 +269,12 @@
 
     <div class="footer-bottom">
       <div class="container">
-        <p>&copy; 1932 - 2026 Lezzet Mührü. Tüm hakları saklıdır.</p>
+        <p data-translate="footer-copyright">© 2026 1932 Lezzet Mührü. Tüm Hakları Saklıdır.</p>
       </div>
     </div>
   </footer>
 
+  <script src="../public/js/translations.js"></script>
   <script src="../public/js/main.js?v=12.0"></script>
 </body>
 </html>

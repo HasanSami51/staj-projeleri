@@ -1,14 +1,1195 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
-    <title>Document</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lezzet Mührü 1932 - Yönetici Paneli</title>
+  <link rel="icon" type="image/png" href="../../public/images/favicon-round.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="../../public/css/style.css">
+  <style>
+    /* Admin Dashboard Specific Premium Styling */
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      font-family: 'Inter', sans-serif;
+      background-color: #0b0f13;
+      color: #ffffff;
+    }
+
+    .admin-wrapper {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      z-index: 10;
+      position: relative;
+    }
+
+    .admin-header {
+      background: rgba(15, 22, 28, 0.75);
+      backdrop-filter: blur(15px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .admin-logo-section {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .admin-logo-img {
+      width: 50px;
+      height: 50px;
+      object-fit: contain;
+    }
+
+    .admin-logo-text h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      color: #f39c12;
+      margin: 0;
+    }
+
+    .admin-logo-text p {
+      font-size: 0.75rem;
+      color: #95a5a6;
+      margin: 0;
+      letter-spacing: 1px;
+    }
+
+    .admin-user-menu {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .admin-user-info {
+      font-size: 0.9rem;
+      color: #bdc3c7;
+    }
+
+    .admin-user-info strong {
+      color: #f39c12;
+    }
+
+    .btn-logout {
+      padding: 10px 18px;
+      background: rgba(231, 76, 60, 0.15);
+      border: 1px solid rgba(231, 76, 60, 0.3);
+      border-radius: 8px;
+      color: #e74c3c;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-logout:hover {
+      background: #e74c3c;
+      color: #ffffff;
+      box-shadow: 0 0 15px rgba(231, 76, 60, 0.4);
+    }
+
+    .admin-main {
+      flex: 1;
+      padding: 40px 30px;
+      max-width: 1400px;
+      width: 100%;
+      margin: 0 auto;
+      box-sizing: border-box;
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 25px;
+      margin-bottom: 40px;
+    }
+
+    .stat-card {
+      background: rgba(15, 22, 28, 0.6);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 16px;
+      padding: 25px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      transition: transform 0.3s ease, border-color 0.3s ease;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-5px);
+      border-color: #f39c12;
+    }
+
+    .stat-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 12px;
+      background: rgba(243, 156, 18, 0.1);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #f39c12;
+      font-size: 1.5rem;
+    }
+
+    .stat-icon.red {
+      background: rgba(231, 76, 60, 0.1);
+      color: #e74c3c;
+    }
+
+    .stat-icon.green {
+      background: rgba(46, 204, 113, 0.1);
+      color: #2ecc71;
+    }
+
+    .stat-icon.blue {
+      background: rgba(52, 152, 219, 0.1);
+      color: #3498db;
+    }
+
+    .stat-info h3 {
+      font-size: 0.85rem;
+      color: #95a5a6;
+      margin: 0 0 5px 0;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .stat-info p {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin: 0;
+      color: #ffffff;
+    }
+
+    /* Tabs Controller */
+    .dashboard-tabs {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 30px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 15px;
+    }
+
+    .dash-tab-btn {
+      padding: 12px 24px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+      color: #bdc3c7;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .dash-tab-btn:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: #ffffff;
+    }
+
+    .dash-tab-btn.active {
+      background: #f39c12;
+      color: #0b0f13;
+      border-color: #f39c12;
+      box-shadow: 0 4px 15px rgba(243, 156, 18, 0.3);
+    }
+
+    /* Content Area */
+    .dashboard-content {
+      background: rgba(15, 22, 28, 0.6);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+      min-height: 400px;
+    }
+
+    .tab-panel {
+      display: none;
+    }
+
+    .tab-panel.active {
+      display: block;
+      animation: panelFadeIn 0.5s ease;
+    }
+
+    @keyframes panelFadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+    }
+
+    .panel-header h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      color: #f39c12;
+      margin: 0;
+    }
+
+    .btn-refresh {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #ffffff;
+      padding: 10px 15px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.85rem;
+      transition: all 0.3s ease;
+    }
+
+    .btn-refresh:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: #ffffff;
+    }
+
+    /* Responsive Table Styles */
+    .table-container {
+      overflow-x: auto;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .admin-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.9rem;
+    }
+
+    .admin-table th {
+      background: rgba(255, 255, 255, 0.04);
+      padding: 15px 20px;
+      font-weight: 600;
+      color: #bdc3c7;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      text-transform: uppercase;
+      font-size: 0.8rem;
+      letter-spacing: 0.5px;
+    }
+
+    .admin-table td {
+      padding: 18px 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      color: #e2e8f0;
+      vertical-align: middle;
+    }
+
+    .admin-table tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .admin-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    /* Badges */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 0.78rem;
+      font-weight: 600;
+    }
+
+    .badge-pending {
+      background: rgba(243, 156, 18, 0.15);
+      color: #f39c12;
+      border: 1px solid rgba(243, 156, 18, 0.3);
+    }
+
+    .badge-approved {
+      background: rgba(46, 204, 113, 0.15);
+      color: #2ecc71;
+      border: 1px solid rgba(46, 204, 113, 0.3);
+    }
+
+    .badge-cancelled {
+      background: rgba(231, 76, 60, 0.15);
+      color: #e74c3c;
+      border: 1px solid rgba(231, 76, 60, 0.3);
+    }
+
+    .badge-read {
+      background: rgba(127, 140, 141, 0.15);
+      color: #95a5a6;
+      border: 1px solid rgba(127, 140, 141, 0.3);
+    }
+
+    .badge-unread {
+      background: rgba(52, 152, 219, 0.15);
+      color: #3498db;
+      border: 1px solid rgba(52, 152, 219, 0.3);
+    }
+
+    /* Action Buttons */
+    .actions-cell {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn-action {
+      padding: 6px 12px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .btn-action-approve {
+      background: rgba(46, 204, 113, 0.15);
+      color: #2ecc71;
+      border: 1px solid rgba(46, 204, 113, 0.3);
+    }
+
+    .btn-action-approve:hover {
+      background: #2ecc71;
+      color: #0b0f13;
+    }
+
+    .btn-action-cancel {
+      background: rgba(230, 126, 34, 0.15);
+      color: #e67e22;
+      border: 1px solid rgba(230, 126, 34, 0.3);
+    }
+
+    .btn-action-cancel:hover {
+      background: #e67e22;
+      color: #0b0f13;
+    }
+
+    .btn-action-delete {
+      background: rgba(231, 76, 60, 0.15);
+      color: #e74c3c;
+      border: 1px solid rgba(231, 76, 60, 0.3);
+    }
+
+    .btn-action-delete:hover {
+      background: #e74c3c;
+      color: #ffffff;
+    }
+
+    .btn-action-read {
+      background: rgba(52, 152, 219, 0.15);
+      color: #3498db;
+      border: 1px solid rgba(52, 152, 219, 0.3);
+    }
+
+    .btn-action-read:hover {
+      background: #3498db;
+      color: #0b0f13;
+    }
+
+    /* Empty state */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: #95a5a6;
+    }
+
+    .empty-state i {
+      font-size: 3rem;
+      margin-bottom: 15px;
+      color: #7f8c8d;
+    }
+
+    .empty-state p {
+      font-size: 1rem;
+      margin: 0;
+    }
+
+    /* Modal dialog */
+    .confirm-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(5px);
+      z-index: 1000;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      animation: modalFade 0.3s ease;
+    }
+
+    @keyframes modalFade {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .confirm-dialog {
+      background: #141a20;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      padding: 30px;
+      max-width: 400px;
+      width: 90%;
+      text-align: center;
+    }
+
+    .confirm-dialog h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+      color: #f39c12;
+      margin: 0 0 15px 0;
+    }
+
+    .confirm-dialog p {
+      font-size: 0.95rem;
+      color: #bdc3c7;
+      margin: 0 0 25px 0;
+      line-height: 1.5;
+    }
+
+    .confirm-actions {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+    }
+
+    .btn-dialog {
+      padding: 10px 20px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: all 0.2s ease;
+    }
+
+    .btn-dialog-yes {
+      background: #e74c3c;
+      color: #ffffff;
+    }
+
+    .btn-dialog-yes:hover {
+      background: #c0392b;
+    }
+
+    .btn-dialog-no {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #ffffff;
+    }
+
+    .btn-dialog-no:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    /* Guest notes expandable */
+    .note-cell {
+      max-width: 250px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      cursor: pointer;
+      color: #bdc3c7;
+    }
+
+    .note-cell:hover {
+      color: #f39c12;
+      text-decoration: underline;
+    }
+
+    .note-expanded-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(5px);
+      z-index: 1000;
+      display: none;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .note-expanded-dialog {
+      background: #141a20;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      padding: 30px;
+      max-width: 500px;
+      width: 90%;
+    }
+
+    .note-expanded-dialog h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+      color: #f39c12;
+      margin: 0 0 15px 0;
+      text-align: center;
+    }
+
+    .note-content-text {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      padding: 15px;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: #e2e8f0;
+      margin-bottom: 20px;
+      white-space: pre-wrap;
+    }
+
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: #1e272e;
+      border-left: 4px solid #2ecc71;
+      padding: 15px 25px;
+      border-radius: 6px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      z-index: 2000;
+      transform: translateY(150%);
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .toast.active {
+      transform: translateY(0);
+    }
+
+    .toast-error {
+      border-left-color: #e74c3c;
+    }
+  </style>
 </head>
 <body>
-    
+  <!-- Global background video element to match premium aesthetic -->
+  <video id="globalBgVideo" autoplay loop muted playsinline class="global-bg-video" style="position: fixed; right: 0; bottom: 0; min-width: 100%; min-height: 100%; width: auto; height: auto; z-index: -100; object-fit: cover; opacity: 0.3;">
+    <source src="../../public/images/video.mp4" type="video/mp4">
+  </video>
+
+  <div class="admin-wrapper">
+    <header class="admin-header">
+      <div class="admin-logo-section">
+        <img src="../../public/images/favicon-round.png" alt="Lezzet Mührü Logo" class="admin-logo-img">
+        <div class="admin-logo-text">
+          <h1>Lezzet Mührü</h1>
+          <p>YÖNETİM PANELİ</p>
+        </div>
+      </div>
+
+      <div class="admin-user-menu">
+        <span class="admin-user-info">Hoş geldiniz, <strong id="adminUsername">Yönetici</strong></span>
+        <button id="logoutBtn" class="btn-logout">
+          <i class="fa-solid fa-right-from-bracket"></i>
+          Çıkış Yap
+        </button>
+      </div>
+    </header>
+
+    <main class="admin-main">
+      <!-- Quick Stats Card Section -->
+      <section class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon"><i class="fa-solid fa-calendar-check"></i></div>
+          <div class="stat-info">
+            <h3>Toplam Rezervasyon</h3>
+            <p id="statTotalRes">0</p>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon blue"><i class="fa-solid fa-clock"></i></div>
+          <div class="stat-info">
+            <h3>Bekleyen Talepler</h3>
+            <p id="statPendingRes">0</p>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon green"><i class="fa-solid fa-circle-check"></i></div>
+          <div class="stat-info">
+            <h3>Onaylananlar</h3>
+            <p id="statApprovedRes">0</p>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon red"><i class="fa-solid fa-envelope-open-text"></i></div>
+          <div class="stat-info">
+            <h3>Okunmamış Mesajlar</h3>
+            <p id="statUnreadMessages">0</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Tab Controller -->
+      <div class="dashboard-tabs">
+        <button class="dash-tab-btn active" data-target="panelReservations">
+          <i class="fa-solid fa-calendar-days"></i> Rezervasyon Yönetimi
+        </button>
+        <button class="dash-tab-btn" data-target="panelMessages">
+          <i class="fa-solid fa-envelope"></i> İletişim Mesajları
+        </button>
+      </div>
+
+      <!-- Main Dashboard Content Panel -->
+      <div class="dashboard-content">
+        
+        <!-- Tab Panel: Reservations -->
+        <div class="tab-panel active" id="panelReservations">
+          <div class="panel-header">
+            <h2>Masa Rezervasyonları</h2>
+            <button class="btn-refresh" onclick="loadReservations()"><i class="fa-solid fa-arrows-rotate"></i> Yenile</button>
+          </div>
+
+          <div class="table-container">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Müşteri Bilgileri</th>
+                  <th>Tarih & Saat</th>
+                  <th>Kişi</th>
+                  <th>Masa No</th>
+                  <th>Notlar</th>
+                  <th>Durum</th>
+                  <th style="width: 260px;">İşlemler</th>
+                </tr>
+              </thead>
+              <tbody id="reservationsTableBody">
+                <tr>
+                  <td colspan="8" style="text-align: center; padding: 40px; color: #7f8c8d;">
+                    <i class="fa-solid fa-spinner fa-spin" style="font-size: 1.5rem; margin-bottom: 10px;"></i><br>
+                    Yükleniyor...
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Tab Panel: Contact Messages -->
+        <div class="tab-panel" id="panelMessages">
+          <div class="panel-header">
+            <h2>İletişim Formu Mesajları</h2>
+            <button class="btn-refresh" onclick="loadMessages()"><i class="fa-solid fa-arrows-rotate"></i> Yenile</button>
+          </div>
+
+          <div class="table-container">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Gönderen</th>
+                  <th>Konu</th>
+                  <th>Mesaj</th>
+                  <th>Tarih</th>
+                  <th>Durum</th>
+                  <th style="width: 180px;">İşlemler</th>
+                </tr>
+              </thead>
+              <tbody id="messagesTableBody">
+                <tr>
+                  <td colspan="7" style="text-align: center; padding: 40px; color: #7f8c8d;">
+                    <i class="fa-solid fa-spinner fa-spin" style="font-size: 1.5rem; margin-bottom: 10px;"></i><br>
+                    Yükleniyor...
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Modal Dialog: Delete Confirm -->
+  <div class="confirm-modal" id="confirmModal">
+    <div class="confirm-dialog">
+      <h3 id="confirmTitle">Kaydı Sil</h3>
+      <p id="confirmMessage">Bu kaydı silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.</p>
+      <div class="confirm-actions">
+        <button class="btn-dialog btn-dialog-no" onclick="closeConfirmModal()">Vazgeç</button>
+        <button class="btn-dialog btn-dialog-yes" id="btnConfirmDelete">Evet, Sil</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Dialog: Expand Notes -->
+  <div class="note-expanded-modal" id="noteExpandedModal">
+    <div class="note-expanded-dialog">
+      <h3 id="noteModalTitle">Müşteri Notu</h3>
+      <div class="note-content-text" id="noteModalText"></div>
+      <div style="text-align: center;">
+        <button class="btn-dialog btn-dialog-no" onclick="closeNoteModal()">Kapat</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Alert -->
+  <div class="toast" id="toastAlert">
+    <i class="fa-solid fa-circle-check" style="color: #2ecc71; font-size: 1.2rem;"></i>
+    <span id="toastMessage">İşlem başarıyla tamamlandı.</span>
+  </div>
+
+  <script>
+    let currentDeleteId = null;
+    let currentDeleteType = null; // 'reservation' veya 'message'
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      // 1. Yetki Kontrolü
+      try {
+        const response = await fetch('/api/admin/check-auth');
+        const data = await response.json();
+        if (!data.authenticated) {
+          window.location.href = 'login.html';
+          return;
+        }
+        document.getElementById('adminUsername').textContent = data.username || 'Yönetici';
+      } catch (err) {
+        console.error('Oturum kontrolü başarısız:', err);
+        window.location.href = 'login.html';
+        return;
+      }
+
+      // 2. Tab Değiştirme Mantığı
+      const tabs = document.querySelectorAll('.dash-tab-btn');
+      tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+          tabs.forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+
+          const target = tab.getAttribute('data-target');
+          document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+          document.getElementById(target).classList.add('active');
+
+          if (target === 'panelReservations') {
+            loadReservations();
+          } else if (target === 'panelMessages') {
+            loadMessages();
+          }
+        });
+      });
+
+      // 3. Verileri İlk Kez Çek
+      loadReservations();
+      loadMessages();
+
+      // 4. Logout Butonu
+      document.getElementById('logoutBtn').addEventListener('click', async () => {
+        try {
+          const response = await fetch('/api/admin/logout', { method: 'POST' });
+          const result = await response.json();
+          if (result.success) {
+            showToast('Başarıyla çıkış yapıldı.');
+            setTimeout(() => {
+              window.location.href = 'login.html';
+            }, 1000);
+          }
+        } catch (err) {
+          showToast('Çıkış işlemi başarısız.', true);
+        }
+      });
+    });
+
+    // REZERVASYONLARI YÜKLE
+    async function loadReservations() {
+      const tableBody = document.getElementById('reservationsTableBody');
+      try {
+        const response = await fetch('/api/rezervasyonlar');
+        if (!response.ok) throw new Error('Yetkisiz veya sunucu hatası');
+        
+        const result = await response.json();
+        const items = result.data || [];
+        
+        // İstatistikleri güncelle
+        document.getElementById('statTotalRes').textContent = items.length;
+        document.getElementById('statPendingRes').textContent = items.filter(x => x.durum === 'Beklemede').length;
+        document.getElementById('statApprovedRes').textContent = items.filter(x => x.durum === 'Onaylandı').length;
+
+        if (items.length === 0) {
+          tableBody.innerHTML = `
+            <tr>
+              <td colspan="8">
+                <div class="empty-state">
+                  <i class="fa-regular fa-calendar-minus"></i>
+                  <p>Henüz rezervasyon kaydı bulunmamaktadır.</p>
+                </div>
+              </td>
+            </tr>
+          `;
+          return;
+        }
+
+        tableBody.innerHTML = items.map(item => {
+          // Masa No ve Konum Çözümü
+          const masaNo = String((item.id % 18) + 1).padStart(2, '0');
+          const konumlar = ['(Geleneksel Odun Ateşi Katı)', '(Tarihi Avlu Tarafı)', '(Taş Fırın Yanı)', '(Üst Kat Balkon)', '(VIP Salon)'];
+          const konum = konumlar[item.id % konumlar.length];
+
+          // Tarih Formatlama (YYYY-MM-DD -> DD.MM.YYYY)
+          let dateStr = item.tarih;
+          if (dateStr.includes('-')) {
+            const parts = dateStr.split('-');
+            if (parts.length === 3) dateStr = `${parts[2]}.${parts[1]}.${parts[0]}`;
+          }
+
+          // Durum badge sınıfı
+          let badgeClass = 'badge-pending';
+          if (item.durum === 'Onaylandı') badgeClass = 'badge-approved';
+          if (item.durum === 'İptal Edildi') badgeClass = 'badge-cancelled';
+
+          const notText = item.notlar ? item.notlar.trim() : '';
+          const shortNot = notText.length > 25 ? notText.substring(0, 22) + '...' : notText || '---';
+
+          return `
+            <tr>
+              <td><strong>#${item.id}</strong></td>
+              <td>
+                <div style="font-weight: 600; color: #fff;">${escapeHTML(item.ad_soyad)}</div>
+                <div style="font-size: 0.82rem; color: #95a5a6;"><i class="fa-solid fa-phone"></i> ${escapeHTML(item.telefon)}</div>
+              </td>
+              <td>
+                <div><i class="fa-regular fa-calendar"></i> ${dateStr}</div>
+                <div style="font-size: 0.85rem; color: #bdc3c7;"><i class="fa-regular fa-clock"></i> ${escapeHTML(item.saat)}</div>
+              </td>
+              <td><span style="font-weight: 600; color: #f39c12;">${item.kisi_sayisi}</span> Kişi</td>
+              <td>
+                <div style="font-weight: 600;">Masa ${masaNo}</div>
+                <div style="font-size: 0.75rem; color: #bdc3c7;">${konum}</div>
+              </td>
+              <td>
+                ${notText ? `<span class="note-cell" onclick="showNoteModal('${escapeHTML(notText)}', 'Müşteri Notu')">${escapeHTML(shortNot)}</span>` : '<span style="opacity: 0.5;">---</span>'}
+              </td>
+              <td><span class="badge ${badgeClass}">${item.durum}</span></td>
+              <td>
+                <div class="actions-cell">
+                  ${item.durum !== 'Onaylandı' ? `
+                    <button class="btn-action btn-action-approve" onclick="updateReservationStatus(${item.id}, 'Onaylandı')">
+                      <i class="fa-solid fa-check"></i> Onayla
+                    </button>
+                  ` : ''}
+                  ${item.durum !== 'İptal Edildi' ? `
+                    <button class="btn-action btn-action-cancel" onclick="updateReservationStatus(${item.id}, 'İptal Edildi')">
+                      <i class="fa-solid fa-ban"></i> İptal Et
+                    </button>
+                  ` : ''}
+                  <button class="btn-action btn-action-delete" onclick="askDelete(${item.id}, 'reservation')">
+                    <i class="fa-regular fa-trash-can"></i> Sil
+                  </button>
+                </div>
+              </td>
+            </tr>
+          `;
+        }).join('');
+      } catch (err) {
+        console.error(err);
+        tableBody.innerHTML = `
+          <tr>
+            <td colspan="8" style="text-align: center; padding: 40px; color: #e74c3c;">
+              <i class="fa-solid fa-triangle-exclamation" style="font-size: 1.5rem; margin-bottom: 10px;"></i><br>
+              Rezervasyon verileri yüklenemedi. Lütfen oturumunuzu kontrol edin.
+            </td>
+          </tr>
+        `;
+      }
+    }
+
+    // REZERVASYON DURUMUNU GÜNCELLE
+    async function updateReservationStatus(id, newStatus) {
+      try {
+        const response = await fetch(`/api/rezervasyonlar/durum/${id}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ durum: newStatus })
+        });
+        const result = await response.json();
+        if (result.success) {
+          showToast(`Rezervasyon durumu "${newStatus}" olarak güncellendi.`);
+          loadReservations();
+        } else {
+          showToast(result.message || 'Durum güncellenemedi.', true);
+        }
+      } catch (err) {
+        console.error(err);
+        showToast('Sunucu hatası oluştu.', true);
+      }
+    }
+
+    // İLETİŞİM MESAJLARINI YÜKLE
+    async function loadMessages() {
+      const tableBody = document.getElementById('messagesTableBody');
+      try {
+        const response = await fetch('/api/mesajlar');
+        if (!response.ok) throw new Error('Yetkisiz veya sunucu hatası');
+        
+        const result = await response.json();
+        const items = result.data || [];
+        
+        document.getElementById('statUnreadMessages').textContent = items.filter(x => x.durum === 'Okunmadı').length;
+
+        if (items.length === 0) {
+          tableBody.innerHTML = `
+            <tr>
+              <td colspan="7">
+                <div class="empty-state">
+                  <i class="fa-regular fa-envelope"></i>
+                  <p>Henüz gelen iletişim mesajı bulunmamaktadır.</p>
+                </div>
+              </td>
+            </tr>
+          `;
+          return;
+        }
+
+        tableBody.innerHTML = items.map(item => {
+          const badgeClass = item.durum === 'Okundu' ? 'badge-read' : 'badge-unread';
+          const isUnread = item.durum !== 'Okundu';
+          const shortMsg = item.mesaj.length > 30 ? item.mesaj.substring(0, 27) + '...' : item.mesaj;
+
+          // Tarih formatlama
+          const date = new Date(item.olusturulma_tarihi);
+          const dateFormatted = isNaN(date.getTime()) ? item.olusturulma_tarihi : date.toLocaleString('tr-TR');
+
+          return `
+            <tr style="${isUnread ? 'background: rgba(52, 152, 219, 0.03);' : ''}">
+              <td><strong>#${item.id}</strong></td>
+              <td>
+                <div style="font-weight: 600; color: #fff;">${escapeHTML(item.ad_soyad)}</div>
+                <div style="font-size: 0.82rem; color: #95a5a6;"><i class="fa-regular fa-envelope"></i> ${escapeHTML(item.eposta)}</div>
+              </td>
+              <td><div style="font-weight: 500;">${escapeHTML(item.konu)}</div></td>
+              <td>
+                <span class="note-cell" style="color: #cbd5e1;" onclick="showAndReadMessage(${item.id}, '${escapeHTML(item.ad_soyad)}', '${escapeHTML(item.mesaj)}')">
+                  ${escapeHTML(shortMsg)}
+                </span>
+              </td>
+              <td style="font-size: 0.85rem; color: #bdc3c7;">${dateFormatted}</td>
+              <td><span class="badge ${badgeClass}">${item.durum}</span></td>
+              <td>
+                <div class="actions-cell">
+                  ${isUnread ? `
+                    <button class="btn-action btn-action-read" onclick="markMessageRead(${item.id}, 'Okundu')">
+                      <i class="fa-regular fa-envelope-open"></i> Okundu
+                    </button>
+                  ` : `
+                    <button class="btn-action btn-refresh" style="padding: 6px 10px;" onclick="markMessageRead(${item.id}, 'Okunmadı')">
+                      <i class="fa-regular fa-envelope"></i> Okunmadı Yap
+                    </button>
+                  `}
+                  <button class="btn-action btn-action-delete" onclick="askDelete(${item.id}, 'message')">
+                    <i class="fa-regular fa-trash-can"></i> Sil
+                  </button>
+                </div>
+              </td>
+            </tr>
+          `;
+        }).join('');
+      } catch (err) {
+        console.error(err);
+        tableBody.innerHTML = `
+          <tr>
+            <td colspan="7" style="text-align: center; padding: 40px; color: #e74c3c;">
+              <i class="fa-solid fa-triangle-exclamation" style="font-size: 1.5rem; margin-bottom: 10px;"></i><br>
+              Mesaj verileri yüklenemedi. Lütfen oturumunuzu kontrol edin.
+            </td>
+          </tr>
+        `;
+      }
+    }
+
+    // MESAJ DURUMUNU GÜNCELLE
+    async function markMessageRead(id, status) {
+      try {
+        const response = await fetch(`/api/mesajlar/durum/${id}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ durum: status })
+        });
+        const result = await response.json();
+        if (result.success) {
+          showToast(`Mesaj durumu güncellendi.`);
+          loadMessages();
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    // MESAJI DETAYLI GÖSTER VE OKUNDU YAP
+    async function showAndReadMessage(id, name, msg) {
+      showNoteModal(msg, `${name} Tarafından Gönderilen Mesaj`);
+      // Okundu yapalım otomatik
+      try {
+        await fetch(`/api/mesajlar/durum/${id}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ durum: 'Okundu' })
+        });
+        loadMessages();
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    // SİLME ONAY MODALİ
+    function askDelete(id, type) {
+      currentDeleteId = id;
+      currentDeleteType = type;
+      
+      const modal = document.getElementById('confirmModal');
+      const title = document.getElementById('confirmTitle');
+      const message = document.getElementById('confirmMessage');
+
+      if (type === 'reservation') {
+        title.textContent = 'Rezervasyonu Sil';
+        message.textContent = `#${id} numaralı rezervasyon kaydını silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.`;
+      } else {
+        title.textContent = 'Mesajı Sil';
+        message.textContent = `#${id} numaralı iletişim mesajını silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.`;
+      }
+
+      modal.style.display = 'flex';
+    }
+
+    function closeConfirmModal() {
+      document.getElementById('confirmModal').style.display = 'none';
+      currentDeleteId = null;
+      currentDeleteType = null;
+    }
+
+    // Gerçek Silme İsteği
+    document.getElementById('btnConfirmDelete').addEventListener('click', async () => {
+      if (!currentDeleteId || !currentDeleteType) return;
+
+      const endpoint = currentDeleteType === 'reservation' 
+        ? `/api/rezervasyonlar/${currentDeleteId}` 
+        : `/api/mesajlar/${currentDeleteId}`;
+
+      try {
+        const response = await fetch(endpoint, { method: 'DELETE' });
+        const result = await response.json();
+        if (result.success) {
+          showToast('Kayıt başarıyla silindi.');
+          closeConfirmModal();
+          if (currentDeleteType === 'reservation') {
+            loadReservations();
+          } else {
+            loadMessages();
+          }
+        } else {
+          showToast(result.message || 'Silme işlemi başarısız.', true);
+        }
+      } catch (err) {
+        console.error(err);
+        showToast('Sunucu hatası oluştu.', true);
+      }
+    });
+
+    // MÜŞTERİ NOTU/MESAJ DETAY MODALİ
+    function showNoteModal(text, title) {
+      document.getElementById('noteModalTitle').textContent = title || 'Müşteri Notu';
+      document.getElementById('noteModalText').textContent = text;
+      document.getElementById('noteExpandedModal').style.display = 'flex';
+    }
+
+    // Modal dışına tıklayınca kapatma
+    window.onclick = function(event) {
+      const confirmModal = document.getElementById('confirmModal');
+      const noteModal = document.getElementById('noteExpandedModal');
+      if (event.target === confirmModal) {
+        closeConfirmModal();
+      }
+      if (event.target === noteModal) {
+        closeNoteModal();
+      }
+    }
+
+    function closeNoteModal() {
+      document.getElementById('noteExpandedModal').style.display = 'none';
+    }
+
+    // TOAST BİLDİRİMİ
+    function showToast(message, isError = false) {
+      const toast = document.getElementById('toastAlert');
+      const toastMsg = document.getElementById('toastMessage');
+      const toastIcon = toast.querySelector('i');
+
+      toastMsg.textContent = message;
+
+      if (isError) {
+        toast.classList.add('toast-error');
+        toastIcon.className = 'fa-solid fa-circle-exclamation';
+        toastIcon.style.color = '#e74c3c';
+      } else {
+        toast.classList.remove('toast-error');
+        toastIcon.className = 'fa-solid fa-circle-check';
+        toastIcon.style.color = '#2ecc71';
+      }
+
+      toast.classList.add('active');
+
+      setTimeout(() => {
+        toast.classList.remove('active');
+      }, 3000);
+    }
+
+    // HTML Kaçış (Güvenlik için)
+    function escapeHTML(str) {
+      if (!str) return '';
+      return str.replace(/[&<>'"]/g, 
+        tag => ({
+          '&': '&amp;',
+          '<': '&lt;',
+          '>': '&gt;',
+          "'": '&#39;',
+          '"': '&quot;'
+        }[tag] || tag)
+      );
+    }
+  </script>
 </body>
 </html>
