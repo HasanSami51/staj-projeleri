@@ -1984,9 +1984,16 @@ grid-column: span 2;
   font-weight: 500;
 }
 /* JS display:flex ile açılır, --hidden sınıfı kalıcı olarak kapatır */
-.form-alert--hidden {
+#formAlert.form-alert.form-alert--hidden,
+#resFormAlert.form-alert.form-alert--hidden,
+.form-alert.form-alert--hidden {
   display: none !important;
   visibility: hidden !important;
+  opacity: 0 !important;
+  height: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
   pointer-events: none !important;
 }
 .location-features {
@@ -2167,12 +2174,12 @@ input[type="time"]{
 
 #resDate, #resTime, input#resDate, input#resTime, .input-picker-wrapper input {
   cursor: pointer !important;
-  background-color: #1e140d !important;
-  background: #1e140d !important;
+  background: rgba(12, 6, 3, 0.65) !important;
+  background-color: rgba(12, 6, 3, 0.65) !important;
   color: #ffffff !important;
-  border: 1px solid rgba(212, 175, 55, 0.4) !important;
-  border-radius: 8px !important;
-  box-shadow: none !important;
+  border: 1px solid rgba(212, 175, 55, 0.3) !important;
+  border-radius: 12px !important;
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.6) !important;
   transition: all 0.25s ease !important;
 }
 
@@ -3627,25 +3634,38 @@ user-select: none !important;
 }
 
 .vintage-stamp-badge {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
 }
 
 .vintage-seal-img {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  width: 44px !important;
+  height: 44px !important;
+  border-radius: 50% !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2) !important;
 }
 
 .vintage-stamp-badge span {
-  font-family: 'Playfair Display', Georgia, serif;
-  font-weight: 800;
-  font-size: 0.95rem;
-  letter-spacing: 1.5px;
-  color: #8b4513;
-  text-transform: uppercase;
+  font-family: 'Playfair Display', Georgia, serif !important;
+  font-weight: 700 !important;
+  font-size: 1.15rem !important;
+  letter-spacing: 1.5px !important;
+  color: #f39c12 !important; /* Birleşik durması için altın sarısı rengi */
+  text-transform: uppercase !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+
+.vintage-stamp-badge .year-highlight {
+  font-size: 1.35rem !important; /* Harmonik büyüklük */
+  font-weight: 800 !important;
+  color: #f39c12 !important; /* Altın sarısı rengi */
 }
 
 .vintage-status-pill {
@@ -4469,7 +4489,7 @@ textarea::placeholder,
   border-color: #1a120c !important;
 }
 
-.badge, .chef-special-badge, .dish-badge, .vintage-stamp-badge {
+.badge, .chef-special-badge, .dish-badge {
   background: linear-gradient(135deg, #2b1c12 0%, #170d07 100%) !important;
   border: 1px solid rgba(212, 175, 55, 0.6) !important;
   color: #f39c12 !important;
@@ -4857,7 +4877,7 @@ body {
   min-width: 100% !important;
   min-height: 100% !important;
   z-index: -1 !important;
-  transform: translate(-50%, -50%) !important; /* Tam merkezleme */
+  transform: translate(-50%, -50%) scale(1.2) !important; /* Yıldız ve ızgarayı ekran dışına itmek için 1.2x ölçekleme */
   object-fit: cover !important;
   pointer-events: none !important;
   filter: brightness(0.85) contrast(1.05) !important; /* Canlı ve göz yormayan doğal filtreler */
@@ -4894,8 +4914,8 @@ body::after {
   bottom: 0 !important;
   left: 0 !important;
   width: 100vw !important;
-  height: 35vh !important; /* Yüksekliği 35vh'e çıkarıp ızgara bölgesini tamamen yutuyoruz */
-  background: linear-gradient(0deg, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.85) 50%, rgba(0, 0, 0, 0) 100%) !important;
+  height: 45vh !important; /* Alt ızgara kalıntılarını yutmak için yüksekliği 45vh yaptık */
+  background: linear-gradient(0deg, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.95) 50%, rgba(0, 0, 0, 0) 100%) !important;
   z-index: -1 !important;
   pointer-events: none !important;
   display: block !important;
@@ -5747,7 +5767,7 @@ form, button, input, select, textarea, a, .btn-primary, .btn-secondary,
     height: 100vh !important;
     min-width: 100% !important;
     min-height: 100% !important;
-    transform: translate(-50%, -50%) !important;
+    transform: translate(-50%, -50%) scale(1.2) !important;
     will-change: transform !important;
     filter: brightness(0.85) contrast(1.05) !important;
   }
@@ -6132,13 +6152,27 @@ body.day-atmosphere .trust-bar-section {
   }
 
   .about-stats {
-    flex-direction: column !important;
-    gap: 15px !important;
+    flex-direction: row !important;
+    gap: 8px !important;
+    margin-top: 20px !important;
   }
 
   .stat-box {
-    width: 100% !important;
+    flex: 1 !important;
+    min-width: 0 !important;
+    padding: 14px 6px !important;
+    border-radius: 10px !important;
     text-align: center !important;
+  }
+
+  .stat-box .stat-number {
+    font-size: 1.35rem !important;
+  }
+
+  .stat-box .stat-label {
+    font-size: 0.78rem !important;
+    line-height: 1.3 !important;
+    margin-top: 6px !important;
   }
 
   /* ==========================================
@@ -6256,13 +6290,13 @@ body.day-atmosphere .trust-bar-section {
     box-sizing: border-box !important;
   }
 
-  /* Etiketler (Labels) - Temiz, krem renkli ve kutusuz/çizgisiz yalın duruş */
+  /* Etiketler (Labels) - Temiz, altın sarısı renkli ve kutusuz/çizgisiz yalın duruş */
   .reservation-form label, 
   .contact-form label,
   .form-group label {
     font-size: 0.88rem !important;
-    font-weight: 500 !important;
-    color: #e2e8f0 !important; /* Yumuşak krem rengi */
+    font-weight: 600 !important;
+    color: #f39c12 !important; /* Altın sarısı rengi */
     margin-bottom: 6px !important;
     border: none !important;
     background: transparent !important;
@@ -6299,7 +6333,9 @@ body.day-atmosphere .trust-bar-section {
   .reservation-form select,
   .reservation-form textarea,
   .contact-form input,
-  .contact-form textarea {
+  .contact-form textarea,
+  #resDate,
+  #resTime {
     width: 100% !important;
     max-width: 100% !important;
     box-sizing: border-box !important;
@@ -6383,5 +6419,241 @@ body.day-atmosphere .menu-section .filter-buttons-wrapper {
   border-bottom: none !important;
   box-shadow: none !important;
   padding: 0 !important;
+}
+
+/* REZERVASYON SEKME DÜĞMELERİ */
+.reservation-toggle-wrapper {
+  display: flex !important;
+  justify-content: center !important;
+  gap: 15px !important;
+  margin-bottom: 25px !important;
+  width: 100% !important;
+}
+
+.toggle-tab-btn {
+  background: rgba(28, 19, 13, 0.75) !important;
+  color: #e0d8d0 !important;
+  border: 1.5px solid rgba(212, 175, 55, 0.3) !important;
+  border-radius: 30px !important;
+  padding: 12px 24px !important;
+  font-weight: 600 !important;
+  font-size: 0.95rem !important;
+  cursor: pointer !important;
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3) !important;
+}
+
+.toggle-tab-btn:hover {
+  border-color: #f39c12 !important;
+  color: #ffffff !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 20px rgba(243, 156, 18, 0.15) !important;
+}
+
+.toggle-tab-btn.active {
+  background: #f39c12 !important;
+  color: #1a120c !important;
+  border-color: #f39c12 !important;
+  font-weight: 700 !important;
+  box-shadow: 0 6px 20px rgba(243, 156, 18, 0.35) !important;
+}
+
+/* Mobil Uyumlu Sekmeler */
+@media (max-width: 576px) {
+  .reservation-toggle-wrapper {
+    gap: 8px !important;
+    padding: 0 10px !important;
+  }
+  .toggle-tab-btn {
+    padding: 10px 16px !important;
+    font-size: 0.82rem !important;
+    gap: 5px !important;
+    flex: 1 !important;
+    justify-content: center !important;
+  }
+}
+
+/* Onaylı/İptal durumlarına göre bilet rozet renkleri */
+.vintage-status-pill.approved {
+  border-color: #2ecc71 !important;
+  background: rgba(46, 204, 113, 0.1) !important;
+  color: #2ecc71 !important;
+}
+.vintage-status-pill.approved .pulse-dot-green {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background-color: #2ecc71;
+  border-radius: 50%;
+  box-shadow: 0 0 8px #2ecc71;
+  margin-right: 4px;
+}
+
+.vintage-status-pill.cancelled {
+  border-color: #e74c3c !important;
+  background: rgba(231, 76, 60, 0.1) !important;
+  color: #e74c3c !important;
+}
+.vintage-status-pill.cancelled .pulse-dot-red {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background-color: #e74c3c;
+  border-radius: 50%;
+  box-shadow: 0 0 8px #e74c3c;
+  margin-right: 4px;
+}
+
+/* ==========================================
+   🌐 TR / EN ÇOKLU DİL SEÇİCİ STİLLERİ
+   ========================================== */
+.lang-selector-container {
+  position: relative !important;
+  display: inline-block !important;
+  margin-left: 10px !important;
+  z-index: 1100 !important;
+}
+
+.lang-toggle-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  padding: 6px 14px !important;
+  border-radius: 20px !important;
+  background: rgba(30, 15, 8, 0.85) !important;
+  border: 1px solid rgba(243, 156, 18, 0.4) !important;
+  color: #ffffff !important;
+  font-size: 0.82rem !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.4) !important;
+  user-select: none !important;
+}
+
+.lang-toggle-btn:hover {
+  transform: translateY(-2px) scale(1.04) !important;
+  border-color: #f39c12 !important;
+  box-shadow: 0 5px 16px rgba(243, 156, 18, 0.35) !important;
+}
+
+.lang-toggle-btn i.fa-globe {
+  color: #f39c12 !important;
+  font-size: 0.9rem !important;
+}
+
+.lang-toggle-btn i.fa-chevron-down {
+  font-size: 0.7rem !important;
+  opacity: 0.7 !important;
+  transition: transform 0.3s ease !important;
+}
+
+.lang-selector-container.open .lang-toggle-btn i.fa-chevron-down {
+  transform: rotate(180deg) !important;
+}
+
+/* Glassmorphism Açılır Kutu */
+.lang-dropdown {
+  position: absolute !important;
+  top: calc(100% + 8px) !important;
+  right: 0 !important;
+  background: rgba(22, 11, 6, 0.95) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(243, 156, 18, 0.5) !important;
+  border-radius: 12px !important;
+  padding: 6px 0 !important;
+  min-width: 130px !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6) !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  transform: translateY(-10px) !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  z-index: 1200 !important;
+}
+
+.lang-selector-container.open .lang-dropdown {
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: translateY(0) !important;
+}
+
+/* Dil Seçenekleri */
+.lang-option {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  padding: 8px 16px !important;
+  width: 100% !important;
+  background: transparent !important;
+  border: none !important;
+  color: #dddddd !important;
+  font-size: 0.85rem !important;
+  font-weight: 500 !important;
+  text-align: left !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+}
+
+.lang-option:hover {
+  background: rgba(243, 156, 18, 0.15) !important;
+  color: #f39c12 !important;
+  padding-left: 20px !important;
+}
+
+.lang-option.active {
+  color: #f39c12 !important;
+  font-weight: 700 !important;
+  background: rgba(243, 156, 18, 0.08) !important;
+}
+
+.lang-flag {
+  font-size: 1.1rem !important;
+}
+
+@media (max-width: 768px) {
+  .lang-selector-container {
+    position: absolute !important;
+    right: 76px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    margin-left: 0 !important;
+    z-index: 1001 !important;
+  }
+  
+  .lang-toggle-btn {
+    width: 32px !important;
+    height: 32px !important;
+    border-radius: 50% !important;
+    padding: 0 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.3) !important;
+  }
+  
+  .lang-toggle-btn span,
+  .lang-toggle-btn i.fa-chevron-down {
+    display: none !important;
+  }
+  
+  .lang-toggle-btn i.fa-globe {
+    margin: 0 !important;
+    font-size: 1rem !important;
+  }
+
+  .lang-toggle-btn:hover,
+  .lang-toggle-btn:active,
+  .lang-toggle-btn:focus {
+    transform: translateY(-50%) scale(1.04) !important;
+  }
+  
+  .lang-dropdown {
+    top: calc(100% + 15px) !important;
+    right: -10px !important;
+  }
 }
 

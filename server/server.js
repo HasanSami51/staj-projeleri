@@ -9,6 +9,27 @@ const db = require('./db'); // SQLite Veritabanı Modülü
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// ==========================================
+// 🗄️ SUNUCU AÇILIŞINDA MESAJLAR TABLOSUNU KONTROL ET / OLUŞTUR
+// ==========================================
+db.run(`
+  CREATE TABLE IF NOT EXISTS mesajlar (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    ad_soyad TEXT NOT NULL,
+    eposta TEXT NOT NULL,
+    konu TEXT NOT NULL,
+    mesaj TEXT NOT NULL,
+    durum TEXT DEFAULT 'Okunmadı',
+    olusturulma_tarihi DATETIME DEFAULT CURRENT_TIMESTAMP
+  )
+`, (err) => {
+  if (err) {
+    console.error('❌ mesajlar tablosu oluşturulamadı:', err.message);
+  } else {
+    console.log('✅ mesajlar tablosu hazır.');
+  }
+});
+
 // CORS Desteği (Farklı Portlardan veya Live Server Üzerinden Gelen Fetch İstekleri İçin)
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
@@ -166,15 +187,16 @@ app.post('/api/rezervasyon', (req, res) => {
       return res.status(500).json({ success: false, message: 'Rezervasyon kaydı sırasında bir sunucu hatası oluştu.', error: err.message });
     }
 
-    const masaNo = String(Math.floor(1 + Math.random() * 18)).padStart(2, '0');
+    const id = this.lastID;
+    const masaNo = String((id % 18) + 1).padStart(2, '0');
     const konumlar = ['(Geleneksel Odun Ateşi Katı)', '(Tarihi Avlu Tarafı)', '(Taş Fırın Yanı)', '(Üst Kat Balkon)', '(VIP Salon)'];
-    const rastgeleKonum = konumlar[Math.floor(Math.random() * konumlar.length)];
+    const konum = konumlar[id % konumlar.length];
 
     res.status(201).json({
       success: true,
       message: 'Rezervasyonunuz başarıyla alındı! En kısa sürede tarafınıza ulaşacağız.',
       data: {
-        id: this.lastID,
+        id,
         name: name.trim(),
         phone: phone.trim(),
         date,
@@ -182,32 +204,190 @@ app.post('/api/rezervasyon', (req, res) => {
         guests: guestCount,
         notes: notes ? notes.trim() : '',
         masaNo,
-        konum: rastgeleKonum
+        konum
       }
     });
   });
 });
 
-// 4. İLETİŞİM MESAJI KAYDETME (POST /api/iletisim)
-app.post('/api/iletisim', (req, res) => {
-  const { ad_soyad, eposta, konu, mesaj } = req.body;
+// 3b. REZERVASYON SORGULAMA (GET /api/rezervasyon-sorgula)
+app.get('/api/rezervasyon-sorgula', (req, res) => {
+  try {
+    const { telefon } = req.query;
 
-  if (!ad_soyad || !eposta || !mesaj) {
-    return res.status(400).json({ success: false, message: 'Lütfen ad, e-posta ve mesaj alanlarını eksiksiz giriniz.' });
-  }
-
-  const sql = `INSERT INTO mesajlar (ad_soyad, eposta, konu, mesaj) VALUES (?, ?, ?, ?)`;
-  db.run(sql, [ad_soyad, eposta, konu || 'Genel Soru', mesaj], function(err) {
-    if (err) {
-      return res.status(500).json({ success: false, message: 'Mesaj kaydedilemedi.', error: err.message });
+    if (!telefon || !String(telefon).trim()) {
+      return res.status(400).json({
+        success: false,
+        message: 'Lütfen sorgulama için geçerli bir telefon numarası giriniz.'
+      });
     }
 
-    res.status(201).json({
-      success: true,
-      message: 'Mesajınız başarıyla veritabanına kaydedildi!',
-      id: this.lastID
+    const temizTel = String(telefon).trim();
+
+    // SQL Injection koruması: Değerler ? ile parametreli sorgulanır.
+    const sql = `
+      SELECT id, ad_soyad, telefon, tarih, saat, kisi_sayisi, notlar, durum
+      FROM rezervasyonlar
+      WHERE telefon = ?
+      ORDER BY id DESC
+      LIMIT 1
+    `;
+
+    db.get(sql, [temizTel], (err, row) => {
+      if (err) {
+        console.error('❌ /api/rezervasyon-sorgula veritabanı hatası:', err.message);
+        return res.status(500).json({
+          success: false,
+          message: 'Sorgulama sırasında bir veritabanı hatası oluştu. Lütfen tekrar deneyiniz.'
+        });
+      }
+
+      if (!row) {
+        return res.status(404).json({
+          success: false,
+          message: 'Bu telefon numarasına ait aktif bir rezervasyon bulunamadı. Lütfen bilgilerinizi kontrol ediniz.'
+        });
+      }
+
+      // Deterministik masa no ve konum eşleşmesi (böylece rezervasyon her çağrıldığında aynı masa gelir)
+      const id = row.id;
+      const masaNo = String((id % 18) + 1).padStart(2, '0');
+      const konumlar = ['(Geleneksel Odun Ateşi Katı)', '(Tarihi Avlu Tarafı)', '(Taş Fırın Yanı)', '(Üst Kat Balkon)', '(VIP Salon)'];
+      const konum = konumlar[id % konumlar.length];
+
+      return res.status(200).json({
+        success: true,
+        message: 'Rezervasyonunuz bulundu.',
+        data: {
+          id: row.id,
+          name: row.ad_soyad,
+          phone: row.telefon,
+          date: row.tarih,
+          time: row.saat,
+          guests: row.kisi_sayisi,
+          notes: row.notlar || '',
+          masaNo,
+          konum,
+          durum: row.durum
+        }
+      });
     });
-  });
+
+  } catch (beklenmedikHata) {
+    console.error('❌ /api/rezervasyon-sorgula beklenmedik hata:', beklenmedikHata.message);
+    return res.status(500).json({
+      success: false,
+      message: 'Beklenmedik bir hata oluştu. Lütfen tekrar deneyiniz.'
+    });
+  }
+});
+
+// 4. İLETİŞİM MESAJI KAYDETME (POST /api/iletisim)
+// ─────────────────────────────────────────────────
+// Hata Yönetimi:
+//   400 → Eksik alan, geçersiz e-posta, kısa ad/mesaj
+//   500 → Veritabanı bağlantı / yazma hatası
+//   201 → Başarılı kayıt
+// SQL Injection Koruması: Tüm veriler ? parametreli sorguyla aktarılır.
+// ─────────────────────────────────────────────────
+app.post('/api/iletisim', (req, res) => {
+  try {
+    const { ad_soyad, eposta, konu, mesaj } = req.body;
+
+    // ── 1. ZORUNLU ALAN KONTROLÜ (400) ──────────────────────────────────
+    const eksikler = [];
+    if (!ad_soyad || !String(ad_soyad).trim()) eksikler.push('Ad Soyad');
+    if (!eposta   || !String(eposta).trim())   eksikler.push('E-posta');
+    if (!mesaj    || !String(mesaj).trim())    eksikler.push('Mesaj');
+
+    if (eksikler.length > 0) {
+      return res.status(400).json({
+        success: false,
+        hata: 'eksik_alan',
+        mesaj: `Şu alanlar boş bırakılamaz: ${eksikler.join(', ')}.`
+      });
+    }
+
+    // ── 2. GEÇERSİZ VERİ KONTROLLERI (400) ─────────────────────────────
+    const temizAd    = String(ad_soyad).trim();
+    const temizEposta = String(eposta).trim();
+    const temizKonu  = konu ? String(konu).trim() : 'Genel Soru';
+    const temizMesaj = String(mesaj).trim();
+
+    // 2a. Ad uzunluğu en az 3 karakter
+    if (temizAd.length < 3) {
+      return res.status(400).json({
+        success: false,
+        hata: 'gecersiz_ad',
+        mesaj: 'Ad Soyad en az 3 karakter olmalıdır.'
+      });
+    }
+
+    // 2b. E-posta format doğrulaması (RFC benzeri regex)
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+    if (!emailRegex.test(temizEposta)) {
+      return res.status(400).json({
+        success: false,
+        hata: 'gecersiz_eposta',
+        mesaj: 'Lütfen geçerli bir e-posta adresi giriniz. (örn: ad@domain.com)'
+      });
+    }
+
+    // 2c. Mesaj uzunluğu en az 10 karakter
+    if (temizMesaj.length < 10) {
+      return res.status(400).json({
+        success: false,
+        hata: 'kisa_mesaj',
+        mesaj: 'Mesaj en az 10 karakter olmalıdır.'
+      });
+    }
+
+    // 2d. Konu uzunluğu (opsiyonel ama doluysa min 3 karakter)
+    if (konu && temizKonu.length < 3) {
+      return res.status(400).json({
+        success: false,
+        hata: 'gecersiz_konu',
+        mesaj: 'Konu en az 3 karakter olmalıdır.'
+      });
+    }
+
+    // ── 3. VERİTABANINA KAYDET ──────────────────────────────────────────
+    // SQL Injection koruması: değerler doğrudan SQL'e gömülmez,
+    // ? yer tutuculara ayrı dizi olarak geçirilir (parametreli sorgu).
+    const sql = `
+      INSERT INTO mesajlar (ad_soyad, eposta, konu, mesaj)
+      VALUES (?, ?, ?, ?)
+    `;
+
+    db.run(sql, [temizAd, temizEposta, temizKonu, temizMesaj], function(err) {
+      // ── 4. VERİTABANI / SUNUCU HATASI (500) ──────────────────────────
+      if (err) {
+        console.error('❌ /api/iletisim veritabanı hatası:', err.message);
+        return res.status(500).json({
+          success: false,
+          hata: 'veritabani_hatasi',
+          mesaj: 'Mesajınız şu an kaydedilemedi. Lütfen daha sonra tekrar deneyiniz.'
+        });
+      }
+
+      // ── 5. BAŞARILI KAYIT (201) ───────────────────────────────────────
+      console.log(`✅ Yeni iletişim mesajı kaydedildi — ID: ${this.lastID}, Gönderen: ${temizEposta}`);
+      return res.status(201).json({
+        success: true,
+        mesaj: 'Mesajınız başarıyla alındı! En kısa sürede sizinle iletişime geçeceğiz.',
+        id: this.lastID
+      });
+    });
+
+  } catch (beklenmedikHata) {
+    // ── 6. BEKLENMEDİK SUNUCU HATASI (500) ──────────────────────────────
+    console.error('❌ /api/iletisim beklenmedik hata:', beklenmedikHata.message);
+    return res.status(500).json({
+      success: false,
+      hata: 'sunucu_hatasi',
+      mesaj: 'Beklenmedik bir sunucu hatası oluştu. Lütfen daha sonra tekrar deneyiniz.'
+    });
+  }
 });
 
 // 5. TÜM REZERVASYONLARI VERİTABANINDAN ÇEKME (GET /api/rezervasyonlar)

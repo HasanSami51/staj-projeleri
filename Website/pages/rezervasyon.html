@@ -121,63 +121,63 @@
                         </div>
 
                         <div class="form-group full-width">
-                          <label for="resNotes">Özel İstekler / Notlar <span style="font-size: 0.78rem; opacity: 0.65; font-weight: normal;">(İsteğe Bağlı)</span></label>
+                          <label for="resNotes"><span data-translate="res-form-notes-label">Özel İstekler / Notlar</span> <span style="font-size: 0.78rem; opacity: 0.65; font-weight: normal;" data-translate="res-form-notes-optional">(İsteğe Bağlı)</span></label>
                           <div class="input-icon-wrapper textarea-wrapper">
                             <i class="fa-solid fa-pen-to-square input-icon"></i>
-                            <textarea id="resNotes" name="notes" rows="3" placeholder="Varsa ek not veya masanız için özel talepleriniz..." maxlength="300"></textarea>
+                            <textarea id="resNotes" name="notes" rows="3" data-translate-placeholder="res-form-notes-ph" placeholder="Varsa ek not veya masanız için özel talepleriniz..." maxlength="300"></textarea>
                           </div>
                         </div>
                       </div>
 
                       <div class="form-submit-btn text-center">
-                        <button type="submit" class="btn-primary">
+                        <button type="submit" class="btn-primary" data-translate="res-form-submit-new">
                           <i class="fa-solid fa-calendar-check"></i> Rezervasyon Yap
                         </button>
                       </div>
                     </form>
 
-                     <!-- 1932 NOSTALJİK MASA MÜHRÜ REZERVAZYON BİLET KUTUSU -->
-                     <div id="resTicketContainer" class="res-ticket-result-wrapper" style="display: none;">
-                       <div class="vintage-ticket-card">
-                         <div class="vintage-ticket-top">
-                           <div class="vintage-stamp-badge">
-                             <img src="../public/images/logo.png" alt="1932 Mühür" class="vintage-seal-img">
-                             <span>1932 LEZZET MÜHRÜ</span>
-                           </div>
-                           <div class="vintage-status-pill">
-                             <span class="pulse-dot-amber"></span> ⏳ Restoran Onayı Bekliyor
-                           </div>
-                         </div>
+                      <!-- 1932 NOSTALJİK MASA MÜHRÜ REZERVAZYON BİLET KUTUSU -->
+                      <div id="resTicketContainer" class="res-ticket-result-wrapper" style="display: none;">
+                        <div class="vintage-ticket-card">
+                          <div class="vintage-ticket-top">
+                            <div class="vintage-stamp-badge">
+                              <img src="../public/images/logo.png" alt="1932 Mühür" class="vintage-seal-img">
+                              <span data-translate="ticket-logo-text">1932 LEZZET MÜHRÜ</span>
+                            </div>
+                            <div class="vintage-status-pill">
+                              <span class="pulse-dot-amber"></span> <span data-translate="ticket-status-approved">⏳ Restoran Onayı Bekliyor</span>
+                            </div>
+                          </div>
 
-                         <div class="vintage-ticket-divider">
-                           <div class="ticket-notch left"></div>
-                           <div class="ticket-dashed-line"></div>
-                           <div class="ticket-notch right"></div>
-                         </div>
-                         
-                         <div class="vintage-table-highlight">
-                           <span class="table-label">TAHSİS EDİLEN MASA</span>
-                           <h3 class="table-number-display" id="cardTableNumber">Masa No: 07 <small>(Geleneksel Odun Ateşi Katı)</small></h3>
-                         </div>
+                          <div class="vintage-ticket-divider">
+                            <div class="ticket-notch left"></div>
+                            <div class="ticket-dashed-line"></div>
+                            <div class="ticket-notch right"></div>
+                          </div>
+                          
+                          <div class="vintage-table-highlight">
+                            <span class="table-label" data-translate="ticket-table-label">TAHSİS EDİLEN MASA</span>
+                            <h3 class="table-number-display" id="cardTableNumber">Masa No: 07 <small>(Geleneksel Odun Ateşi Katı)</small></h3>
+                          </div>
 
-                         <div class="res-ticket-body vintage-body">
-                           <div class="res-ticket-item"><i class="fa-solid fa-user"></i> <span><strong>Misafir Adı:</strong> <span id="cardTicketName">Mehmet Ünal</span></span></div>
-                           <div class="res-ticket-item"><i class="fa-solid fa-phone"></i> <span><strong>İrtibat Tel:</strong> <span id="cardTicketPhone">0532 123 45 67</span></span></div>
-                           <div class="res-ticket-item"><i class="fa-solid fa-calendar-days"></i> <span><strong>Tarih & Saat:</strong> <span id="cardTicketDateTime">Tarih ve Saat Seçiniz</span></span></div>
-                           <div class="res-ticket-item"><i class="fa-solid fa-users"></i> <span><strong>Masa Kapasitesi:</strong> <span id="cardTicketGuests">-- Kişilik Masa</span></span></div>
-                           <div class="res-ticket-item" id="cardTicketNotesRow" style="grid-column: 1 / -1; display: none;"><i class="fa-solid fa-comment-dots"></i> <span><strong>Özel Not:</strong> <span id="cardTicketNotes">---</span></span></div>
-                         </div>
+                          <div class="res-ticket-body vintage-body">
+                            <div class="res-ticket-item"><i class="fa-solid fa-user"></i> <span><strong data-translate="ticket-name-label">Misafir Adı:</strong> <span id="cardTicketName">Mehmet Ünal</span></span></div>
+                            <div class="res-ticket-item"><i class="fa-solid fa-phone"></i> <span><strong data-translate="ticket-phone-label">İrtibat Tel:</strong> <span id="cardTicketPhone">0532 123 45 67</span></span></div>
+                            <div class="res-ticket-item"><i class="fa-solid fa-calendar-days"></i> <span><strong data-translate="ticket-date-label">Tarih & Saat:</strong> <span id="cardTicketDateTime">Tarih ve Saat Seçiniz</span></span></div>
+                            <div class="res-ticket-item"><i class="fa-solid fa-users"></i> <span><strong data-translate="ticket-guests-label">Masa Kapasitesi:</strong> <span id="cardTicketGuests">-- Kişilik Masa</span></span></div>
+                            <div class="res-ticket-item" id="cardTicketNotesRow" style="grid-column: 1 / -1; display: none;"><i class="fa-solid fa-comment-dots"></i> <span><strong data-translate="ticket-notes-label">Özel Not:</strong> <span id="cardTicketNotes">---</span></span></div>
+                          </div>
 
-                         <div class="res-ticket-notice vintage-notice">
-                           <i class="fa-solid fa-scroll"></i>
-                           <p>⚠️ Lütfen rezervasyon bilgilerinizin doğru olduğundan emin olunuz. İptal ve değişiklik talepleriniz için lütfen restoranımız ile iletişime geçiniz.</p>
-                         </div>
+                          <div class="res-ticket-notice vintage-notice">
+                            <i class="fa-solid fa-scroll"></i>
+                            <p data-translate="ticket-notice-text">⚠️ Lütfen rezervasyon bilgilerinizin doğru olduğundan emin olunuz. İptal ve değişiklik talepleriniz için lütfen restoranımız ile iletişime geçiniz.</p>
+                          </div>
 
-                         <div class="res-ticket-actions">
-                           <button type="button" class="btn-ticket-action vintage-btn" onclick="window.print()"><i class="fa-solid fa-mobile-screen-button"></i> Telefonuna Kaydet (PDF)</button>
-                           <a href="https://wa.me/902325137567?text=Merhaba,%20Masa%20No:%2007%20rezervasyonum%20hakkinda%20bilgi%20almak%20istiyorum." target="_blank" class="btn-ticket-action btn-wa vintage-btn-wa" id="cardTicketWaBtn"><i class="fa-brands fa-whatsapp"></i> WhatsApp ile Masanı Teyit Et</a>
-                           <button type="button" class="btn-ticket-action vintage-btn-edit" id="btnEditReservation"><i class="fa-solid fa-pen-to-square"></i> Bilgileri Düzenle</button>
-                         </div>
+                          <div class="res-ticket-actions">
+                            <button type="button" class="btn-ticket-action vintage-btn" onclick="window.print()"><i class="fa-solid fa-mobile-screen-button"></i> <span data-translate="ticket-btn-save">Telefonuna Kaydet (PDF)</span></button>
+                            <a href="https://wa.me/902325137567?text=Merhaba,%20Masa%20No:%2007%20rezervasyonum%20hakkinda%20bilgi%20almak%20istiyorum." target="_blank" class="btn-ticket-action btn-wa vintage-btn-wa" id="cardTicketWaBtn"><i class="fa-brands fa-whatsapp"></i> <span data-translate="ticket-btn-wa">WhatsApp ile Masanı Teyit Et</span></a>
+                            <button type="button" class="btn-ticket-action vintage-btn-edit" id="btnEditReservation" data-translate="ticket-edit-btn"><i class="fa-solid fa-pen-to-square"></i> Bilgileri Düzenle</button>
+                          </div>
                        </div>
                      </div>
                 </div>

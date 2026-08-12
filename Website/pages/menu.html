@@ -60,7 +60,7 @@
      <a href="index.html" class="logo-link" title="Lezzet Mührü 1932&#10;Gaziantep Menüsü"><img src="../public/images/logo.png" class="logo-img" alt="Lezzet Mührü 1932 Logo"></a>
      <div class="brand-text-wrapper">
          <span class="brand-title">Lezzet Mührü</span>
-         <span class="brand-subtitle">1932'den Beri</span>
+         <span class="brand-subtitle" data-translate="brand-sub">1932'den Beri</span>
      </div>
      <div class="header-status-wrapper">
          <div class="header-divider"></div>
@@ -72,12 +72,12 @@
    </button>
       <nav class="main-navbar" id="mainNavbar">
          <ul>
-             <li><a href="index.html">Anasayfa</a></li>
-             <li><a href="menu.html" class="active">Menü</a></li>
-             <li><a href="rezervasyon.html">Rezervasyon</a></li>
-             <li><a href="hakkimizda.html">Hakkımızda</a></li>
-             <li><a href="galeri.html">Galeri</a></li>
-             <li><a href="iletisim.html" class="nav-btn">İletişim</a></li>
+             <li><a href="index.html" data-translate="nav-home">Anasayfa</a></li>
+             <li><a href="menu.html" class="active" data-translate="nav-menu">Menü</a></li>
+             <li><a href="rezervasyon.html" data-translate="nav-reservation">Rezervasyon</a></li>
+             <li><a href="hakkimizda.html" data-translate="nav-about">Hakkımızda</a></li>
+             <li><a href="galeri.html" data-translate="nav-gallery">Galeri</a></li>
+             <li><a href="iletisim.html" class="nav-btn" data-translate="nav-contact">İletişim</a></li>
          </ul>
              </nav>
         </div>
@@ -93,8 +93,8 @@
 
         <section class="menu-hero" style="text-align: center; padding: 40px 0 20px 0;">
             <div class="container">
-                <h1 style="color: var(--primary-kiremit); margin-bottom: 10px;">Lezzet Mührü Menü</h1>
-                <p style="color: var(--color-text-muted); font-size: 1.2rem;">1932'den beri değişmeyen tarifler, usta ellerden sofranıza</p>
+                <h1 style="color: var(--primary-kiremit); margin-bottom: 10px;" data-translate="menu-title">Lezzet Mührü Menü</h1>
+                <p style="color: var(--color-text-muted); font-size: 1.2rem;" data-translate="menu-subtitle">1932'den beri değişmeyen tarifler, usta ellerden sofranıza</p>
             </div>
         </section>
 
@@ -104,11 +104,11 @@
     <div class="container">
         <div class="search-container" style="margin-bottom: 25px; text-align:center; display: flex; justify-content: center; align-items: center; gap: 15px; flex-wrap: wrap;">
             <div style="position: relative; width: 100%; max-width:460px;">
-                <input type="text" id="menuSearchInput" placeholder="Lezzetlerde ara... (Örn: Adana, Künefe, Mercimek)" style="width: 100%; padding: 13px 20px 13px 48px; border-radius: 30px; border: 1.5px solid #f39c12; font-size: 0.95rem; outline: none; transition: all 0.3s ease; background: rgba(20, 10, 5, 0.9); color: #ffffff;">
+                <input type="text" id="menuSearchInput" placeholder="Lezzetlerde ara... (Örn: Adana, Künefe, Mercimek)" data-translate-placeholder="menu-search-ph" style="width: 100%; padding: 13px 20px 13px 48px; border-radius: 30px; border: 1.5px solid #f39c12; font-size: 0.95rem; outline: none; transition: all 0.3s ease; background: rgba(20, 10, 5, 0.9); color: #ffffff;">
                 <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 18px; top: 50%; transform: translateY(-50%); color: #f39c12 !important; font-size: 1.15rem !important; z-index: 10 !important; pointer-events: none !important;"></i>     
             </div>
-            <button type="button" id="btnPrintMenu" class="btn-print-menu" onclick="if(typeof window.menuyuYazdirAninda==='function'){window.menuyuYazdirAninda();}else{window.print();}" title="42 Lezzetin Tamamını Renkli PDF Olarak İndirin Veya Yazdırın">
-                <i class="fa-solid fa-print"></i> Menüyü Yazdır / PDF (42 Lezzet)
+            <button type="button" id="btnPrintMenu" class="btn-print-menu" data-translate="menu-btn-print" data-translate-title="menu-btn-print-title" onclick="if(typeof window.menuyuYazdirAninda==='function'){window.menuyuYazdirAninda();}else{window.print();}" title="42 Lezzetin Tamamını Renkli PDF Olarak İndirin Veya Yazdırın" data-translate-title="menu-btn-print-title">
+                <i class="fa-solid fa-print"></i> <span data-translate="menu-btn-print">Menüyü Yazdır / PDF (42 Lezzet)</span>
             </button>
         </div>
     </div>
@@ -117,13 +117,13 @@
     <div class="filter-buttons-wrapper">
       <div class="container" style="padding: 0 !important;">
         <div class="filter-buttons">
-            <button class="filter-btn active" data-kategori="tumu">⭐ Şefin Seçtikleri <span class="badge-count">6</span></button>
-            <button class="filter-btn" data-kategori="corba">Çorbalar <span class="badge-count">5</span></button>
-            <button class="filter-btn" data-kategori="kebap">Izgaralar & Kebaplar <span class="badge-count">9</span></button>
-            <button class="filter-btn" data-kategori="pide">Pideler & Lahmacunlar <span class="badge-count">9</span></button>
-            <button class="filter-btn" data-kategori="zeytinyagli">Zeytinyağlı & Salatalar <span class="badge-count">8</span></button> 
-            <button class="filter-btn" data-kategori="tatli">Tatlılar <span class="badge-count">5</span></button>
-            <button class="filter-btn" data-kategori="icecek">İçecekler <span class="badge-count">6</span></button>
+            <button class="filter-btn active" data-kategori="tumu" data-translate="menu-filter-all">⭐ Şefin Seçtikleri <span class="badge-count">6</span></button>
+            <button class="filter-btn" data-kategori="corba" data-translate="menu-filter-corba">Çorbalar <span class="badge-count">5</span></button>
+            <button class="filter-btn" data-kategori="kebap" data-translate="menu-filter-kebap">Izgaralar & Kebaplar <span class="badge-count">9</span></button>
+            <button class="filter-btn" data-kategori="pide" data-translate="menu-filter-pide">Pideler & Lahmacunlar <span class="badge-count">9</span></button>
+            <button class="filter-btn" data-kategori="zeytinyagli" data-translate="menu-filter-zeytinyagli">Zeytinyağlı & Salatalar <span class="badge-count">8</span></button> 
+            <button class="filter-btn" data-kategori="tatli" data-translate="menu-filter-tatli">Tatlılar <span class="badge-count">5</span></button>
+            <button class="filter-btn" data-kategori="icecek" data-translate="menu-filter-icecek">İçecekler <span class="badge-count">6</span></button>
         </div>
       </div>
     </div>
@@ -134,12 +134,12 @@
 
         <!-- Chef's Recommendation Card (Menü Ortası) -->
         <div class="chef-special-card">
-          <div class="chef-special-badge"><i class="fa-solid fa-star"></i> Şefin Günün Menü Tavsiyesi</div>
+          <div class="chef-special-badge"><i class="fa-solid fa-star"></i> <span data-translate="menu-chef-card-badge">Şefin Günün Menü Tavsiyesi</span></div>
           <div class="chef-special-content">
-            <h3>Geleneksel Taş Fırın & Izgara Kombini</h3>
-            <p>Köz Patlıcanlı Süt Çorbası + Zırh Kıyması Adana Kebap + Çıtır Antep Fıstıklı Künefe</p>
+            <h3 data-translate="menu-chef-card-title">Geleneksel Taş Fırın & Izgara Kombini</h3>
+            <p data-translate="menu-chef-card-desc">Köz Patlıcanlı Süt Çorbası + Zırh Kıyması Adana Kebap + Çıtır Antep Fıstıklı Künefe</p>
           </div>
-          <a href="rezervasyon.html" class="btn-chef-special"><i class="fa-solid fa-calendar-check"></i> Masa Rezerve Et</a>
+          <a href="rezervasyon.html" class="btn-chef-special" data-translate="menu-chef-card-btn"><i class="fa-solid fa-calendar-check"></i> Masa Rezerve Et</a>
         </div>
     </div>
 </section>
@@ -151,18 +151,18 @@
       <div class="service-box">
         <i class="fa-solid fa-file-pdf"></i>
         <div>
-          <strong>Dijital Menü PDF</strong>
-          <span>Telefonunuza indirmek için tıklayın</span>
+          <strong data-translate="menu-serv-1-title">Dijital Menü PDF</strong>
+          <span data-translate="menu-serv-1-desc">Telefonunuza indirmek için tıklayın</span>
         </div>
-        <a href="../public/pdf/Lezzet_Muhru_1932_Menu.pdf" download="Lezzet_Muhru_1932_Dijital_Menu.pdf" target="_blank" class="btn-service-action">PDF İndir</a>
+        <a href="../public/pdf/Lezzet_Muhru_1932_Menu.pdf" download="Lezzet_Muhru_1932_Dijital_Menu.pdf" target="_blank" class="btn-service-action" data-translate="menu-serv-1-btn">PDF İndir</a>
       </div>
       <div class="service-box">
         <i class="fa-solid fa-phone-volume"></i>
         <div>
-          <strong>Masaya Sipariş & Bilgi</strong>
-          <span>Garson çağırma ve detaylı bilgi için</span>
+          <strong data-translate="menu-serv-2-title">Masaya Sipariş & Bilgi</strong>
+          <span data-translate="menu-serv-2-desc">Garson çağırma ve detaylı bilgi için</span>
         </div>
-        <a href="tel:02325137567" class="btn-service-action highlight">Bizi Arayın</a>
+        <a href="tel:02325137567" class="btn-service-action highlight" data-translate="menu-serv-2-btn">Bizi Arayın</a>
       </div>
     </div>
   </div>
@@ -178,33 +178,33 @@
         <div class="container footer-container">
           <div class="footer-col">
             <a href="index.html" class="footer-logo-link"><img src="../public/images/logo.png" alt="Lezzet Mührü Logo" class="footer-logo-img"></a>
-            <p class="footer-text">Geleneksel tarifler, asırlık lezzet ve ızgara ustalığıyla 1932'den beri sofralarınıza mühür vuruyoruz.</p>
+            <p class="footer-text" data-translate="footer-desc">Gaziantep'in asırlık tarifi ve odun ateşinin eşsiz lezzetiyle 1932'den beri hizmetinizdeyiz. Kuşaklar boyu aktarılan bu miras, her lokmada yeniden canlanıyor.</p>
           </div>
          
           <div class="footer-col">
-            <h3>Hızlı Menü</h3>
+            <h3 data-translate="footer-quick-links">Hızlı Menü</h3>
             <ul class="footer-links">
-              <li><a href="index.html">Anasayfa</a></li>
-              <li><a href="menu.html">Menü</a></li>
-              <li><a href="rezervasyon.html">Rezervasyon</a></li>
-              <li><a href="hakkimizda.html">Hakkımızda</a></li>
-              <li><a href="galeri.html">Galeri</a></li>
+              <li><a href="index.html" data-translate="nav-home">Anasayfa</a></li>
+              <li><a href="menu.html" data-translate="nav-menu">Menü</a></li>
+              <li><a href="rezervasyon.html" data-translate="nav-reservation">Rezervasyon</a></li>
+              <li><a href="hakkimizda.html" data-translate="nav-about">Hakkımızda</a></li>
+              <li><a href="galeri.html" data-translate="nav-gallery">Galeri</a></li>
             </ul>
           </div>
 
           <div class="footer-col">
-            <h3>Çalışma Saatleri</h3>
+            <h3 data-translate="footer-hours-title">Çalışma Saatleri</h3>
             <div class="working-hours">
-              <p><strong>Pazartesi - Perşembe:</strong> 10:00 - 22:00</p>
-              <p><strong>Cuma - Cumartesi:</strong> 10:00 - 23:00</p>
-              <p><strong>Pazar:</strong> <span class="status-badge closed">Kapalı</span></p>
+              <p data-translate="footer-hours-weekdays"><strong>Pazartesi - Perşembe:</strong> 10:00 - 22:00</p>
+              <p data-translate="footer-hours-weekend"><strong>Cuma - Cumartesi:</strong> 10:00 - 23:00</p>
+              <p data-translate="footer-hours-sunday"><strong>Pazar:</strong> <span class="status-badge closed">Kapalı</span></p>
             </div>
           </div>
 
           <div class="footer-col">
-            <h3>İletişim</h3>
+            <h3 data-translate="footer-contact-title">İletişim</h3>
             <ul class="footer-contact-list">
-              <li><i class="fa-solid fa-location-dot"></i><span>Akkent Mahallesi, Kemalpaşa Caddesi, No:77, Şahinbey / Gaziantep</span></li>
+              <li><i class="fa-solid fa-location-dot"></i><span data-translate="footer-address">Akkent Mahallesi, Kemalpaşa Caddesi, No:77, Şahinbey / Gaziantep</span></li>
               <li><i class="fa-solid fa-phone"></i><a href="tel:02325137567">0 232 513 75 67</a></li>
               <li><i class="fa-solid fa-envelope"></i><a href="mailto:info@lezzetmuhru.com">info@lezzetmuhru.com</a></li>
             </ul>
@@ -218,12 +218,13 @@
 
         <div class="footer-bottom">
           <div class="container">
-            <p>&copy; 1932 - 2026 Lezzet Mührü. Tüm hakları saklıdır.</p>
+            <p data-translate="footer-copyright">&copy; 1932 - 2026 Lezzet Mührü. Tüm hakları saklıdır.</p>
           </div>
         </div>
     </footer>
 
     
-    <script src="../public/js/main.js?v=2.1"></script>
+    <script src="../public/js/translations.js"></script>
+  <script src="../public/js/main.js?v=2.1"></script>
 </body>
 </html>

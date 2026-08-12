@@ -7,6 +7,20 @@ let yemekler = [];
 
 document.addEventListener("DOMContentLoaded", () => {
 
+  // Helper to translate validation and dynamic message texts
+  function t(key, defaultVal) {
+    const currentLang = localStorage.getItem('language') || 'tr';
+    if (window.translations && window.translations[currentLang] && window.translations[currentLang][key] !== undefined) {
+      return window.translations[currentLang][key];
+    }
+    return defaultVal;
+  }
+
+  // --- MULTI-LANGUAGE SYSTEM INITIALIZATION ---
+  if (typeof initLanguageSystem === 'function') {
+    initLanguageSystem();
+  }
+
   // --- CANLI ARKA PLAN VİDEO SİSTEMİ (TÜM SAYFALARDA OTOMATİK DÖNEN YÜKLEDİĞİNİZ ATEŞ VİDEOSU) ---
   let bgVideo = document.getElementById('globalBgVideo');
   if (!bgVideo) {
@@ -114,8 +128,8 @@ document.addEventListener("DOMContentLoaded", () => {
       toggleBtn = document.createElement('button');
       toggleBtn.id = 'atmosphereToggleBtn';
       toggleBtn.className = 'atmosphere-toggle-btn';
-      toggleBtn.setAttribute('title', 'Atmosfer Modunu Değiştir (Gündüz / Mangal Akşamı)');
-      toggleBtn.innerHTML = `<i class="fa-solid fa-fire" style="color:#e74c3c;"></i> <span>Mangal Akşamı</span>`;
+      toggleBtn.setAttribute('title', 'Atmosfer Modunu Değiştir (Tarihi Antep Gündüzü / Meşe Kömürü Akşamı)');
+      toggleBtn.innerHTML = `<i class="fa-solid fa-fire" style="color:#e74c3c;"></i> <span>Meşe Kömürü Akşamı</span>`;
       statusWrapper.appendChild(toggleBtn);
     }
 
@@ -145,16 +159,21 @@ document.addEventListener("DOMContentLoaded", () => {
       document.body.classList.add('day-atmosphere');
       localStorage.setItem('atmosphereMode', 'day');
       if (toggleBtn) {
-        toggleBtn.innerHTML = `<i class="fa-solid fa-sun" style="color:#f39c12;"></i> <span>Gündüz Sefası</span>`;
+        toggleBtn.innerHTML = `<i class="fa-solid fa-sun" style="color:#f39c12;"></i> <span>Tarihi Antep Gündüzü</span>`;
         toggleBtn.classList.add('day-active');
       }
     } else {
       document.body.classList.remove('day-atmosphere');
       localStorage.setItem('atmosphereMode', 'night');
       if (toggleBtn) {
-        toggleBtn.innerHTML = `<i class="fa-solid fa-fire" style="color:#e74c3c;"></i> <span>Mangal Akşamı</span>`;
+        toggleBtn.innerHTML = `<i class="fa-solid fa-fire" style="color:#e74c3c;"></i> <span>Meşe Kömürü Akşamı</span>`;
         toggleBtn.classList.remove('day-active');
       }
+    }
+
+    // Dil Çevirisini Hemen Uygula
+    if (typeof updateAtmosphereBtnTranslation === 'function') {
+      updateAtmosphereBtnTranslation(localStorage.getItem('language') || 'tr');
     }
 
     if (bgVideo) {
@@ -342,9 +361,32 @@ document.addEventListener("DOMContentLoaded", () => {
       const fragment = document.createDocumentFragment();
 
       Liste.forEach((yemek) => {
-        const sefinOnerisiHTML = yemek.sefinOnerisi ? `<span class="badge badge-chef">⭐ Şefin Önerisi</span>` : '';
-        const vejetaryenHTML = yemek.vejetaryen ? `<span class="badge badge-veg" title="Vejetaryen Dostu">🌱 Veg</span>` : '';
-        const aciliHTML = (yemek.kategori === 'kebap' && (yemek.ad.includes('Adana') || yemek.ad.includes('Ciğer') || yemek.ad.includes('Sarma'))) || yemek.ad.includes('Acılı') ? `<span class="badge badge-spicy" title="Acılı Lezzet"><i class="fa-solid fa-pepper-hot"></i> Acılı</span>` : '';
+        const currentLang = localStorage.getItem('language') || 'tr';
+        
+        // Dinamik Yemek Çevirisi
+        const translatedAd = (window.translations && translations[currentLang] && translations[currentLang][yemek.ad]) 
+          ? translations[currentLang][yemek.ad] 
+          : yemek.ad;
+        const translatedAciklama = (window.translations && translations[currentLang] && translations[currentLang][yemek.aciklama]) 
+          ? translations[currentLang][yemek.aciklama] 
+          : yemek.aciklama;
+        
+        // Dinamik Rozet Çevirileri
+        const chefSpecialLabel = (window.translations && translations[currentLang] && translations[currentLang]['menu-chef-special']) 
+          ? translations[currentLang]['menu-chef-special'] 
+          : 'Şefin Önerisi';
+        const vegLabel = (window.translations && translations[currentLang] && translations[currentLang]['menu-vegetarian']) 
+          ? translations[currentLang]['menu-vegetarian'] 
+          : 'Veg';
+        const spicyLabel = (window.translations && translations[currentLang] && translations[currentLang]['menu-spicy']) 
+          ? translations[currentLang]['menu-spicy'] 
+          : 'Acılı';
+
+        const sefinOnerisiHTML = yemek.sefinOnerisi ? `<span class="badge badge-chef">⭐ ${chefSpecialLabel}</span>` : '';
+        const vejetaryenHTML = yemek.vejetaryen ? `<span class="badge badge-veg" title="Vejetaryen Dostu">🌱 ${vegLabel}</span>` : '';
+        const aciliHTML = (yemek.kategori === 'kebap' && (yemek.ad.includes('Adana') || yemek.ad.includes('Ciğer') || yemek.ad.includes('Sarma'))) || yemek.ad.includes('Acılı') 
+          ? `<span class="badge badge-spicy" title="Acılı Lezzet"><i class="fa-solid fa-pepper-hot"></i> ${spicyLabel}</span>` 
+          : '';
 
         const cardDiv = document.createElement("div");
         cardDiv.className = "dish-card";
@@ -357,11 +399,11 @@ document.addEventListener("DOMContentLoaded", () => {
             ${aciliHTML}
           </div>
           <div class="dish-img-container">
-            <img src="${yemek.resim}" alt="${yemek.ad}" loading="${yemek.loading}">
+            <img src="${yemek.resim}" alt="${translatedAd}" loading="${yemek.loading}">
           </div>
           <div class="dish-info">
-            <h3>${yemek.ad}</h3>
-            <p>${yemek.aciklama}</p>
+            <h3>${translatedAd}</h3>
+            <p>${translatedAciklama}</p>
             <span class="dish-price">₺${yemek.fiyat}</span>
           </div>
         `;
@@ -400,23 +442,33 @@ document.addEventListener("DOMContentLoaded", () => {
     // Kategori ve Arama Filtresi
     function menuyuFiltrele() {
       const filtrelenmis = yemekler.filter((yemek) => {
+        const currentLang = localStorage.getItem('language') || 'tr';
+        const translatedAd = (window.translations && translations[currentLang] && translations[currentLang][yemek.ad]) 
+          ? translations[currentLang][yemek.ad] 
+          : yemek.ad;
+        const translatedAciklama = (window.translations && translations[currentLang] && translations[currentLang][yemek.aciklama]) 
+          ? translations[currentLang][yemek.aciklama] 
+          : yemek.aciklama;
+
         const kategoriUyumlu = (aktifKategori === "tumu") || (yemek.kategori === aktifKategori);
-        const adUyumlu = yemek.ad.toLocaleLowerCase('tr-TR').includes(mevcutAramaMetni);
-        const aciklamaUyumlu = yemek.aciklama.toLocaleLowerCase('tr-TR').includes(mevcutAramaMetni);
+        const adUyumlu = yemek.ad.toLocaleLowerCase('tr-TR').includes(mevcutAramaMetni) || 
+                         translatedAd.toLocaleLowerCase('tr-TR').includes(mevcutAramaMetni);
+        const aciklamaUyumlu = yemek.aciklama.toLocaleLowerCase('tr-TR').includes(mevcutAramaMetni) || 
+                               translatedAciklama.toLocaleLowerCase('tr-TR').includes(mevcutAramaMetni);
         
         let kategoriEtiketUyumlu = false;
         if (mevcutAramaMetni.length > 0) {
-          if (('izgara'.includes(mevcutAramaMetni) || 'ızgara'.includes(mevcutAramaMetni) || 'kebap'.includes(mevcutAramaMetni)) && yemek.kategori === 'kebap') {
+          if (('izgara'.includes(mevcutAramaMetni) || 'ızgara'.includes(mevcutAramaMetni) || 'kebap'.includes(mevcutAramaMetni) || 'grill'.includes(mevcutAramaMetni) || 'kebab'.includes(mevcutAramaMetni)) && yemek.kategori === 'kebap') {
             kategoriEtiketUyumlu = true;
-          } else if (('corba'.includes(mevcutAramaMetni) || 'çorba'.includes(mevcutAramaMetni)) && yemek.kategori === 'corba') {
+          } else if (('corba'.includes(mevcutAramaMetni) || 'çorba'.includes(mevcutAramaMetni) || 'soup'.includes(mevcutAramaMetni)) && yemek.kategori === 'corba') {
             kategoriEtiketUyumlu = true;
-          } else if (('pide'.includes(mevcutAramaMetni) || 'lahmacun'.includes(mevcutAramaMetni)) && yemek.kategori === 'pide') {
+          } else if (('pide'.includes(mevcutAramaMetni) || 'lahmacun'.includes(mevcutAramaMetni) || 'pita'.includes(mevcutAramaMetni) || 'pizza'.includes(mevcutAramaMetni)) && yemek.kategori === 'pide') {
             kategoriEtiketUyumlu = true;
-          } else if (('zeytinyağlı'.includes(mevcutAramaMetni) || 'salata'.includes(mevcutAramaMetni)) && yemek.kategori === 'zeytinyagli') {
+          } else if (('zeytinyağlı'.includes(mevcutAramaMetni) || 'salata'.includes(mevcutAramaMetni) || 'salad'.includes(mevcutAramaMetni)) && yemek.kategori === 'zeytinyagli') {
             kategoriEtiketUyumlu = true;
-          } else if (('tatli'.includes(mevcutAramaMetni) || 'tatlı'.includes(mevcutAramaMetni)) && yemek.kategori === 'tatli') {
+          } else if (('tatli'.includes(mevcutAramaMetni) || 'tatlı'.includes(mevcutAramaMetni) || 'dessert'.includes(mevcutAramaMetni) || 'baklava'.includes(mevcutAramaMetni)) && yemek.kategori === 'tatli') {
             kategoriEtiketUyumlu = true;
-          } else if (('icecek'.includes(mevcutAramaMetni) || 'içecek'.includes(mevcutAramaMetni)) && yemek.kategori === 'icecek') {
+          } else if (('icecek'.includes(mevcutAramaMetni) || 'içecek'.includes(mevcutAramaMetni) || 'drink'.includes(mevcutAramaMetni) || 'beverage'.includes(mevcutAramaMetni)) && yemek.kategori === 'icecek') {
             kategoriEtiketUyumlu = true;
           }
         }
@@ -507,7 +559,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       } catch (err) {
         console.error('Backend API Fetch Hatası:', err);
-        gosterHataState('Veritabanından menü verileri çekilemedi. Lütfen arka plan sunucusunun (Express & SQLite) aktif olduğunu kontrol edin.');
+        gosterHataState(t('err-menu-db', 'Veritabanından menü verileri çekilemedi. Lütfen arka plan sunucusunun (Express & SQLite) aktif olduğunu kontrol edin.'));
       }
     }
 
@@ -564,22 +616,36 @@ document.addEventListener("DOMContentLoaded", () => {
       kategoriMap.forEach(kat => {
         const katYemekleri = yemekler.filter(y => y.kategori === kat.id);
         if (katYemekleri.length > 0) {
+          const currentLang = localStorage.getItem('language') || 'tr';
+          
+          // E.g. "menu-filter-corba" might map to "Soups" or similar, otherwise fallback to baslik
+          const translatedKatTitle = (window.translations && translations[currentLang] && translations[currentLang]['menu-filter-' + kat.id]) 
+            ? translations[currentLang]['menu-filter-' + kat.id] 
+            : kat.baslik;
+
           const katHeader = document.createElement("div");
           katHeader.className = "print-category-header";
-          katHeader.innerHTML = `<span>${kat.baslik}</span>`;
+          katHeader.innerHTML = `<span>${translatedKatTitle}</span>`;
           fragment.appendChild(katHeader);
 
           katYemekleri.forEach(yemek => {
+            const translatedAd = (window.translations && translations[currentLang] && translations[currentLang][yemek.ad]) 
+              ? translations[currentLang][yemek.ad] 
+              : yemek.ad;
+            const translatedAciklama = (window.translations && translations[currentLang] && translations[currentLang][yemek.aciklama]) 
+              ? translations[currentLang][yemek.aciklama] 
+              : yemek.aciklama;
+
             const cardDiv = document.createElement("div");
             cardDiv.className = "dish-card";
             cardDiv.dataset.kategori = yemek.kategori;
             cardDiv.innerHTML = `
               <div class="dish-img-container">
-                <img src="${yemek.resim}" alt="${yemek.ad}" class="loaded" decoding="async" loading="eager">
+                <img src="${yemek.resim}" alt="${translatedAd}" class="loaded" decoding="async" loading="eager">
               </div>
               <div class="dish-info">
-                <h3>${yemek.ad}</h3>
-                <p>${yemek.aciklama}</p>
+                <h3>${translatedAd}</h3>
+                <p>${translatedAciklama}</p>
                 <span class="dish-price">₺${yemek.fiyat}</span>
               </div>
             `;
@@ -619,22 +685,35 @@ document.addEventListener("DOMContentLoaded", () => {
       kategoriMap.forEach(kat => {
         const katYemekleri = yemekler.filter(y => y.kategori === kat.id);
         if (katYemekleri.length > 0) {
+          const currentLang = localStorage.getItem('language') || 'tr';
+          
+          const translatedKatTitle = (window.translations && translations[currentLang] && translations[currentLang]['menu-filter-' + kat.id]) 
+            ? translations[currentLang]['menu-filter-' + kat.id] 
+            : kat.baslik;
+
           const katHeader = document.createElement("div");
           katHeader.className = "print-category-header";
-          katHeader.innerHTML = `<span>${kat.baslik}</span>`;
+          katHeader.innerHTML = `<span>${translatedKatTitle}</span>`;
           fragment.appendChild(katHeader);
 
           katYemekleri.forEach(yemek => {
+            const translatedAd = (window.translations && translations[currentLang] && translations[currentLang][yemek.ad]) 
+              ? translations[currentLang][yemek.ad] 
+              : yemek.ad;
+            const translatedAciklama = (window.translations && translations[currentLang] && translations[currentLang][yemek.aciklama]) 
+              ? translations[currentLang][yemek.aciklama] 
+              : yemek.aciklama;
+
             const cardDiv = document.createElement("div");
             cardDiv.className = "dish-card";
             cardDiv.dataset.kategori = yemek.kategori;
             cardDiv.innerHTML = `
               <div class="dish-img-container">
-                <img src="${yemek.resim}" alt="${yemek.ad}" class="loaded" decoding="async" loading="eager">
+                <img src="${yemek.resim}" alt="${translatedAd}" class="loaded" decoding="async" loading="eager">
               </div>
               <div class="dish-info">
-                <h3>${yemek.ad}</h3>
-                <p>${yemek.aciklama}</p>
+                <h3>${translatedAd}</h3>
+                <p>${translatedAciklama}</p>
                 <span class="dish-price">₺${yemek.fiyat}</span>
               </div>
             `;
@@ -737,7 +816,7 @@ document.addEventListener("DOMContentLoaded", () => {
       // --- SIRALI DOĞRULAMA (1. Ad Soyad, 2. Telefon, 3. Tarih, 4. Saat, 5. Kişi Sayısı) ---
       // 1. Adınız Soyadınız
       if (!nameInput || !nameInput.value.trim() || nameInput.value.trim().length < 3) {
-        hataGoster(nameInput, 'Lütfen en az 3 karakterden oluşan adınızı ve soyadınızı giriniz.');
+        hataGoster(nameInput, t('err-res-name', 'Lütfen en az 3 karakterden oluşan adınızı ve soyadınızı giriniz.'));
         if (!hasError) { nameInput.focus(); hasError = true; }
       }
 
@@ -745,7 +824,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const phoneClean = phoneInput ? phoneInput.value.trim() : '';
       const phoneRegex = /^05[0-9]{9}$/;
       if (!phoneInput || !phoneClean || !phoneRegex.test(phoneClean)) {
-        hataGoster(phoneInput, 'Lütfen 05 ile başlayan 11 haneli cep telefonunuzu giriniz.');
+        hataGoster(phoneInput, t('err-res-phone', 'Lütfen 05 ile başlayan 11 haneli cep telefonunuzu giriniz.'));
         if (!hasError) { phoneInput.focus(); hasError = true; }
       }
 
@@ -753,7 +832,7 @@ document.addEventListener("DOMContentLoaded", () => {
       let isSunday = false;
       let selectedDayOfWeek = -1;
       if (!dateInput || !dateInput.value.trim() || dateInput.value.trim() === 'Tarih Seçiniz') {
-        hataGoster(dateInput, 'Lütfen rezervasyon tarihini seçiniz.');
+        hataGoster(dateInput, t('err-res-date', 'Lütfen rezervasyon tarihini seçiniz.'));
         if (!hasError) { dateInput.focus(); hasError = true; }
       } else {
         const dateVal = dateInput.value.trim();
@@ -767,7 +846,7 @@ document.addEventListener("DOMContentLoaded", () => {
           
           if (selectedDayOfWeek === 0) {
             isSunday = true;
-            hataGoster(dateInput, 'Pazar günleri kapalıyız. Lütfen başka bir gün seçiniz.');
+            hataGoster(dateInput, t('err-res-sunday', 'Pazar günleri kapalıyız. Lütfen başka bir gün seçiniz.'));
             if (!hasError) { dateInput.focus(); hasError = true; }
           }
         }
@@ -775,7 +854,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // 4. Rezervasyon Saati
       if (!timeInput || !timeInput.value.trim() || timeInput.value.trim() === 'Saat Seçiniz') {
-        hataGoster(timeInput, 'Lütfen rezervasyon saatini seçiniz.');
+        hataGoster(timeInput, t('err-res-time', 'Lütfen rezervasyon saatini seçiniz.'));
         if (!hasError) { timeInput.focus(); hasError = true; }
       } else if (!isSunday && selectedDayOfWeek !== -1) {
         const timeVal = timeInput.value.trim();
@@ -798,7 +877,10 @@ document.addEventListener("DOMContentLoaded", () => {
           }
 
           if (totalMinutes < minLimit || totalMinutes > maxLimit) {
-            hataGoster(timeInput, `Seçilen gün için mesai saatlerimiz ${minTime} - ${maxTime} arasındadır.`);
+            const limitMsg = (localStorage.getItem('language') || 'tr') === 'en'
+              ? `Working hours for this day are between ${minTime} and ${maxTime}.`
+              : `Seçilen gün için mesai saatlerimiz ${minTime} - ${maxTime} arasındadır.`;
+            hataGoster(timeInput, limitMsg);
             if (!hasError) { timeInput.focus(); hasError = true; }
           }
         }
@@ -806,12 +888,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // 5. Kişi Sayısı
       if (!guestsInput || !guestsInput.value.trim() || parseInt(guestsInput.value) < 1 || parseInt(guestsInput.value) > 10) {
-        hataGoster(guestsInput, 'Lütfen kişi sayısını giriniz (1-10 arası).');
+        hataGoster(guestsInput, t('err-res-guests', 'Lütfen kişi sayısını giriniz (1-10 arası).'));
         if (!hasError) { guestsInput.focus(); hasError = true; }
       }
 
       if (hasError) {
-        alertGoster(resFormAlert, 'error', '<i class="fa-solid fa-triangle-exclamation"></i> <span>Lütfen tüm zorunlu alanları eksiksiz doldurunuz.</span>');
+        alertGoster(resFormAlert, 'error', `<i class="fa-solid fa-triangle-exclamation"></i> <span>${t('err-res-fill', 'Lütfen tüm zorunlu alanları eksiksiz doldurunuz.')}</span>`);
         return;
       }
 
@@ -843,6 +925,20 @@ document.addEventListener("DOMContentLoaded", () => {
           guests: `${data.guests || guestsVal} Kişilik Masa`,
           notes: data.notes || notesVal
         };
+
+        // Yeni rezervasyonda durumu beklemede olarak sıfırla
+        const cardTicketStatus = document.getElementById('cardTicketStatus');
+        if (cardTicketStatus) {
+          cardTicketStatus.innerHTML = '<span class="pulse-dot-amber"></span> ⏳ Restoran Onayı Bekliyor';
+          cardTicketStatus.className = 'vintage-status-pill';
+        }
+
+        // Yeni rezervasyon için düzenle butonunu göster
+        const btnEditReservation = document.getElementById('btnEditReservation');
+        if (btnEditReservation) {
+          btnEditReservation.style.display = 'inline-block';
+        }
+
         setTimeout(() => {
           displayTicketData(ticketData);
           if (ticketContainer) {
@@ -886,18 +982,171 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     });
 
+    // --- SEKME GEÇİŞLERİ VE REZERVAZYON SORGULAMA ---
+    const toggleNewResBtn = document.getElementById('toggleNewResBtn');
+    const toggleQueryResBtn = document.getElementById('toggleQueryResBtn');
+    const reservationQueryForm = document.getElementById('reservationQueryForm');
+    const resQueryAlert = document.getElementById('resQueryAlert');
+
+    if (toggleNewResBtn && toggleQueryResBtn) {
+      toggleNewResBtn.addEventListener('click', () => {
+        toggleNewResBtn.classList.add('active');
+        toggleQueryResBtn.classList.remove('active');
+        if (reservationForm) {
+          reservationForm.style.display = 'block';
+          hatalariTemizle();
+        }
+        if (reservationQueryForm) reservationQueryForm.style.display = 'none';
+        const ticketContainer = document.getElementById('resTicketContainer');
+        if (ticketContainer) ticketContainer.style.display = 'none';
+      });
+
+      toggleQueryResBtn.addEventListener('click', () => {
+        toggleQueryResBtn.classList.add('active');
+        toggleNewResBtn.classList.remove('active');
+        if (reservationForm) reservationForm.style.display = 'none';
+        if (reservationQueryForm) {
+          reservationQueryForm.style.display = 'block';
+          const queryPhoneInput = document.getElementById('queryPhone');
+          if (queryPhoneInput) queryPhoneInput.value = '';
+          if (resQueryAlert) resQueryAlert.style.display = 'none';
+        }
+        const ticketContainer = document.getElementById('resTicketContainer');
+        if (ticketContainer) ticketContainer.style.display = 'none';
+      });
+    }
+
+    if (reservationQueryForm) {
+      reservationQueryForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const queryPhoneInput = document.getElementById('queryPhone');
+        if (!queryPhoneInput) return;
+
+        const phoneVal = queryPhoneInput.value.trim();
+        const phoneRegex = /^05[0-9]{9}$/;
+
+        if (!phoneVal) {
+          alertGoster(resQueryAlert, 'error', `<i class="fa-solid fa-triangle-exclamation"></i> <span>${t('err-query-phone-empty', 'Lütfen telefon numaranızı giriniz.')}</span>`);
+          return;
+        }
+
+        if (!phoneRegex.test(phoneVal)) {
+          alertGoster(resQueryAlert, 'error', `<i class="fa-solid fa-triangle-exclamation"></i> <span>${t('err-query-phone-invalid', 'Lütfen 05 ile başlayan 11 haneli geçerli bir telefon numarası giriniz.')}</span>`);
+          return;
+        }
+
+        const querySubmitBtn = reservationQueryForm.querySelector('button[type="submit"]');
+        const originalQueryBtnHtml = querySubmitBtn ? querySubmitBtn.innerHTML : '';
+        if (querySubmitBtn) {
+          querySubmitBtn.disabled = true;
+          const searchSpinnerMsg = (localStorage.getItem('language') || 'tr') === 'en' ? 'Searching...' : 'Rezervasyonunuz Aranıyor...';
+          querySubmitBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> ${searchSpinnerMsg}`;
+        }
+
+        fetch(`/api/rezervasyon-sorgula?telefon=${encodeURIComponent(phoneVal)}`)
+          .then(res => {
+            if (res.status === 404) {
+              throw new Error(t('err-query-not-found', 'Aktif bir rezervasyon kaydı bulunamadı. Lütfen telefon numaranızı kontrol ediniz.'));
+            }
+            if (!res.ok) {
+              const serverErr = (localStorage.getItem('language') || 'tr') === 'en' ? 'A server error occurred during query.' : 'Sorgulama sırasında bir sunucu hatası oluştu.';
+              throw new Error(serverErr);
+            }
+            return res.json();
+          })
+          .then(result => {
+            if (querySubmitBtn) {
+              querySubmitBtn.disabled = false;
+              querySubmitBtn.innerHTML = originalQueryBtnHtml;
+            }
+
+            if (result && result.success && result.data) {
+              alertGoster(resQueryAlert, 'success', '<i class="fa-solid fa-circle-check"></i> <span>Rezervasyonunuz başarıyla bulundu!</span>');
+              
+              // Sorgulama formunu gizle
+              if (reservationQueryForm) reservationQueryForm.style.display = 'none';
+              
+              // Bilet verilerini yerleştir
+              const cardTableNumber = document.getElementById('cardTableNumber');
+              const cardTicketName = document.getElementById('cardTicketName');
+              const cardTicketPhone = document.getElementById('cardTicketPhone');
+              const cardTicketDateTime = document.getElementById('cardTicketDateTime');
+              const cardTicketGuests = document.getElementById('cardTicketGuests');
+              const cardTicketNotes = document.getElementById('cardTicketNotes');
+              const cardTicketNotesRow = document.getElementById('cardTicketNotesRow');
+              const cardTicketWaBtn = document.getElementById('cardTicketWaBtn');
+              const cardTicketStatus = document.getElementById('cardTicketStatus');
+
+              const data = result.data;
+              if (cardTableNumber) cardTableNumber.innerHTML = `Masa No: ${data.masaNo} <small>${data.konum}</small>`;
+              if (cardTicketName) cardTicketName.textContent = data.name || 'Girilmedi';
+              if (cardTicketPhone) cardTicketPhone.textContent = data.phone || '---';
+              if (cardTicketDateTime) cardTicketDateTime.textContent = `${data.date} • ${data.time}`;
+              if (cardTicketGuests) cardTicketGuests.textContent = `${data.guests} Kişilik Masa`;
+
+              if (cardTicketNotes && cardTicketNotesRow) {
+                if (data.notes) {
+                  cardTicketNotes.textContent = data.notes;
+                  cardTicketNotesRow.style.display = 'flex';
+                } else {
+                  cardTicketNotesRow.style.display = 'none';
+                }
+              }
+
+              if (cardTicketStatus) {
+                if (data.durum === 'Onaylandı') {
+                  cardTicketStatus.innerHTML = '<span class="pulse-dot-green"></span> 🟢 Rezervasyon Onaylandı';
+                  cardTicketStatus.className = 'vintage-status-pill approved';
+                } else if (data.durum === 'İptal Edildi') {
+                  cardTicketStatus.innerHTML = '<span class="pulse-dot-red"></span> 🔴 Rezervasyon İptal Edildi';
+                  cardTicketStatus.className = 'vintage-status-pill cancelled';
+                } else {
+                  cardTicketStatus.innerHTML = '<span class="pulse-dot-amber"></span> ⏳ Restoran Onayı Bekliyor';
+                  cardTicketStatus.className = 'vintage-status-pill';
+                }
+              }
+
+              if (cardTicketWaBtn) {
+                cardTicketWaBtn.href = `https://wa.me/902325137567?text=Merhaba,%20Masa%20No:%20${data.masaNo}%20${encodeURIComponent(data.konum)}%20rezervasyonum%20hakkinda%20bilgi%20almak%20istiyorum.`;
+              }
+
+              // Bilgileri düzenle butonunu gizle (Sorgulanan biletler için geçerli değildir)
+              const btnEditReservation = document.getElementById('btnEditReservation');
+              if (btnEditReservation) {
+                btnEditReservation.style.display = 'none';
+              }
+
+              const ticketContainer = document.getElementById('resTicketContainer');
+              if (ticketContainer) {
+                ticketContainer.style.display = 'block';
+                yumusakKaydir(ticketContainer);
+              }
+            } else {
+              throw new Error('Sorgulama başarısız oldu.');
+            }
+          })
+          .catch(err => {
+            if (querySubmitBtn) {
+              querySubmitBtn.disabled = false;
+              querySubmitBtn.innerHTML = originalQueryBtnHtml;
+            }
+            alertGoster(resQueryAlert, 'error', `<i class="fa-solid fa-triangle-exclamation"></i> <span>${err.message}</span>`);
+          });
+      });
+    }
+
     // ==========================================
     // 🔔 FORM ALERT YARDIMCI FONKSİYONU
     // Her buton tıklamasında gösterilir, 5 sn sonra kaybolur.
     // Kendi kendine geri dönmez (CSS --hidden class ile korunur).
     // ==========================================
-    let alertHideTimer = null;
-
     function alertGoster(el, type, html) {
       if (!el) return;
 
-      // Önceki timer'ı iptal et + kalıcı gizleme class'ını kaldır (yeni tıklama geldi)
-      clearTimeout(alertHideTimer);
+      // Önceki aktif timer'ı temizle (elementin kendi üzerindeki dataset'ten oku)
+      if (el.dataset.timerId) {
+        clearTimeout(parseInt(el.dataset.timerId, 10));
+      }
       el.classList.remove('form-alert--hidden');
 
       el.style.transition = 'none';
@@ -907,17 +1156,19 @@ document.addEventListener("DOMContentLoaded", () => {
       el.innerHTML = html;
       yumusakKaydir(el);
 
-      alertHideTimer = setTimeout(() => {
+      const timerId = setTimeout(() => {
         el.style.transition = 'opacity 0.6s ease';
         el.style.opacity = '0';
         setTimeout(() => {
           el.style.display = 'none';
           el.style.opacity = '1';
           el.style.transition = 'none';
-          // 5 sn sonra --hidden ekle → kendi kendine yeniden beliremez
           el.classList.add('form-alert--hidden');
         }, 650);
       }, 5000);
+
+      // Yeni timer ID'sini elementin dataset'ine kaydet
+      el.dataset.timerId = timerId;
     }
 
     function displayTicketData(data) {
@@ -1074,7 +1325,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 icon.style.cssText = 'font-size: 0.95rem; flex-shrink: 0; position: static; display: inline;';
 
                 const text = document.createElement('span');
-                text.textContent = 'Pazar günleri kapalıyız. Lütfen başka bir gün seçiniz.';
+                text.textContent = t('err-res-sunday', 'Pazar günleri kapalıyız. Lütfen başka bir gün seçiniz.');
                 text.style.cssText = 'position: static; display: inline;';
 
                 banner.appendChild(icon);
@@ -1179,30 +1430,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const contactForm = document.getElementById('contactForm');
   const contactFormAlert = document.getElementById('formAlert');
 
-  // Timer submit handler DIŞINDA tanımlanmalı — yoksa her tıklamada sıfırlanır
-  let contactAlertTimer = null;
-  function contactAlertGoster(type, html) {
-    if (!contactFormAlert) return;
-    clearTimeout(contactAlertTimer);
-    contactFormAlert.classList.remove('form-alert--hidden');
-    contactFormAlert.style.transition = 'none';
-    contactFormAlert.style.opacity = '1';
-    contactFormAlert.style.display = 'flex';
-    contactFormAlert.className = `form-alert ${type}`;
-    contactFormAlert.innerHTML = html;
-    yumusakKaydir(contactFormAlert);
-    contactAlertTimer = setTimeout(() => {
-      contactFormAlert.style.transition = 'opacity 0.6s ease';
-      contactFormAlert.style.opacity = '0';
-      setTimeout(() => {
-        contactFormAlert.style.display = 'none';
-        contactFormAlert.style.opacity = '1';
-        contactFormAlert.style.transition = 'none';
-        contactFormAlert.classList.add('form-alert--hidden');
-      }, 650);
-    }, 5000);
-  }
-
   if (contactForm) {
     contactForm.addEventListener('submit', (e) => {
       e.preventDefault();
@@ -1216,33 +1443,34 @@ document.addEventListener("DOMContentLoaded", () => {
       let hasError = false;
 
       if (!cName || !cName.value.trim() || cName.value.trim().length < 3) {
-        hataGoster(cName, 'Lütfen adınızı ve soyadınızı giriniz.');
+        hataGoster(cName, t('err-contact-name', 'Lütfen adınızı ve soyadınızı giriniz.'));
         if (!hasError && cName) { cName.focus(); hasError = true; }
       }
 
       const emailVal = cEmail ? cEmail.value.trim() : '';
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!cEmail || !emailVal || !emailRegex.test(emailVal)) {
-        hataGoster(cEmail, 'Lütfen geçerli bir e-posta adresi giriniz.');
+        hataGoster(cEmail, t('err-contact-email', 'Lütfen geçerli bir e-posta adresi giriniz.'));
         if (!hasError && cEmail) { cEmail.focus(); hasError = true; }
       }
 
       if (!cSubject || !cSubject.value.trim() || cSubject.value.trim().length < 3) {
-        hataGoster(cSubject, 'Lütfen mesaj konusunu giriniz.');
+        hataGoster(cSubject, t('err-contact-subject', 'Lütfen mesaj konusunu giriniz.'));
         if (!hasError && cSubject) { cSubject.focus(); hasError = true; }
       }
 
       if (!cMessage || !cMessage.value.trim() || cMessage.value.trim().length < 5) {
-        hataGoster(cMessage, 'Lütfen mesajınızı buraya yazınız.');
+        hataGoster(cMessage, t('err-contact-message', 'Lütfen mesajınızı buraya yazınız.'));
         if (!hasError && cMessage) { cMessage.focus(); hasError = true; }
       }
 
       if (hasError) {
-        contactAlertGoster('error', '<i class="fa-solid fa-triangle-exclamation"></i> <span>Lütfen tüm zorunlu alanları eksiksiz ve doğru doldurunuz.</span>');
+        alertGoster(contactFormAlert, 'error', `<i class="fa-solid fa-triangle-exclamation"></i> <span>${t('err-contact-fill', 'Lütfen tüm zorunlu alanları eksiksiz ve doğru doldurunuz.')}</span>`);
         return;
       }
 
-      formGonderimSimuleEt(contactForm, contactFormAlert, 'Mesajınız Gönderiliyor...', 900);
+      const sendingMsg = (localStorage.getItem('language') || 'tr') === 'en' ? 'Sending Message...' : 'Mesajınız Gönderiliyor...';
+      formGonderimSimuleEt(contactForm, contactFormAlert, sendingMsg, 900);
 
       fetch('/api/iletisim', {
         method: 'POST',
@@ -1254,18 +1482,34 @@ document.addEventListener("DOMContentLoaded", () => {
           mesaj: cMessage.value.trim()
         })
       })
-      .then(res => res.json())
-      .then(result => {
-        if (result && result.success) {
-          contactAlertGoster('success', '<i class="fa-solid fa-circle-check"></i> <span>Mesajınız restorana başarıyla iletildi! En kısa sürede sizinle iletişime geçeceğiz.</span>');
+      .then(res => {
+        // res.ok = HTTP 200-299 arasi (201 dahil basarili)
+        // res.ok degil = 400 veya 500, backend hata mesajini al
+        return res.json().then(data => ({ ok: res.ok, status: res.status, data }));
+      })
+      .then(({ ok, status, data }) => {
+        if (ok && data.success) {
+          // 201: Basarili kayit
+          alertGoster(contactFormAlert, 'success', `<i class="fa-solid fa-circle-check"></i> <span>${t('contact-form-success', 'Mesajınız restorana başarıyla iletildi! En kısa sürede sizinle iletişime geçeceğiz.')}</span>`);
           contactForm.reset();
+        } else if (status === 400) {
+          // 400: Eksik alan, gecersiz e-posta, kisa mesaj vb. (backend mesaji goster)
+          let hataMetni = '';
+          if ((localStorage.getItem('language') || 'tr') === 'en') {
+            hataMetni = (data && data.mesaj_en) ? data.mesaj_en : 'Please fill in all fields completely and correctly.';
+          } else {
+            hataMetni = (data && data.mesaj) ? data.mesaj : 'Lütfen tüm alanları eksiksiz ve doğru doldurunuz.';
+          }
+          alertGoster(contactFormAlert, 'error', `<i class="fa-solid fa-triangle-exclamation"></i> <span>${hataMetni}</span>`);
         } else {
-          contactAlertGoster('error', '<i class="fa-solid fa-triangle-exclamation"></i> <span>Mesaj gönderilemedi. Lütfen tekrar deneyiniz.</span>');
+          // 500 veya beklenmedik durum
+          alertGoster(contactFormAlert, 'error', `<i class="fa-solid fa-triangle-exclamation"></i> <span>${t('err-contact-submit', 'Mesaj gönderilemedi. Lütfen tekrar deneyiniz.')}</span>`);
         }
       })
-      .catch(() => {
-        contactAlertGoster('success', '<i class="fa-solid fa-circle-check"></i> <span>Mesajınız başarıyla iletildi! En kısa sürede sizinle iletişime geçeceğiz.</span>');
-        contactForm.reset();
+      .catch((err) => {
+        // Sunucuya baglanamadi (internet yok, server kapali vb.)
+        console.error('İletişim formu bağlantı hatası:', err);
+        alertGoster(contactFormAlert, 'error', `<i class="fa-solid fa-wifi"></i> <span>${t('err-server-connection', 'Sunucuya bağlanılamadı. Lütfen internet bağlantınızı kontrol edip tekrar deneyiniz.')}</span>`);
       });
     });
   }
@@ -1294,15 +1538,12 @@ document.addEventListener("DOMContentLoaded", () => {
     inlineErrs.forEach(el => el.remove());
 
     // Aktif çalışan timer'ları temizle ki sonradan tetiklenip alert'i açmasınlar
-    if (typeof alertHideTimer !== 'undefined' && alertHideTimer !== null) {
-      clearTimeout(alertHideTimer);
-    }
-    if (typeof contactAlertTimer !== 'undefined' && contactAlertTimer !== null) {
-      clearTimeout(contactAlertTimer);
-    }
-
     const formAlerts = document.querySelectorAll('.form-alert');
     formAlerts.forEach(alert => {
+      if (alert.dataset.timerId) {
+        clearTimeout(parseInt(alert.dataset.timerId, 10));
+        delete alert.dataset.timerId;
+      }
       alert.style.display = 'none';
       alert.classList.add('form-alert--hidden');
       alert.style.opacity = '1';
@@ -1466,4 +1707,193 @@ document.addEventListener("DOMContentLoaded", () => {
       if (e.key === 'ArrowLeft') modalPrev && modalPrev.click();
     });
   }
+
+  // ==========================================
+  // 🌐 MULTI-LANGUAGE (TR / EN) SYSTEM
+  // ==========================================
+  function initLanguageSystem() {
+    // 1. Dil seçici butonunu DOM'a ekleme
+    const statusWrapper = document.querySelector('.header-status-wrapper') || document.querySelector('.logo');
+    if (!statusWrapper) return;
+
+    let langSelector = document.getElementById('langSelector');
+    if (!langSelector) {
+      langSelector = document.createElement('div');
+      langSelector.id = 'langSelector';
+      langSelector.className = 'lang-selector-container';
+      langSelector.innerHTML = `
+        <button class="lang-toggle-btn" id="langToggleBtn" title="Dil Seç / Select Language">
+          <i class="fa-solid fa-globe"></i>
+          <span>TR</span>
+          <i class="fa-solid fa-chevron-down"></i>
+        </button>
+        <div class="lang-dropdown">
+          <button class="lang-option" data-lang="tr">
+            <span class="lang-flag">🇹🇷</span> Türkçe (TR)
+          </button>
+          <button class="lang-option" data-lang="en">
+            <span class="lang-flag">🇬🇧</span> English (EN)
+          </button>
+        </div>
+      `;
+      // Atmosfer butonunun yanına veya status badge'in soluna ekle
+      const toggleBtn = document.getElementById('atmosphereToggleBtn');
+      if (toggleBtn) {
+        statusWrapper.insertBefore(langSelector, toggleBtn);
+      } else {
+        statusWrapper.appendChild(langSelector);
+      }
+    }
+
+    const langToggleBtn = document.getElementById('langToggleBtn');
+    const dropdownOptions = langSelector.querySelectorAll('.lang-option');
+
+    // Kaydedilen dili oku, yoksa varsayılan TR yap
+    const savedLang = localStorage.getItem('language') || 'tr';
+    applyLanguage(savedLang);
+
+    // Açılır kutu tetikleyici
+    langToggleBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      langSelector.classList.toggle('open');
+    });
+
+    // Dil seçimi tıklama olayı
+    dropdownOptions.forEach(opt => {
+      opt.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const selectedLang = opt.getAttribute('data-lang');
+        applyLanguage(selectedLang);
+        langSelector.classList.remove('open');
+      });
+    });
+
+    // Dışarı tıklayınca açılır kutuyu kapatma
+    document.addEventListener('click', (e) => {
+      if (langSelector && !langSelector.contains(e.target)) {
+        langSelector.classList.remove('open');
+      }
+    });
+  }
+
+  function applyLanguage(lang) {
+    localStorage.setItem('language', lang);
+    
+    // Buton metnini güncelle
+    const toggleBtnText = document.querySelector('#langToggleBtn span');
+    if (toggleBtnText) {
+      toggleBtnText.textContent = lang.toUpperCase();
+    }
+
+    // Seçeneklerin aktiflik durumunu güncelle
+    const options = document.querySelectorAll('.lang-option');
+    options.forEach(opt => {
+      if (opt.getAttribute('data-lang') === lang) {
+        opt.classList.add('active');
+      } else {
+        opt.classList.remove('active');
+      }
+    });
+
+    // Sayfadaki statik metinleri çevir
+    translatePage(lang);
+  }
+
+  function translatePage(lang) {
+    if (!window.translations) {
+      console.warn('translations dictionary not loaded yet!');
+      return;
+    }
+
+    // 1. data-translate niteliğine sahip elemanları çevir
+    const translateElements = document.querySelectorAll('[data-translate]');
+    translateElements.forEach(el => {
+      const key = el.getAttribute('data-translate');
+      if (translations[lang] && translations[lang][key] !== undefined) {
+        // Metin düğümünü (Text Node) bozmadan değiştirme
+        let textNodeFound = false;
+        for (let node of el.childNodes) {
+          if (node.nodeType === Node.TEXT_NODE && node.nodeValue.trim() !== '') {
+            node.nodeValue = translations[lang][key];
+            textNodeFound = true;
+            break;
+          }
+        }
+        if (!textNodeFound && el.children.length === 0) {
+          el.textContent = translations[lang][key];
+        }
+      }
+    });
+
+    // 2. data-translate-placeholder niteliğine sahip inputları çevir
+    const placeholders = document.querySelectorAll('[data-translate-placeholder]');
+    placeholders.forEach(el => {
+      const key = el.getAttribute('data-translate-placeholder');
+      if (translations[lang] && translations[lang][key] !== undefined) {
+        el.setAttribute('placeholder', translations[lang][key]);
+      }
+    });
+
+    // 3. Canlı Durum Widget'ını Çevir
+    updateStatusBadgeTranslation(lang);
+
+    // 4. Atmosfer Modu Butonunu Çevir
+    updateAtmosphereBtnTranslation(lang);
+    
+    // 5. Eğer menü sayfasındaysak ve yemekler listesi yüklüyse menüyü yeniden filtrele (listeyi güncelle)
+    if (typeof menuyuFiltrele === 'function' && window.yemekler && window.yemekler.length > 0) {
+      menuyuFiltrele();
+    }
+  }
+
+  function updateStatusBadgeTranslation(lang) {
+    const liveStatusBadges = document.querySelectorAll('.live-status-badge');
+    liveStatusBadges.forEach(badge => {
+      const isClosed = badge.classList.contains('status-closed');
+      const statusTextSpan = badge.querySelector('.status-text');
+      if (!statusTextSpan) return;
+
+      const now = new Date();
+      const day = now.getDay();
+      let isTodayOpen = (day !== 0); // Pazar kapalı
+      let closeHour = (day === 5 || day === 6) ? 23 : 22;
+
+      if (lang === 'en') {
+        if (!isClosed) {
+          statusTextSpan.innerHTML = `We Are Open <small>(Closes ${closeHour}:00)</small>`;
+        } else {
+          const subtext = !isTodayOpen ? 'Closed on Sundays' : `Opens at 10:00`;
+          statusTextSpan.innerHTML = `We Are Closed <small>(${subtext})</small>`;
+        }
+      } else {
+        if (!isClosed) {
+          statusTextSpan.innerHTML = `Şu An Açığız <small>(Kapanış ${closeHour}:00)</small>`;
+        } else {
+          const subtext = !isTodayOpen ? 'Pazar Günleri Kapalıyız' : 'Açılış 10:00';
+          statusTextSpan.innerHTML = `Şu An Kapalıyız <small>(${subtext})</small>`;
+        }
+      }
+    });
+  }
+
+  function updateAtmosphereBtnTranslation(lang) {
+    const toggleBtn = document.getElementById('atmosphereToggleBtn');
+    if (toggleBtn) {
+      const isDay = document.body.classList.contains('day-atmosphere');
+      const span = toggleBtn.querySelector('span');
+      if (span) {
+        if (lang === 'en') {
+          span.textContent = isDay ? 'Historic Antep Day' : 'Oak Charcoal Night';
+        } else {
+          span.textContent = isDay ? 'Tarihi Antep Gündüzü' : 'Meşe Kömürü Akşamı';
+        }
+      }
+    }
+  }
+
+  // Global erişim için fonksiyonları pencere kapsamına atayalım (E.g. translations dictionary tarafından çağrılabilir)
+  window.initLanguageSystem = initLanguageSystem;
+  window.updateAtmosphereBtnTranslation = updateAtmosphereBtnTranslation;
 });
