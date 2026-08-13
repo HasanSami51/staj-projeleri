@@ -556,6 +556,33 @@ document.addEventListener("DOMContentLoaded", () => {
         const result = await response.json();
         if (result && result.success && Array.isArray(result.data)) {
           yemekler = result.data;
+          
+          // Kategori Sayaçlarını Dinamik Güncelle (Veritabanındaki Gerçek Veriye Göre)
+          try {
+            const btnTumu = document.querySelector('.filter-btn[data-kategori="tumu"] .badge-count');
+            if (btnTumu) btnTumu.textContent = yemekler.filter(y => y.sefinOnerisi || y.sefin_onerisi).length;
+
+            const btnCorba = document.querySelector('.filter-btn[data-kategori="corba"] .badge-count');
+            if (btnCorba) btnCorba.textContent = yemekler.filter(y => y.kategori === 'corba').length;
+
+            const btnKebap = document.querySelector('.filter-btn[data-kategori="kebap"] .badge-count');
+            if (btnKebap) btnKebap.textContent = yemekler.filter(y => y.kategori === 'kebap').length;
+
+            const btnPide = document.querySelector('.filter-btn[data-kategori="pide"] .badge-count');
+            if (btnPide) btnPide.textContent = yemekler.filter(y => y.kategori === 'pide').length;
+
+            const btnZeytinyagli = document.querySelector('.filter-btn[data-kategori="zeytinyagli"] .badge-count');
+            if (btnZeytinyagli) btnZeytinyagli.textContent = yemekler.filter(y => y.kategori === 'zeytinyagli').length;
+
+            const btnTatli = document.querySelector('.filter-btn[data-kategori="tatli"] .badge-count');
+            if (btnTatli) btnTatli.textContent = yemekler.filter(y => y.kategori === 'tatli').length;
+
+            const btnIcecek = document.querySelector('.filter-btn[data-kategori="icecek"] .badge-count');
+            if (btnIcecek) btnIcecek.textContent = yemekler.filter(y => y.kategori === 'icecek').length;
+          } catch (e) {
+            console.error('Kategori sayaçları güncellenemedi:', e);
+          }
+
           menuyuFiltrele();
         } else {
           throw new Error(result.message || 'Geçersiz menü verisi alındı.');
@@ -594,187 +621,6 @@ document.addEventListener("DOMContentLoaded", () => {
       );
     }
 
-    // ==========================================
-    // 🖨️ MENÜYÜ YAZDIR / PDF İÇİN 42 LEZZETİ 6 KATEGORİ BAŞLIĞIYLA HAZIRLAMA
-    // ==========================================
-    window.menuyuYazdirAninda = function() {
-      if (!menuGrid || !Array.isArray(yemekler) || yemekler.length === 0) {
-        window.print();
-        return;
-      }
-
-      hepsiAcik = true;
-      const kategoriMap = [
-        { id: 'corba', baslik: '🥣 ÇORBALAR & BAŞLANGIÇLAR' },
-        { id: 'kebap', baslik: '🔥 KEBAPLAR & IZGARALAR' },
-        { id: 'pide', baslik: '🍕 PİDELER & LAHMACUNLAR' },
-        { id: 'zeytinyagli', baslik: '🥗 ZEYTİNYAĞLILAR & SALATALAR' },
-        { id: 'tatli', baslik: ' BAKLAVALAR & TATLILAR' },
-        { id: 'icecek', baslik: '🥤 GELENEKSEL İÇECEKLER' }
-      ];
-
-      menuGrid.innerHTML = "";
-      const fragment = document.createDocumentFragment();
-
-      kategoriMap.forEach(kat => {
-        const katYemekleri = yemekler.filter(y => y.kategori === kat.id);
-        if (katYemekleri.length > 0) {
-          const currentLang = localStorage.getItem('language') || 'tr';
-          
-          // E.g. "menu-filter-corba" might map to "Soups" or similar, otherwise fallback to baslik
-          const translatedKatTitle = (window.translations && window.translations[currentLang] && window.translations[currentLang]['menu-filter-' + kat.id]) 
-            ? window.translations[currentLang]['menu-filter-' + kat.id] 
-            : kat.baslik;
-
-          const katHeader = document.createElement("div");
-          katHeader.className = "print-category-header";
-          katHeader.innerHTML = `<span>${translatedKatTitle}</span>`;
-          fragment.appendChild(katHeader);
-
-          katYemekleri.forEach(yemek => {
-            const translatedAd = (window.translations && window.translations[currentLang] && window.translations[currentLang][yemek.ad]) 
-              ? window.translations[currentLang][yemek.ad] 
-              : yemek.ad;
-            const translatedAciklama = (window.translations && window.translations[currentLang] && window.translations[currentLang][yemek.aciklama]) 
-              ? window.translations[currentLang][yemek.aciklama] 
-              : yemek.aciklama;
-
-            const cardDiv = document.createElement("div");
-            cardDiv.className = "dish-card";
-            cardDiv.dataset.kategori = yemek.kategori;
-            cardDiv.innerHTML = `
-              <div class="dish-img-container">
-                <img src="${yemek.resim}" alt="${translatedAd}" class="loaded" decoding="async" loading="eager">
-              </div>
-              <div class="dish-info">
-                <h3>${translatedAd}</h3>
-                <p>${translatedAciklama}</p>
-                <span class="dish-price">₺${yemek.fiyat}</span>
-              </div>
-            `;
-            fragment.appendChild(cardDiv);
-          });
-        }
-      });
-
-      menuGrid.appendChild(fragment);
-
-      if (loadMoreContainer) loadMoreContainer.style.display = "none";
-
-      setTimeout(() => {
-        window.print();
-      }, 150);
-    };
-
-    // ==========================================
-    // 📄 DİREKT PDF İNDİRME SİSTEMİ (PENCERESİZ DOĞRUDAN .PDF DOSYASI İNDİRME)
-    // ==========================================
-    window.pdfIndirDirekt = function() {
-      if (!menuGrid || !Array.isArray(yemekler) || yemekler.length === 0) return;
-
-      hepsiAcik = true;
-      const kategoriMap = [
-        { id: 'corba', baslik: '🥣 ÇORBALAR & BAŞLANGIÇLAR' },
-        { id: 'kebap', baslik: '🔥 KEBAPLAR & IZGARALAR' },
-        { id: 'pide', baslik: '🍕 PİDELER & LAHMACUNLAR' },
-        { id: 'zeytinyagli', baslik: '🥗 ZEYTİNYAĞLILAR & SALATALAR' },
-        { id: 'tatli', baslik: ' BAKLAVALAR & TATLILAR' },
-        { id: 'icecek', baslik: '🥤 GELENEKSEL İÇECEKLER' }
-      ];
-
-      menuGrid.innerHTML = "";
-      const fragment = document.createDocumentFragment();
-
-      kategoriMap.forEach(kat => {
-        const katYemekleri = yemekler.filter(y => y.kategori === kat.id);
-        if (katYemekleri.length > 0) {
-          const currentLang = localStorage.getItem('language') || 'tr';
-          
-          const translatedKatTitle = (window.translations && window.translations[currentLang] && window.translations[currentLang]['menu-filter-' + kat.id]) 
-            ? window.translations[currentLang]['menu-filter-' + kat.id] 
-            : kat.baslik;
-
-          const katHeader = document.createElement("div");
-          katHeader.className = "print-category-header";
-          katHeader.innerHTML = `<span>${translatedKatTitle}</span>`;
-          fragment.appendChild(katHeader);
-
-          katYemekleri.forEach(yemek => {
-            const translatedAd = (window.translations && window.translations[currentLang] && window.translations[currentLang][yemek.ad]) 
-              ? window.translations[currentLang][yemek.ad] 
-              : yemek.ad;
-            const translatedAciklama = (window.translations && window.translations[currentLang] && window.translations[currentLang][yemek.aciklama]) 
-              ? window.translations[currentLang][yemek.aciklama] 
-              : yemek.aciklama;
-
-            const cardDiv = document.createElement("div");
-            cardDiv.className = "dish-card";
-            cardDiv.dataset.kategori = yemek.kategori;
-            cardDiv.innerHTML = `
-              <div class="dish-img-container">
-                <img src="${yemek.resim}" alt="${translatedAd}" class="loaded" decoding="async" loading="eager">
-              </div>
-              <div class="dish-info">
-                <h3>${translatedAd}</h3>
-                <p>${translatedAciklama}</p>
-                <span class="dish-price">₺${yemek.fiyat}</span>
-              </div>
-            `;
-            fragment.appendChild(cardDiv);
-          });
-        }
-      });
-
-      menuGrid.appendChild(fragment);
-      if (loadMoreContainer) loadMoreContainer.style.display = "none";
-
-      if (typeof html2pdf === 'function') {
-        const opt = {
-          margin: [6, 6, 6, 6],
-          filename: 'Lezzet_Muhru_1932_Dijital_Menu.pdf',
-          image: { type: 'jpeg', quality: 0.95 },
-          html2canvas: { scale: 2, useCORS: true, logging: false },
-          jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-        };
-
-        const printWrapper = document.createElement('div');
-        printWrapper.style.background = '#ffffff';
-        printWrapper.style.padding = '10px';
-        printWrapper.style.color = '#111111';
-        printWrapper.innerHTML = `
-          <div style="text-align: center; margin-bottom: 10px; padding-bottom: 6px; border-bottom: 2px double #c0392b;">
-            <h1 style="color: #c0392b; font-family: Georgia, serif; font-size: 20px; margin: 0; font-weight: 800;">LEZZET MÜHRÜ 1932</h1>
-            <p style="color: #555; font-size: 11px; margin: 3px 0 0 0; font-style: italic;">Gaziantep Mutfak Mirası • Dijital Yemek Menüsü (42 Lezzet)</p>
-          </div>
-        ` + menuGrid.outerHTML;
-
-        html2pdf().set(opt).from(printWrapper).save().then(() => {
-          setTimeout(() => {
-            if (typeof menuyuFiltrele === 'function') menuyuFiltrele();
-          }, 400);
-        }).catch(err => {
-          console.error('PDF Indirme Hatası:', err);
-          window.print();
-        });
-      } else {
-        window.print();
-      }
-    };
-
-    window.addEventListener('beforeprint', () => {
-      if (typeof window.menuyuYazdirAninda === 'function' && menuGrid && Array.isArray(yemekler) && yemekler.length > 0) {
-        const cards = menuGrid.querySelectorAll('.dish-card');
-        if (cards.length < 20) {
-          window.menuyuYazdirAninda();
-        }
-      }
-    });
-
-    window.addEventListener('afterprint', () => {
-      if (typeof menuyuFiltrele === 'function') {
-        menuyuFiltrele();
-      }
-    });
   }
 
   // --- REZERVAZYON SİSTEMİ ---
@@ -1714,6 +1560,57 @@ document.addEventListener("DOMContentLoaded", () => {
   // ==========================================
   // 🌐 MULTI-LANGUAGE (TR / EN) SYSTEM
   // ==========================================
+  function placeLangSelector(selectorInstance) {
+    const langSelector = selectorInstance || document.getElementById('langSelector');
+    if (!langSelector) return;
+
+    const isDesktop = window.matchMedia('(min-width: 769px)').matches;
+    const statusWrapper = document.querySelector('.header-status-wrapper');
+    const mainNavbarUl = document.querySelector('#mainNavbar ul');
+
+    langSelector.classList.remove('open');
+    
+    // Temizleme: Eski boş veya aktif nav-item kapsayıcılarını temizleyelim
+    document.querySelectorAll('.lang-selector-nav-item').forEach((el) => {
+      if (!el.contains(langSelector)) {
+        el.remove();
+      }
+    });
+
+    if (isDesktop && mainNavbarUl) {
+      // Masaüstü: Dil seçiciyi Anasayfa linkinin hemen yanına (soluna) yerleştir
+      let navItem = langSelector.closest('.lang-selector-nav-item');
+      if (!navItem) {
+        navItem = document.createElement('li');
+        navItem.className = 'lang-selector-nav-item';
+      }
+      navItem.appendChild(langSelector);
+      
+      const homeLi = mainNavbarUl.querySelector('li'); // İlk eleman Anasayfa'dır
+      if (homeLi) {
+        mainNavbarUl.insertBefore(navItem, homeLi);
+      } else {
+        mainNavbarUl.appendChild(navItem);
+      }
+      return;
+    }
+
+    if (statusWrapper) {
+      // Mobil: Li kapsayıcısından çıkarıp direkt durum rozetinin yanına koy
+      const navItem = langSelector.closest('.lang-selector-nav-item');
+      if (navItem) {
+        navItem.remove();
+      }
+
+      const statusBadge = statusWrapper.querySelector('.live-status-badge');
+      if (statusBadge) {
+        statusBadge.insertAdjacentElement('afterend', langSelector);
+      } else {
+        statusWrapper.appendChild(langSelector);
+      }
+    }
+  }
+
   function initLanguageSystem() {
     // 1. Dil seçici butonunu DOM'a ekleme
     const statusWrapper = document.querySelector('.header-status-wrapper') || document.querySelector('.logo');
@@ -1739,22 +1636,15 @@ document.addEventListener("DOMContentLoaded", () => {
           </button>
         </div>
       `;
-      // Anasayfa (Home) linkinin önüne, yani navbar listesinin en başına yerleştir
-      const mainNavbarUl = document.querySelector('#mainNavbar ul');
-      if (mainNavbarUl) {
-        const li = document.createElement('li');
-        li.className = 'lang-selector-nav-item';
-        li.appendChild(langSelector);
-        mainNavbarUl.insertBefore(li, mainNavbarUl.firstChild);
-      } else {
-        // Fallback: Atmosfer butonunun yanına veya status badge'in soluna ekle
-        const toggleBtn = document.getElementById('atmosphereToggleBtn');
-        if (toggleBtn) {
-          statusWrapper.insertBefore(langSelector, toggleBtn);
-        } else {
-          statusWrapper.appendChild(langSelector);
-        }
-      }
+    }
+
+    placeLangSelector(langSelector);
+
+    const langMediaQuery = window.matchMedia('(min-width: 769px)');
+    if (typeof langMediaQuery.addEventListener === 'function') {
+      langMediaQuery.addEventListener('change', () => placeLangSelector());
+    } else if (typeof langMediaQuery.addListener === 'function') {
+      langMediaQuery.addListener(() => placeLangSelector());
     }
 
     const langToggleBtn = document.getElementById('langToggleBtn');

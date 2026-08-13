@@ -130,6 +130,12 @@ app.use(session({
   }
 }));
 
+// İstek Günlüğü (Request Logger) - Session takibi için
+app.use((req, res, next) => {
+  console.log(`[${new Date().toLocaleTimeString()}] ${req.method} ${req.url} - Session: ${req.session && req.session.isAdmin ? 'Admin' : 'Misafir'}`);
+  next();
+});
+
 // Admin Rotalarının Oturum Kontrolü (Session Protection Middleware)
 app.use((req, res, next) => {
   const url = req.path.toLowerCase();
@@ -637,6 +643,41 @@ app.delete('/api/mesajlar/:id', (req, res) => {
   db.run("DELETE FROM mesajlar WHERE id = ?", [id], function(err) {
     if (err) return res.status(500).json({ success: false, error: err.message });
     res.json({ success: true, message: 'Mesaj silindi.' });
+  });
+});
+
+
+// 9. Yeni Ürün Ekle (POST /admin/urun veya /api/admin/urun) - Korunmalı
+app.post(['/admin/urun', '/api/admin/urun'], (req, res) => {
+  if (!req.session || !req.session.isAdmin) {
+    return res.status(401).json({ success: false, error: 'unauthorized', message: 'Yetkisiz erişim.' });
+  }
+
+  const kategori_id = req.body.kategori_id || req.body.kategoriId || req.body.kategori;
+  const ad = req.body.ad || req.body.isim || req.body.name;
+  const aciklama = req.body.aciklama || req.body.description || '';
+  const fiyat = parseFloat(req.body.fiyat || req.body.price);
+  const resim = req.body.resim || req.body.gorsel || req.body.image || '';
+  const one_cikan = req.body.one_cikan !== undefined ? req.body.one_cikan : (req.body.oneCikan ? 1 : 0);
+  const sefin_onerisi = req.body.sefin_onerisi !== undefined ? req.body.sefin_onerisi : (req.body.sefinOnerisi ? 1 : 0);
+  const vejetaryen = req.body.vejetaryen !== undefined ? req.body.vejetaryen : 0;
+
+  if (!kategori_id || !ad || isNaN(fiyat)) {
+    return res.status(400).json({ success: false, message: 'Kategori, isim ve fiyat alanları zorunludur.' });
+  }
+
+  const sql = `
+    INSERT INTO urunler (kategori_id, ad, aciklama, fiyat, resim, loading, one_cikan, sefin_onerisi, vejetaryen)
+    VALUES (?, ?, ?, ?, ?, 'lazy', ?, ?, ?)
+  `;
+
+  db.run(sql, [kategori_id, ad, aciklama, fiyat, resim, one_cikan, sefin_onerisi, vejetaryen], function(err) {
+    if (err) {
+      console.error('❌ Ürün ekleme hatası:', err.message);
+      return res.status(500).json({ success: false, message: 'Ürün eklenemedi.', error: err.message });
+    }
+    console.log(`➕ Yeni ürün eklendi: ID ${this.lastID} - ${ad}`);
+    res.json({ success: true, message: 'Ürün başarıyla eklendi.', id: this.lastID });
   });
 });
 

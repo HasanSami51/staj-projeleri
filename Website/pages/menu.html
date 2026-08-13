@@ -101,17 +101,12 @@
       
 <section class="menu-section" style="padding-bottom: 60px;">
     <!-- 1. Arama kutusu için bağımsız konteyner (Merkezlenmiş) -->
-    <div class="container">
-        <div class="search-container" style="margin-bottom: 25px; text-align:center; display: flex; justify-content: center; align-items: center; gap: 15px; flex-wrap: wrap;">
-            <div style="position: relative; width: 100%; max-width:460px;">
+        <div class="search-container" style="margin-bottom: 8px; text-align:center; display: flex; justify-content: center; align-items: center; gap: 15px; flex-wrap: wrap;">
+            <div style="position: relative; width: 100%; max-width:460px; margin: 0 auto;">
                 <input type="text" id="menuSearchInput" placeholder="Lezzetlerde ara... (Örn: Adana, Künefe, Mercimek)" data-translate-placeholder="menu-search-ph" style="width: 100%; padding: 13px 20px 13px 48px; border-radius: 30px; border: 1.5px solid #f39c12; font-size: 0.95rem; outline: none; transition: all 0.3s ease; background: rgba(20, 10, 5, 0.9); color: #ffffff;">
                 <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 18px; top: 50%; transform: translateY(-50%); color: #f39c12 !important; font-size: 1.15rem !important; z-index: 10 !important; pointer-events: none !important;"></i>     
             </div>
-            <button type="button" id="btnPrintMenu" class="btn-print-menu" data-translate="menu-btn-print" data-translate-title="menu-btn-print-title" onclick="if(typeof window.menuyuYazdirAninda==='function'){window.menuyuYazdirAninda();}else{window.print();}" title="42 Lezzetin Tamamını Renkli PDF Olarak İndirin Veya Yazdırın" data-translate-title="menu-btn-print-title">
-                <i class="fa-solid fa-print"></i> <span data-translate="menu-btn-print">Menüyü Yazdır / PDF (42 Lezzet)</span>
-            </button>
         </div>
-    </div>
 
     <!-- 2. Yapışkan Kategori Barı (Ekranda 100% genişlikte yayılan, kenarları açık kalmayan solid şerit) -->
     <div class="filter-buttons-wrapper">

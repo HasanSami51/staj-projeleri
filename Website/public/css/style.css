@@ -3133,12 +3133,16 @@ user-select: none !important;
   position: sticky !important;
   top: 85px !important; /* Pinned below the fixed desktop header */
   z-index: 9999 !important;
-  margin-bottom: 25px !important;
+  margin-bottom: 10px !important;
   width: 100% !important;
   background: #120b07 !important; /* Solid opaque color matching the site theme */
   border-bottom: 1.5px solid rgba(212, 175, 55, 0.3) !important;
   padding: 10px 0 !important;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4) !important;
+}
+
+#menu-grid {
+  margin-top: 15px !important;
 }
 
 .load-more-wrapper {
@@ -3208,32 +3212,6 @@ user-select: none !important;
   background-color: rgba(231, 76, 60, 0.03);
 }
 
-/* Menüyü Yazdır / PDF Butonu */
-.btn-print-menu {
-  background-color: #1e140d !important;
-  background: #1e140d !important;
-  color: #f39c12 !important;
-  border: 2px solid rgba(212, 175, 55, 0.5) !important;
-  padding: 12px 24px;
-  border-radius: 30px;
-  font-weight: 700;
-  font-size: 0.92rem;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
-  transition: all 0.3s ease;
-}
-
-.btn-print-menu:hover {
-  background-color: #f39c12 !important;
-  background: #f39c12 !important;
-  color: #1a120c !important;
-  border-color: #f39c12 !important;
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(243, 156, 18, 0.4);
-}
 
 /* ==========================================
    6. ADIM: SKELETON SHIMMER (GÖRSEL YÜKLENME IŞILTISI)
@@ -3406,7 +3384,7 @@ user-select: none !important;
   /* Ekran ögelerini ve ekstra widget'ları gizle (Sadece Menü Basılacak) */
   header, footer, .main-header, .main-footer, .scroll-to-top, 
   .live-status-badge, .search-container, .filter-buttons-wrapper, 
-  .load-more-wrapper, .btn-print-menu, .menu-hero, .hero-section,
+  .load-more-wrapper, .menu-hero, .hero-section,
   .chef-special-card, .menu-bottom-services, .services-banner, .service-box,
   .pdf-download-card, .table-order-card {
     display: none !important;
@@ -5952,6 +5930,7 @@ body.day-atmosphere .trust-bar-section {
     grid-column: 2 !important;
     display: flex !important;
     align-items: center !important;
+    gap: 4px !important;
     margin: 0 !important;
     padding: 0 !important;
   }
@@ -6615,45 +6594,44 @@ body.day-atmosphere .menu-section .filter-buttons-wrapper {
 }
 
 @media (max-width: 768px) {
-  .lang-selector-container {
-    position: absolute !important;
-    right: 76px !important;
-    top: 50% !important;
-    transform: translateY(-50%) !important;
-    margin-left: 0 !important;
-    z-index: 1001 !important;
+  .header-status-wrapper .lang-selector-container {
+    position: relative !important;
+    margin-left: 4px !important;
+    flex-shrink: 0 !important;
   }
-  
-  .lang-toggle-btn {
-    width: 32px !important;
-    height: 32px !important;
+
+  .header-status-wrapper .lang-toggle-btn {
+    width: 22px !important;
+    height: 22px !important;
     border-radius: 50% !important;
     padding: 0 !important;
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.3) !important;
-  }
-  
-  .lang-toggle-btn span,
-  .lang-toggle-btn i.fa-chevron-down {
-    display: none !important;
-  }
-  
-  .lang-toggle-btn i.fa-globe {
-    margin: 0 !important;
-    font-size: 1rem !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+    gap: 0 !important;
   }
 
-  .lang-toggle-btn:hover,
-  .lang-toggle-btn:active,
-  .lang-toggle-btn:focus {
-    transform: translateY(-50%) scale(1.04) !important;
+  .header-status-wrapper .lang-toggle-btn span,
+  .header-status-wrapper .lang-toggle-btn i.fa-chevron-down {
+    display: none !important;
   }
-  
-  .lang-dropdown {
-    top: calc(100% + 15px) !important;
-    right: -10px !important;
+
+  .header-status-wrapper .lang-toggle-btn i.fa-globe {
+    margin: 0 !important;
+    font-size: 0.75rem !important;
+  }
+
+  .header-status-wrapper .lang-toggle-btn:hover,
+  .header-status-wrapper .lang-toggle-btn:active,
+  .header-status-wrapper .lang-toggle-btn:focus {
+    transform: scale(1.04) !important;
+  }
+
+  .header-status-wrapper .lang-dropdown {
+    top: calc(100% + 8px) !important;
+    right: 0 !important;
+    left: auto !important;
   }
 }
 
@@ -6700,14 +6678,27 @@ body.day-atmosphere .menu-section .filter-buttons-wrapper {
   box-shadow: 0 6px 20px rgba(230, 126, 34, 0.45) !important;
 }
 
+.header-status-wrapper .lang-selector-container {
+  margin-left: 6px !important;
+}
+
 .lang-selector-nav-item {
   display: flex !important;
   align-items: center !important;
+  list-style: none !important;
+  margin-right: -12px !important;
 }
 
 .lang-selector-nav-item .lang-selector-container {
   margin-left: 0 !important;
   margin-right: 0 !important;
+}
+
+@media (min-width: 769px) {
+  .lang-selector-nav-item .lang-toggle-btn {
+    padding: 5px 12px !important;
+    font-size: 0.78rem !important;
+  }
 }
 
 
