@@ -333,9 +333,13 @@ document.addEventListener("DOMContentLoaded", () => {
   const filterBtns = document.querySelectorAll(".filter-btn");
   const menuSearchInput = document.getElementById("menuSearchInput");
 
+  // Global yemekler değişkeni (dil değişimi sırasında erişilebilir olması için)
+  window.yemekler = [];
+  
   if (menuGrid) {
     let aktifKategori = "tumu";
     let mevcutAramaMetni = "";
+    let yemekler = window.yemekler; // Global window.yemekler'e referans
 
     // Debounce Fonksiyonu
     function debounce(func, delay = 250) {
@@ -351,11 +355,19 @@ document.addEventListener("DOMContentLoaded", () => {
       menuGrid.innerHTML = "";
 
       if (Liste.length === 0) {
+        const currentLang = localStorage.getItem('language') || 'tr';
+        const noMatchText = (window.translations && window.translations[currentLang] && window.translations[currentLang]['menu-no-match']) 
+          ? window.translations[currentLang]['menu-no-match'] 
+          : 'Aradığınız kriterlere uygun lezzet bulunamadı.';
+        const noMatchHint = (window.translations && window.translations[currentLang] && window.translations[currentLang]['menu-no-match-hint']) 
+          ? window.translations[currentLang]['menu-no-match-hint'] 
+          : 'Farklı bir kategori veya arama kelimesi deneyebilirsiniz.';
+        
         menuGrid.innerHTML = `
           <div style="grid-column: 1/-1; text-align: center; padding: 40px 20px; background: #fff; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-top: 20px;">
             <i class="fa-solid fa-utensils" style="font-size: 2.2rem; color: var(--primary-kiremit, #c0392b); margin-bottom: 12px;"></i>
-            <p class="no-match" style="font-size: 1.2rem; color: #555; margin-bottom: 4px;">Aradığınız kriterlere uygun lezzet bulunamadı.</p>
-            <span style="font-size: 0.9rem; color: #888;">Farklı bir kategori veya arama kelimesi deneyebilirsiniz.</span>
+            <p class="no-match" style="font-size: 1.2rem; color: #555; margin-bottom: 4px;">${noMatchText}</p>
+            <span style="font-size: 0.9rem; color: #888;">${noMatchHint}</span>
           </div>
         `;
         return;
@@ -483,8 +495,13 @@ document.addEventListener("DOMContentLoaded", () => {
         const sefinOnerileri = yemekler.filter(y => y.sefinOnerisi);
         yemekleriListele(sefinOnerileri);
         if (loadMoreContainer) {
+          const currentLang = localStorage.getItem('language') || 'tr';
+          const loadMoreText = (window.translations && window.translations[currentLang] && window.translations[currentLang]['menu-load-more']) 
+            ? window.translations[currentLang]['menu-load-more'] 
+            : 'Tüm Lezzetleri İncele';
+          const countLabel = currentLang === 'en' ? 'Delicacies' : 'Lezzet';
           loadMoreContainer.style.display = "block";
-          loadMoreBtn.innerHTML = `Tüm Lezzetleri İncele (${yemekler.length} Lezzet) <i class="fa-solid fa-chevron-down"></i>`;
+          loadMoreBtn.innerHTML = `${loadMoreText} (${yemekler.length} ${countLabel}) <i class="fa-solid fa-chevron-down"></i>`;
         }
       } else {
         yemekleriListele(filtrelenmis);
@@ -556,6 +573,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const result = await response.json();
         if (result && result.success && Array.isArray(result.data)) {
           yemekler = result.data;
+          window.yemekler = yemekler; // Global scope'da da erişilebilir yap (dil değişimi için)
           
           // Kategori Sayaçlarını Dinamik Güncelle (Veritabanındaki Gerçek Veriye Göre)
           try {
@@ -634,6 +652,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const timeInput = document.getElementById('resTime');
   const hiddenNativeTime = document.getElementById('hiddenNativeTime');
   const guestsInput = document.getElementById('resGuests');
+  const areaInput = document.getElementById('resMasaBolgesi');
   const notesInput = document.getElementById('resNotes');
 
   let lastSubmittedTicketData = null;
@@ -741,6 +760,12 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!hasError) { guestsInput.focus(); hasError = true; }
       }
 
+      // 6. Masa Bölgesi Seçimi
+      if (!areaInput || !areaInput.value) {
+        hataGoster(areaInput, t('err-res-area', 'Lütfen masa bölgesi seçimi yapınız.'));
+        if (!hasError) { areaInput.focus(); hasError = true; }
+      }
+
       if (hasError) {
         alertGoster(resFormAlert, 'error', `<i class="fa-solid fa-triangle-exclamation"></i> <span>${t('err-res-fill', 'Lütfen tüm zorunlu alanları eksiksiz doldurunuz.')}</span>`);
         return;
@@ -752,8 +777,9 @@ document.addEventListener("DOMContentLoaded", () => {
       const timeVal = timeInput ? timeInput.value.trim() : '';
       const guestsVal = guestsInput ? guestsInput.value.trim() : '1';
       const notesVal = notesInput ? notesInput.value.trim() : '';
+      const areaVal = areaInput ? areaInput.value : '';
 
-      lastSubmittedTicketData = { name: nameVal, phone: phoneVal, date: dateVal, time: timeVal, guests: guestsVal, notes: notesVal };
+      lastSubmittedTicketData = { name: nameVal, phone: phoneVal, date: dateVal, time: timeVal, guests: guestsVal, area: areaVal, notes: notesVal };
 
       // Butonu yükleniyor moduna al (formGonderimSimuleEt yerine inline)
       const submitBtn = reservationForm.querySelector('button[type="submit"]');
@@ -765,9 +791,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const renderTicket = (data) => {
         const ticketContainer = document.getElementById('resTicketContainer');
+        const areaClean = data.area || data.konum || areaVal || 'Geleneksel Odun Ateşi Katı';
+        const konumText = areaClean.includes('Katı') || areaClean.includes('Tarafı') || areaClean.includes('Yanı') || areaClean.includes('Salon') || areaClean.includes('Bölgesi')
+          ? areaClean
+          : `${areaClean} Bölgesi`;
+
         const ticketData = {
           masaNo: data.masaNo || String(Math.floor(Math.random() * 15) + 1).padStart(2, '0'),
-          konum: data.konum || '(Geleneksel Odun Ateşi Katı)',
+          konum: `(${konumText})`,
+          area: areaClean,
           name: data.name || nameVal,
           phone: data.phone || phoneVal,
           dateTime: `${data.date || dateVal} • ${data.time || timeVal}`,
@@ -798,7 +830,10 @@ document.addEventListener("DOMContentLoaded", () => {
       };
 
       // --- EXPRESS BACKEND API POST VEYA YEREL SİMÜLASYON ---
-      fetch('/api/rezervasyon', {
+      const isLocalHost3000 = window.location.origin.includes(':3000');
+      const apiUrl = isLocalHost3000 ? '/api/rezervasyon' : 'http://localhost:3000/api/rezervasyon';
+
+      fetch(apiUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -807,6 +842,7 @@ document.addEventListener("DOMContentLoaded", () => {
           date: dateVal,
           time: timeVal,
           guests: guestsVal,
+          area: areaVal,
           notes: notesVal
         })
       })
@@ -892,7 +928,12 @@ document.addEventListener("DOMContentLoaded", () => {
           querySubmitBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> ${searchSpinnerMsg}`;
         }
 
-        fetch(`/api/rezervasyon-sorgula?telefon=${encodeURIComponent(phoneVal)}`)
+        const isLocalHost3000 = window.location.origin.includes(':3000');
+        const apiUrl = isLocalHost3000 
+          ? `/api/rezervasyon-sorgula?telefon=${encodeURIComponent(phoneVal)}` 
+          : `http://localhost:3000/api/rezervasyon-sorgula?telefon=${encodeURIComponent(phoneVal)}`;
+
+        fetch(apiUrl)
           .then(res => {
             if (res.status === 404) {
               throw new Error(t('err-query-not-found', 'Aktif bir rezervasyon kaydı bulunamadı. Lütfen telefon numaranızı kontrol ediniz.'));
@@ -919,8 +960,10 @@ document.addEventListener("DOMContentLoaded", () => {
               const cardTableNumber = document.getElementById('cardTableNumber');
               const cardTicketName = document.getElementById('cardTicketName');
               const cardTicketPhone = document.getElementById('cardTicketPhone');
-              const cardTicketDateTime = document.getElementById('cardTicketDateTime');
+              const cardTicketDate = document.getElementById('cardTicketDate');
+              const cardTicketTime = document.getElementById('cardTicketTime');
               const cardTicketGuests = document.getElementById('cardTicketGuests');
+              const cardTicketArea = document.getElementById('cardTicketArea');
               const cardTicketNotes = document.getElementById('cardTicketNotes');
               const cardTicketNotesRow = document.getElementById('cardTicketNotesRow');
               const cardTicketWaBtn = document.getElementById('cardTicketWaBtn');
@@ -930,8 +973,10 @@ document.addEventListener("DOMContentLoaded", () => {
               if (cardTableNumber) cardTableNumber.innerHTML = `Masa No: ${data.masaNo} <small>${data.konum}</small>`;
               if (cardTicketName) cardTicketName.textContent = data.name || 'Girilmedi';
               if (cardTicketPhone) cardTicketPhone.textContent = data.phone || '---';
-              if (cardTicketDateTime) cardTicketDateTime.textContent = `${data.date} • ${data.time}`;
+              if (cardTicketDate) cardTicketDate.textContent = data.date || 'Tarih Seçiniz';
+              if (cardTicketTime) cardTicketTime.textContent = data.time || 'Saat Seçiniz';
               if (cardTicketGuests) cardTicketGuests.textContent = `${data.guests} Kişilik Masa`;
+              if (cardTicketArea) cardTicketArea.textContent = data.area || 'Belirtilmedi';
 
               if (cardTicketNotes && cardTicketNotesRow) {
                 if (data.notes) {
@@ -1024,8 +1069,10 @@ document.addEventListener("DOMContentLoaded", () => {
       const cardTableNumber = document.getElementById('cardTableNumber');
       const cardTicketName = document.getElementById('cardTicketName');
       const cardTicketPhone = document.getElementById('cardTicketPhone');
-      const cardTicketDateTime = document.getElementById('cardTicketDateTime');
+      const cardTicketDate = document.getElementById('cardTicketDate');
+      const cardTicketTime = document.getElementById('cardTicketTime');
       const cardTicketGuests = document.getElementById('cardTicketGuests');
+      const cardTicketArea = document.getElementById('cardTicketArea');
       const cardTicketNotes = document.getElementById('cardTicketNotes');
       const cardTicketNotesRow = document.getElementById('cardTicketNotesRow');
       const cardTicketWaBtn = document.getElementById('cardTicketWaBtn');
@@ -1033,8 +1080,10 @@ document.addEventListener("DOMContentLoaded", () => {
       if (cardTableNumber) cardTableNumber.innerHTML = `Masa No: ${data.masaNo} <small>${data.konum}</small>`;
       if (cardTicketName) cardTicketName.textContent = data.name || 'Girilmedi';
       if (cardTicketPhone) cardTicketPhone.textContent = data.phone || '---';
-      if (cardTicketDateTime) cardTicketDateTime.textContent = data.dateTime || 'Tarih ve Saat Seçiniz';
+      if (cardTicketDate) cardTicketDate.textContent = data.date || 'Tarih Seçiniz';
+      if (cardTicketTime) cardTicketTime.textContent = data.time || 'Saat Seçiniz';
       if (cardTicketGuests) cardTicketGuests.textContent = data.guests || '-- Kişilik Masa';
+    if (cardTicketArea) cardTicketArea.textContent = data.area || 'Belirtilmedi';
 
       if (cardTicketNotes && cardTicketNotesRow) {
         if (data.notes) {
@@ -1321,7 +1370,10 @@ document.addEventListener("DOMContentLoaded", () => {
       const sendingMsg = (localStorage.getItem('language') || 'tr') === 'en' ? 'Sending Message...' : 'Mesajınız Gönderiliyor...';
       formGonderimSimuleEt(contactForm, contactFormAlert, sendingMsg, 900);
 
-      fetch('/api/iletisim', {
+      const isLocalHost3000 = window.location.origin.includes(':3000');
+      const apiUrl = isLocalHost3000 ? '/api/iletisim' : 'http://localhost:3000/api/iletisim';
+
+      fetch(apiUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -1629,10 +1681,10 @@ document.addEventListener("DOMContentLoaded", () => {
         </button>
         <div class="lang-dropdown">
           <button class="lang-option" data-lang="tr">
-            <span class="lang-flag">🇹🇷</span> Türkçe (TR)
+            <span class="lang-flag">TR</span> Türkçe (TR)
           </button>
           <button class="lang-option" data-lang="en">
-            <span class="lang-flag">🇬🇧</span> English (EN)
+            <span class="lang-flag">EN</span> English (EN)
           </button>
         </div>
       `;
@@ -1738,13 +1790,29 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-    // 3. Canlı Durum Widget'ını Çevir
+    // 3. Filtre butonlarını çevir (menü kategorileri)
+    const filterBtns = document.querySelectorAll('.filter-btn[data-translate]');
+    filterBtns.forEach(btn => {
+      const key = btn.getAttribute('data-translate');
+      if (window.translations[lang] && window.translations[lang][key] !== undefined) {
+        const translatedText = window.translations[lang][key];
+        // İlk text node'u (span.badge-count'u bozmadan) güncelle
+        for (let i = 0; i < btn.childNodes.length; i++) {
+          if (btn.childNodes[i].nodeType === Node.TEXT_NODE && btn.childNodes[i].nodeValue.trim() !== '') {
+            btn.childNodes[i].nodeValue = translatedText + ' ';
+            break;
+          }
+        }
+      }
+    });
+
+    // 4. Canlı Durum Widget'ını Çevir
     updateStatusBadgeTranslation(lang);
 
-    // 4. Atmosfer Modu Butonunu Çevir
+    // 5. Atmosfer Modu Butonunu Çevir
     updateAtmosphereBtnTranslation(lang);
     
-    // 5. Eğer menü sayfasındaysak ve yemekler listesi yüklüyse menüyü yeniden filtrele (listeyi güncelle)
+    // 6. Eğer menü sayfasındaysak ve yemekler listesi yüklüyse menüyü yeniden filtrele (listeyi güncelle)
     if (typeof menuyuFiltrele === 'function' && window.yemekler && window.yemekler.length > 0) {
       menuyuFiltrele();
     }

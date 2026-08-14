@@ -5930,9 +5930,10 @@ body.day-atmosphere .trust-bar-section {
     grid-column: 2 !important;
     display: flex !important;
     align-items: center !important;
+    align-self: center !important;
     gap: 4px !important;
     margin: 0 !important;
-    padding: 0 !important;
+    padding: 2px 0 !important;
   }
 
   .header-divider {
@@ -5941,13 +5942,16 @@ body.day-atmosphere .trust-bar-section {
 
   /* "Şu An Açığız" Yazısı - Logoyla uyumlu, daracık yer kaplamayan şık buton */
   .live-status-badge {
-    padding: 2px 6px !important;
+    padding: 4px 8px !important;
     font-size: 0.65rem !important;
     border-radius: 6px !important;
     white-space: nowrap !important;
     font-weight: 700 !important;
     border: 1px solid rgba(46, 204, 113, 0.3) !important;
     background: rgba(46, 204, 113, 0.12) !important;
+    display: flex !important;
+    align-items: center !important;
+    height: 28px !important;
   }
 
   .live-status-badge small,
@@ -6590,19 +6594,27 @@ body.day-atmosphere .menu-section .filter-buttons-wrapper {
 }
 
 .lang-flag {
-  font-size: 1.1rem !important;
+  font-size: 1rem !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-width: 1.5em !important;
+  min-height: 1.3em !important;
+  font-weight: 600 !important;
+  line-height: 1 !important;
+  letter-spacing: 0.1em !important;
 }
 
 @media (max-width: 768px) {
   .header-status-wrapper .lang-selector-container {
     position: relative !important;
-    margin-left: 4px !important;
+    margin-left: 8px !important;
     flex-shrink: 0 !important;
   }
 
   .header-status-wrapper .lang-toggle-btn {
-    width: 22px !important;
-    height: 22px !important;
+    width: 28px !important;
+    height: 28px !important;
     border-radius: 50% !important;
     padding: 0 !important;
     display: inline-flex !important;
@@ -6619,13 +6631,13 @@ body.day-atmosphere .menu-section .filter-buttons-wrapper {
 
   .header-status-wrapper .lang-toggle-btn i.fa-globe {
     margin: 0 !important;
-    font-size: 0.75rem !important;
+    font-size: 0.9rem !important;
   }
 
   .header-status-wrapper .lang-toggle-btn:hover,
   .header-status-wrapper .lang-toggle-btn:active,
   .header-status-wrapper .lang-toggle-btn:focus {
-    transform: scale(1.04) !important;
+    transform: scale(1.08) !important;
   }
 
   .header-status-wrapper .lang-dropdown {

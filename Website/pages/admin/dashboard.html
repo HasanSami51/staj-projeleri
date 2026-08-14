@@ -11,696 +11,807 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="../../public/css/style.css">
   <style>
-    /* Admin Dashboard Specific Premium Styling */
-    body {
-      margin: 0;
-      padding: 0;
-      min-height: 100vh;
-      font-family: 'Inter', sans-serif;
-      background-color: #0b0f13;
-      color: #ffffff;
-    }
-
-    .admin-wrapper {
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-      z-index: 10;
-      position: relative;
-    }
-
-    .admin-header {
-      background: rgba(15, 22, 28, 0.75);
-      backdrop-filter: blur(15px);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-      padding: 15px 30px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
-
-    .admin-logo-section {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-    }
-
-    .admin-logo-img {
-      width: 50px;
-      height: 50px;
-      object-fit: contain;
-    }
-
-    .admin-logo-text h1 {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.4rem;
-      color: #f39c12;
-      margin: 0;
-    }
-
-    .admin-logo-text p {
-      font-size: 0.75rem;
-      color: #95a5a6;
-      margin: 0;
-      letter-spacing: 1px;
-    }
-
-    .admin-user-menu {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-    }
-
-    .admin-user-info {
-      font-size: 0.9rem;
-      color: #bdc3c7;
-    }
-
-    .admin-user-info strong {
-      color: #f39c12;
-    }
-
-    .btn-logout {
-      padding: 10px 18px;
-      background: rgba(231, 76, 60, 0.15);
-      border: 1px solid rgba(231, 76, 60, 0.3);
-      border-radius: 8px;
-      color: #e74c3c;
-      font-size: 0.9rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .btn-logout:hover {
-      background: #e74c3c;
-      color: #ffffff;
-      box-shadow: 0 0 15px rgba(231, 76, 60, 0.4);
-    }
-
-    .admin-main {
-      flex: 1;
-      padding: 40px 30px;
-      max-width: 1400px;
-      width: 100%;
-      margin: 0 auto;
-      box-sizing: border-box;
-    }
-
-    /* Stats Grid */
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 25px;
-      margin-bottom: 40px;
-    }
-
-    .stat-card {
-      background: rgba(15, 22, 28, 0.6);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      border-radius: 16px;
-      padding: 25px;
-      display: flex;
-      align-items: center;
-      gap: 20px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-      transition: transform 0.3s ease, border-color 0.3s ease;
-    }
-
-    .stat-card:hover {
-      transform: translateY(-5px);
-      border-color: #f39c12;
-    }
-
-    .stat-icon {
-      width: 60px;
-      height: 60px;
-      border-radius: 12px;
-      background: rgba(243, 156, 18, 0.1);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      color: #f39c12;
-      font-size: 1.5rem;
-    }
-
-    .stat-icon.red {
-      background: rgba(231, 76, 60, 0.1);
-      color: #e74c3c;
-    }
-
-    .stat-icon.green {
-      background: rgba(46, 204, 113, 0.1);
-      color: #2ecc71;
-    }
-
-    .stat-icon.blue {
-      background: rgba(52, 152, 219, 0.1);
-      color: #3498db;
-    }
-
-    .stat-info h3 {
-      font-size: 0.85rem;
-      color: #95a5a6;
-      margin: 0 0 5px 0;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    .stat-info p {
-      font-size: 1.8rem;
-      font-weight: 700;
-      margin: 0;
-      color: #ffffff;
-    }
-
-    /* Tabs Controller */
-    .dashboard-tabs {
-      display: flex;
-      gap: 15px;
-      margin-bottom: 30px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-      padding-bottom: 15px;
-    }
-
-    .dash-tab-btn {
-      padding: 12px 24px;
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      border-radius: 10px;
-      color: #bdc3c7;
-      font-size: 0.95rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .dash-tab-btn:hover {
-      background: rgba(255, 255, 255, 0.08);
-      color: #ffffff;
-    }
-
-    .dash-tab-btn.active {
-      background: #f39c12;
-      color: #0b0f13;
-      border-color: #f39c12;
-      box-shadow: 0 4px 15px rgba(243, 156, 18, 0.3);
-    }
-
-    /* Content Area */
-    .dashboard-content {
-      background: rgba(15, 22, 28, 0.6);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      border-radius: 20px;
-      padding: 30px;
-      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
-      min-height: 400px;
-    }
-
-    .tab-panel {
-      display: none;
-    }
-
-    .tab-panel.active {
-      display: block;
-      animation: panelFadeIn 0.5s ease;
-    }
-
-    @keyframes panelFadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .panel-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 25px;
-    }
-
-    .panel-header h2 {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.5rem;
-      color: #f39c12;
-      margin: 0;
-    }
-
-    .btn-refresh {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      color: #ffffff;
-      padding: 10px 15px;
-      border-radius: 8px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 0.85rem;
-      transition: all 0.3s ease;
-    }
-
-    .btn-refresh:hover {
-      background: rgba(255, 255, 255, 0.1);
-      border-color: #ffffff;
-    }
-
-    /* Responsive Table Styles */
-    .table-container {
-      overflow-x: auto;
-      border-radius: 12px;
-      border: 1px solid rgba(255, 255, 255, 0.05);
-    }
-
-    .admin-table {
-      width: 100%;
-      border-collapse: collapse;
-      text-align: left;
-      font-size: 0.9rem;
-    }
-
-    .admin-table th {
-      background: rgba(255, 255, 255, 0.04);
-      padding: 15px 20px;
-      font-weight: 600;
-      color: #bdc3c7;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-      text-transform: uppercase;
-      font-size: 0.8rem;
-      letter-spacing: 0.5px;
-    }
-
-    .admin-table td {
-      padding: 18px 20px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-      color: #e2e8f0;
-      vertical-align: middle;
-    }
-
-    .admin-table tr:hover td {
-      background: rgba(255, 255, 255, 0.02);
-    }
-
-    .admin-table tr:last-child td {
-      border-bottom: none;
-    }
-
-    /* Badges */
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      padding: 5px 12px;
-      border-radius: 20px;
-      font-size: 0.78rem;
-      font-weight: 600;
-    }
-
-    .badge-pending {
-      background: rgba(243, 156, 18, 0.15);
-      color: #f39c12;
-      border: 1px solid rgba(243, 156, 18, 0.3);
-    }
-
-    .badge-approved {
-      background: rgba(46, 204, 113, 0.15);
-      color: #2ecc71;
-      border: 1px solid rgba(46, 204, 113, 0.3);
-    }
-
-    .badge-cancelled {
-      background: rgba(231, 76, 60, 0.15);
-      color: #e74c3c;
-      border: 1px solid rgba(231, 76, 60, 0.3);
-    }
-
-    .badge-read {
-      background: rgba(127, 140, 141, 0.15);
-      color: #95a5a6;
-      border: 1px solid rgba(127, 140, 141, 0.3);
-    }
-
-    .badge-unread {
-      background: rgba(52, 152, 219, 0.15);
-      color: #3498db;
-      border: 1px solid rgba(52, 152, 219, 0.3);
-    }
-
-    /* Action Buttons */
-    .actions-cell {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .btn-action {
-      padding: 6px 12px;
-      border-radius: 6px;
-      border: none;
-      cursor: pointer;
-      font-size: 0.8rem;
-      font-weight: 500;
-      transition: all 0.2s ease;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
-
-    .btn-action-approve {
-      background: rgba(46, 204, 113, 0.15);
-      color: #2ecc71;
-      border: 1px solid rgba(46, 204, 113, 0.3);
-    }
-
-    .btn-action-approve:hover {
-      background: #2ecc71;
-      color: #0b0f13;
-    }
-
-    .btn-action-cancel {
-      background: rgba(230, 126, 34, 0.15);
-      color: #e67e22;
-      border: 1px solid rgba(230, 126, 34, 0.3);
-    }
-
-    .btn-action-cancel:hover {
-      background: #e67e22;
-      color: #0b0f13;
-    }
-
-    .btn-action-delete {
-      background: rgba(231, 76, 60, 0.15);
-      color: #e74c3c;
-      border: 1px solid rgba(231, 76, 60, 0.3);
-    }
-
-    .btn-action-delete:hover {
-      background: #e74c3c;
-      color: #ffffff;
-    }
-
-    .btn-action-read {
-      background: rgba(52, 152, 219, 0.15);
-      color: #3498db;
-      border: 1px solid rgba(52, 152, 219, 0.3);
-    }
-
-    .btn-action-read:hover {
-      background: #3498db;
-      color: #0b0f13;
-    }
-
-    /* Empty state */
-    .empty-state {
-      text-align: center;
-      padding: 60px 20px;
-      color: #95a5a6;
-    }
-
-    .empty-state i {
-      font-size: 3rem;
-      margin-bottom: 15px;
-      color: #7f8c8d;
-    }
-
-    .empty-state p {
-      font-size: 1rem;
-      margin: 0;
-    }
-
-    /* Modal dialog */
-    .confirm-modal {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.7);
-      backdrop-filter: blur(5px);
-      z-index: 1000;
-      display: none;
-      justify-content: center;
-      align-items: center;
-      animation: modalFade 0.3s ease;
-    }
-
-    @keyframes modalFade {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-
-    .confirm-dialog {
-      background: #141a20;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 16px;
-      padding: 30px;
-      max-width: 400px;
-      width: 90%;
-      text-align: center;
-    }
-
-    .confirm-dialog h3 {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.3rem;
-      color: #f39c12;
-      margin: 0 0 15px 0;
-    }
-
-    .confirm-dialog p {
-      font-size: 0.95rem;
-      color: #bdc3c7;
-      margin: 0 0 25px 0;
-      line-height: 1.5;
-    }
-
-    .confirm-actions {
-      display: flex;
-      justify-content: center;
-      gap: 15px;
-    }
-
-    .btn-dialog {
-      padding: 10px 20px;
-      border-radius: 8px;
-      border: none;
-      cursor: pointer;
-      font-weight: 600;
-      font-size: 0.9rem;
-      transition: all 0.2s ease;
-    }
-
-    .btn-dialog-yes {
-      background: linear-gradient(135deg, #f39c12, #d35400);
-      color: #ffffff;
-      order: none;
-      box-shadow: 0 4px 12px rgba(211, 84, 0, 0.3);
-    }
-
-    .btn-dialog-yes:hover {
-      background: #c0392b;
-    }
-
-    .btn-dialog-no {
-     background-color: #212832;
-     color: #ffffff;
-     border: 1px solid rgba(255, 255, 255, 0.15);
-    }
-
-    .btn-dialog-no:hover {
-      background: rgba(255, 255, 255, 0.1);
-    }
-
-    /* Guest notes expandable */
-    .note-cell {
-      max-width: 250px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      cursor: pointer;
-      color: #bdc3c7;
-    }
-
-    .note-cell:hover {
-      color: #f39c12;
-      text-decoration: underline;
-    }
-
-    .note-expanded-modal {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.7);
-      backdrop-filter: blur(5px);
-      z-index: 1000;
-      display: none;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .note-expanded-dialog {
-      background: #141a20;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 16px;
-      padding: 30px;
-      max-width: 500px;
-      width: 90%;
-    }
-
-    .note-expanded-dialog h3 {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.3rem;
-      color: #f39c12;
-      margin: 0 0 15px 0;
-      text-align: center;
-    }
-
-    .note-content-text {
-      background: rgba(255, 255, 255, 0.02);
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      padding: 15px;
-      border-radius: 10px;
-      font-size: 0.95rem;
-      line-height: 1.6;
-      color: #e2e8f0;
-      margin-bottom: 20px;
-      white-space: pre-wrap;
-    }
-
-    /* Toast Notification */
-    .toast {
-      position: fixed;
-      bottom: 30px;
-      right: 30px;
-      background: #1e272e;
-      border-left: 4px solid #2ecc71;
-      padding: 15px 25px;
-      border-radius: 6px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      z-index: 2000;
-      transform: translateY(150%);
-      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    }
-
-    .toast.active {
-      transform: translateY(0);
-    }
-
-    .toast-error {
-      border-left-color: #e74c3c;
-    }
-
-    /* Add Menu Item Form Styles */
-    .form-group-modal {
-      margin-bottom: 20px;
-      text-align: left;
-    }
-    .form-group-modal label {
-      display: block;
-      color: #f39c12;
-      font-size: 0.9rem;
-      font-weight: 600;
-      margin-bottom: 8px;
-      text-align: left;
-    }
-    .form-group-modal input,
-    .form-group-modal textarea,
-    .form-group-modal select {
-      width: 100% !important;
-      padding: 12px 15px !important;
-      background: rgba(255, 255, 255, 0.03) !important;
-      border: 1px solid rgba(255, 255, 255, 0.1) !important;
-      border-radius: 8px !important;
-      color: #ffffff !important;
-      font-size: 0.95rem !important;
-      box-sizing: border-box !important;
-      transition: all 0.3s ease;
-      font-family: inherit;
-      text-align: left !important;
-      text-align-last: left !important;
-    }
-    .form-group-modal input[type="checkbox"] {
-      width: 18px !important;
-      height: 18px !important;
-      padding: 0 !important;
-      margin: 0 !important;
-      background: rgba(255, 255, 255, 0.05) !important;
-      border: 1px solid rgba(212, 175, 55, 0.3) !important;
-      border-radius: 4px !important;
-      cursor: pointer !important;
-      box-shadow: none !important;
-      display: inline-block !important;
-      appearance: checkbox !important;
-      -webkit-appearance: checkbox !important;
-    }
-    .form-group-modal .checkbox-label {
-      display: flex !important;
-      align-items: center !important;
-      gap: 8px !important;
-      cursor: pointer !important;
-      color: #ffffff !important;
-      font-weight: 500 !important;
-      font-size: 0.95rem !important;
-      user-select: none !important;
-      margin-bottom: 0 !important;
-      text-align: left !important;
-    }
-    .checkbox-label input[type="checkbox"] {
-     width: 18px;
-     height: 18px;
-     cursor: pointer;
-     accent-color: #d35400; 
+  /* =========================================================
+   1. GENEL SIFIRLAMA & TEMEL YAPI
+   ========================================================= */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
-    .form-group-modal input:focus,
-    .form-group-modal textarea:focus,
-    .form-group-modal select:focus {
-      outline: none;
-      border-color: #f39c12;
-      background: rgba(255, 255, 255, 0.06);
-      box-shadow: 0 0 8px rgba(243, 156, 18, 0.2);
-    }
-    .form-group-modal option {
-      background: #141a20;
-      color: #ffffff;
-    }
-    .modal-actions {
-    display: flex;
-    justify-content: center; 
-    width:100%;
-    gap: 12px;
-    margin-top: 25px;
-    }
-    .modal-actions button{
-    flex: 1;                
-    padding: 12px 20px;     
-    border-radius: 8px;     
-    font-size: 0.95rem;
-    font-weight: 600;
-    box-sizing: border-box;
-    }
+
+body {
+  min-height: 100vh;
+  font-family: 'Inter', sans-serif;
+  background-color: #0b0f13;
+  color: #ffffff;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Global Arka Plan Videosu */
+.global-bg-video {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  min-width: 100%;
+  min-height: 100%;
+  width: auto;
+  height: auto;
+  z-index: -100;
+  object-fit: cover;
+  opacity: 0.25;
+}
+
+.admin-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  z-index: 10;
+  position: relative;
+}
+
+/* =========================================================
+   2. HEADER & LOGO BÖLÜMÜ
+   ========================================================= */
+.admin-header {
+  background: rgba(15, 22, 28, 0.85);
+  backdrop-filter: blur(15px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 15px 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.admin-logo-section {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.admin-logo-img {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+}
+
+.admin-logo-text h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.4rem;
+  color: #f39c12;
+  margin: 0;
+}
+
+.admin-logo-text p {
+  font-size: 0.75rem;
+  color: #95a5a6;
+  margin: 0;
+  letter-spacing: 1px;
+}
+
+.admin-user-menu {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.admin-user-info {
+  font-size: 0.9rem;
+  color: #bdc3c7;
+}
+
+.admin-user-info strong {
+  color: #f39c12;
+}
+
+.btn-logout {
+  padding: 10px 18px;
+  background: rgba(231, 76, 60, 0.15);
+  border: 1px solid rgba(231, 76, 60, 0.3);
+  border-radius: 8px;
+  color: #e74c3c;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-logout:hover {
+  background: #e74c3c;
+  color: #ffffff;
+  box-shadow: 0 0 15px rgba(231, 76, 60, 0.4);
+}
+
+.admin-main {
+  flex: 1;
+  padding: 30px;
+  max-width: 1440px;
+  width: 100%;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+/* =========================================================
+   3. BİRLEŞİK İSTATİSTİK KARTLARI (KUSURSUZ SIĞMA & HİZALAMA)
+   ========================================================= */
+.stats-grid {
+  display: flex !important;
+  flex-direction: row !important;
+  width: 100% !important;
+  margin-bottom: 35px !important;
+  background: rgba(15, 22, 28, 0.75) !important;
+  backdrop-filter: blur(15px) !important;
+  border: 1px solid rgba(243, 156, 18, 0.25) !important;
+  border-radius: 16px !important;
+  overflow: hidden !important;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3) !important;
+  box-sizing: border-box !important;
+}
+
+.stat-card {
+  flex: 1 1 0 !important;
+  width: auto !important;
+  min-width: 0 !important;
+  padding: 22px 20px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 16px !important;
+  background: transparent !important;
+  border: none !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 0 !important;
+  margin: 0 !important;
+  box-shadow: none !important;
+  transition: background 0.3s ease !important;
+  box-sizing: border-box !important;
+}
+
+.stat-card:last-child {
+  border-right: none !important;
+}
+
+.stat-card:hover {
+  background: rgba(255, 255, 255, 0.03) !important;
+}
+
+.stat-icon {
+  width: 48px !important;
+  height: 48px !important;
+  min-width: 48px !important;
+  flex-shrink: 0 !important;
+  border-radius: 12px !important;
+  background: rgba(243, 156, 18, 0.12) !important;
+  color: #f39c12 !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  font-size: 1.35rem !important;
+}
+
+.stat-icon.blue {
+  background: rgba(52, 152, 219, 0.12) !important;
+  color: #3498db !important;
+}
+
+.stat-icon.green {
+  background: rgba(46, 204, 113, 0.12) !important;
+  color: #2ecc71 !important;
+}
+
+.stat-icon.red {
+  background: rgba(231, 76, 60, 0.12) !important;
+  color: #e74c3c !important;
+}
+
+.stat-info {
+  flex: 1 !important;
+  min-width: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.stat-info h3 {
+  font-size: 0.82rem !important;
+  font-weight: 700 !important;
+  color: #f39c12 !important;
+  margin: 0 0 4px 0 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+  white-space: normal !important;
+  word-break: normal !important;
+  line-height: 1.25 !important;
+}
+
+.stat-info p {
+  font-size: 1.7rem !important;
+  font-weight: 800 !important;
+  color: #ffffff !important;
+  margin: 0 !important;
+  line-height: 1 !important;
+}
+
+/* =========================================================
+   4. SEKMELER (TABS) & İÇERİK ALANI
+   ========================================================= */
+.dashboard-tabs {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 30px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 15px;
+}
+
+.dash-tab-btn {
+  padding: 12px 24px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  color: #bdc3c7;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.dash-tab-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+}
+
+.dash-tab-btn.active {
+  background: #f39c12;
+  color: #0b0f13;
+  border-color: #f39c12;
+  box-shadow: 0 4px 15px rgba(243, 156, 18, 0.3);
+}
+
+.dashboard-content {
+  background: rgba(15, 22, 28, 0.7);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+  min-height: 400px;
+}
+
+.tab-panel {
+  display: none;
+}
+
+.tab-panel.active {
+  display: block;
+  animation: panelFadeIn 0.4s ease;
+}
+
+@keyframes panelFadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.panel-header h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.5rem;
+  color: #f39c12;
+  margin: 0;
+}
+
+.btn-refresh {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.btn-refresh:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: #ffffff;
+}
+
+/* =========================================================
+   5. KATEGORİ FİLTRE HAPLARI
+   ========================================================= */
+.category-filter-wrapper {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 25px;
+  padding: 14px 18px;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.cat-filter-btn {
+  background: rgba(255, 255, 255, 0.04);
+  color: #bdc3c7;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 7px 16px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.cat-filter-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.cat-filter-btn.active {
+  background: #f39c12;
+  color: #0b0f13;
+  border-color: #f39c12;
+  font-weight: 600;
+  box-shadow: 0 2px 10px rgba(243, 156, 18, 0.3);
+}
+
+/* =========================================================
+   6. TABLOLAR VE KATEGORİ AYIRICILARI
+   ========================================================= */
+.table-container {
+  overflow-x: auto;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.9rem;
+}
+
+.admin-table th {
+  background: rgba(255, 255, 255, 0.04);
+  padding: 15px 20px;
+  font-weight: 600;
+  color: #bdc3c7;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  letter-spacing: 0.5px;
+}
+
+.admin-table td {
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  color: #e2e8f0;
+  vertical-align: middle;
+}
+
+.admin-table tr:hover td {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.admin-table tr:last-child td {
+  border-bottom: none;
+}
+
+/* Kategori Başlık Satırı */
+.category-divider-row td {
+  background: rgba(243, 156, 18, 0.08) !important;
+  color: #f39c12 !important;
+  font-weight: 700 !important;
+  font-size: 0.92rem !important;
+  border-left: 4px solid #f39c12 !important;
+  padding: 12px 20px !important;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+/* =========================================================
+   7. ROZETLER (BADGES) & AKSİYON BUTONLARI
+   ========================================================= */
+.badge, .status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-decoration: none !important;
+}
+
+.badge-pending, .status-badge.pending {
+  background: rgba(243, 156, 18, 0.15);
+  color: #f39c12;
+  border: 1px solid rgba(243, 156, 18, 0.3);
+}
+
+.badge-approved, .status-badge.approved {
+  background: rgba(46, 204, 113, 0.15);
+  color: #2ecc71;
+  border: 1px solid rgba(46, 204, 113, 0.3);
+}
+
+.badge-cancelled, .status-badge.cancelled {
+  background: rgba(231, 76, 60, 0.15);
+  color: #e74c3c;
+  border: 1px solid rgba(231, 76, 60, 0.3);
+}
+
+.badge-read {
+  background: rgba(127, 140, 141, 0.15);
+  color: #95a5a6;
+  border: 1px solid rgba(127, 140, 141, 0.3);
+}
+
+.badge-unread {
+  background: rgba(52, 152, 219, 0.15);
+  color: #3498db;
+  border: 1px solid rgba(52, 152, 219, 0.3);
+}
+
+.actions-cell {
+ display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  flex-wrap: nowrap !important; 
+  white-space: nowrap !important;
+}
+
+.btn-action {
+  white-space: nowrap !important; 
+  padding: 7px 10px !important;
+  font-size: 0.78rem !important;
+  font-weight: 600 !important;
+  border-radius: 6px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 5px !important;
+  height: 32px !important;       
+  box-sizing: border-box !important;
+}
+
+.btn-action-approve {
+  background: rgba(46, 204, 113, 0.15);
+  color: #2ecc71;
+  border: 1px solid rgba(46, 204, 113, 0.3);
+}
+
+.btn-action-approve:hover {
+  background: #2ecc71;
+  color: #0b0f13;
+}
+
+.btn-action-cancel {
+  background: rgba(230, 126, 34, 0.15);
+  color: #e67e22;
+  border: 1px solid rgba(230, 126, 34, 0.3);
+}
+
+.btn-action-cancel:hover {
+  background: #e67e22;
+  color: #0b0f13;
+}
+
+.btn-action-delete {
+  background: rgba(231, 76, 60, 0.15);
+  color: #e74c3c;
+  border: 1px solid rgba(231, 76, 60, 0.3);
+}
+
+.btn-action-delete:hover {
+  background: #e74c3c;
+  color: #ffffff;
+}
+
+.btn-action-read {
+  background: rgba(52, 152, 219, 0.15);
+  color: #3498db;
+  border: 1px solid rgba(52, 152, 219, 0.3);
+}
+
+.btn-action-read:hover {
+  background: #3498db;
+  color: #0b0f13;
+}
+
+/* =========================================================
+   8. BOŞ DURUM & MODALLAR
+   ========================================================= */
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: #95a5a6;
+}
+
+.empty-state i {
+  font-size: 3rem;
+  margin-bottom: 15px;
+  color: #7f8c8d;
+}
+
+.empty-state p {
+  font-size: 1rem;
+  margin: 0;
+}
+
+.confirm-modal, .note-expanded-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(5px);
+  z-index: 1000;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  animation: modalFade 0.3s ease;
+}
+
+@keyframes modalFade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.confirm-dialog, .note-expanded-dialog {
+  background: #141a20;
+  border: 1px solid rgba(243, 156, 18, 0.2);
+  border-radius: 16px;
+  padding: 30px;
+  max-width: 480px;
+  width: 90%;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+}
+
+.confirm-dialog h3, .note-expanded-dialog h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.3rem;
+  color: #f39c12;
+  margin: 0 0 15px 0;
+  text-align: center;
+}
+
+.confirm-dialog p {
+  font-size: 0.95rem;
+  color: #bdc3c7;
+  margin: 0 0 25px 0;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.note-content-text {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 15px;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #e2e8f0;
+  margin-bottom: 20px;
+  white-space: pre-wrap;
+}
+
+.confirm-actions, .modal-actions {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 25px;
+  width: 100%;
+}
+
+.modal-actions button, .confirm-actions button {
+  flex: 1;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s ease;
+}
+
+.btn-dialog-yes {
+  background: linear-gradient(135deg, #f39c12, #d35400);
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(211, 84, 0, 0.3);
+}
+
+.btn-dialog-yes:hover {
+  background: #c0392b;
+}
+
+.btn-dialog-no {
+  background-color: #212832;
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+}
+
+.btn-dialog-no:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.note-cell {
+  max-width: 250px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+  color: #bdc3c7;
+}
+
+.note-cell:hover {
+  color: #f39c12;
+  text-decoration: underline;
+}
+
+/* =========================================================
+   9. MODAL FORM ELEMANLARI
+   ========================================================= */
+.form-group-modal {
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.form-group-modal label {
+  display: block;
+  color: #f39c12;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+  text-align: left;
+}
+
+.form-group-modal input,
+.form-group-modal textarea,
+.form-group-modal select {
+  width: 100% !important;
+  padding: 12px 15px !important;
+  background: rgba(255, 255, 255, 0.03) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 8px !important;
+  color: #ffffff !important;
+  font-size: 0.95rem !important;
+  box-sizing: border-box !important;
+  transition: all 0.3s ease;
+  font-family: inherit;
+  text-align: left !important;
+  text-align-last: left !important;
+}
+
+.form-group-modal input:focus,
+.form-group-modal textarea:focus,
+.form-group-modal select:focus {
+  outline: none;
+  border-color: #f39c12;
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: 0 0 8px rgba(243, 156, 18, 0.2);
+}
+
+.form-group-modal option {
+  background: #141a20;
+  color: #ffffff;
+}
+
+.form-group-modal input[type="checkbox"] {
+  width: 18px !important;
+  height: 18px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(212, 175, 55, 0.3) !important;
+  border-radius: 4px !important;
+  cursor: pointer !important;
+  box-shadow: none !important;
+  display: inline-block !important;
+  accent-color: #d35400;
+}
+
+.form-group-modal .checkbox-label {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  cursor: pointer !important;
+  color: #ffffff !important;
+  font-weight: 500 !important;
+  font-size: 0.95rem !important;
+  user-select: none !important;
+  margin-bottom: 0 !important;
+  text-align: left !important;
+}
+
+/* =========================================================
+   10. TOAST BİLDİRİMİ
+   ========================================================= */
+.toast {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background: #1e272e;
+  border-left: 4px solid #2ecc71;
+  padding: 15px 25px;
+  border-radius: 6px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  z-index: 2000;
+  transform: translateY(150%);
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.toast.active {
+  transform: translateY(0);
+}
+
+.toast-error {
+  border-left-color: #e74c3c;
+}
+
+/* =========================================================
+   11. RESPONSIVE DÜZENLEME
+   ========================================================= */
+@media (max-width: 1024px) {
+  .stats-grid {
+    flex-wrap: wrap !important;
+  }
+  .stat-card {
+    flex: 1 1 45% !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .admin-main {
+    padding: 20px 15px;
+  }
+  .dashboard-tabs {
+    flex-wrap: wrap;
+  }
+  .dash-tab-btn {
+    flex: 1;
+    justify-content: center;
+  }
+  .stat-card {
+    flex: 1 1 100% !important;
+    border-right: none !important;
+  }
+}
   </style>
 </head>
 <body>
-  <!-- Global background video element to match premium aesthetic -->
-  <video id="globalBgVideo" autoplay loop muted playsinline class="global-bg-video" style="position: fixed; right: 0; bottom: 0; min-width: 100%; min-height: 100%; width: auto; height: auto; z-index: -100; object-fit: cover; opacity: 0.3;">
+<video id="globalBgVideo" autoplay loop muted playsinline class="global-bg-video" style="position: fixed; right: 0; bottom: 0; min-width: 100%; min-height: 100%; width: auto; height: auto; z-index: -100; object-fit: cover; opacity: 0.3;">
     <source src="../../public/images/video.mp4" type="video/mp4">
   </video>
 
   <div class="admin-wrapper">
+    <!-- Header -->
     <header class="admin-header">
       <div class="admin-logo-section">
         <img src="../../public/images/favicon-round.png" alt="Lezzet Mührü Logo" class="admin-logo-img">
@@ -719,40 +830,54 @@
     </header>
 
     <main class="admin-main">
-      <!-- Quick Stats Card Section -->
-      <section class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-icon"><i class="fa-solid fa-calendar-check"></i></div>
-          <div class="stat-info">
-            <h3>Toplam Rezervasyon</h3>
-            <p id="statTotalRes">0</p>
-          </div>
+  <!-- Quick Stats Card Section (Büyük Başlıklar & Sayılar) -->
+    <section class="stats-grid" style="display: flex !important; flex-direction: row !important; width: 100% !important; background: rgba(15, 22, 28, 0.85) !important; border: 2px solid rgba(243, 156, 18, 0.45) !important; border-radius: 22px !important; overflow: hidden !important; margin-bottom: 45px !important; box-shadow: 0 25px 50px rgba(0,0,0,0.6) !important;">
+      
+      <!-- Kart 1: Toplam Rezervasyon -->
+      <div class="stat-card" style="flex: 1 1 0 !important; width: 25% !important; min-width: 0 !important; padding: 40px 26px !important; display: flex !important; align-items: center !important; gap: 20px !important; border-right: 1px solid rgba(255, 255, 255, 0.12) !important; margin: 0 !important; background: transparent !important; box-shadow: none !important; border-top: none !important; border-bottom: none !important; border-left: none !important;">
+        <div class="stat-icon" style="width: 82px !important; height: 82px !important; min-width: 82px !important; flex-shrink: 0 !important; border-radius: 18px !important; background: rgba(243, 156, 18, 0.18) !important; color: #f39c12 !important; display: flex !important; justify-content: center !important; align-items: center !important; font-size: 2.4rem !important;">
+          <i class="fa-solid fa-calendar-check"></i>
         </div>
+        <div class="stat-info" style="flex: 1 !important; min-width: 0 !important; padding: 0 !important; margin: 0 !important; border: none !important; background: transparent !important;">
+          <h3 style="font-size: 1.15rem !important; font-weight: 800 !important; color: #f39c12 !important; margin: 0 0 6px 0 !important; text-transform: uppercase !important; letter-spacing: 0.8px !important; line-height: 1.25 !important; white-space: normal !important;">Toplam Rezervasyon</h3>
+          <p id="statTotalRes" style="font-size: 3.6rem !important; font-weight: 900 !important; color: #ffffff !important; margin: 0 !important; line-height: 1 !important;">4</p>
+        </div>
+      </div>
 
-        <div class="stat-card">
-          <div class="stat-icon blue"><i class="fa-solid fa-clock"></i></div>
-          <div class="stat-info">
-            <h3>Bekleyen Talepler</h3>
-            <p id="statPendingRes">0</p>
-          </div>
+      <!-- Kart 2: Bekleyen Talepler -->
+      <div class="stat-card" style="flex: 1 1 0 !important; width: 25% !important; min-width: 0 !important; padding: 40px 26px !important; display: flex !important; align-items: center !important; gap: 20px !important; border-right: 1px solid rgba(255, 255, 255, 0.12) !important; margin: 0 !important; background: transparent !important; box-shadow: none !important; border-top: none !important; border-bottom: none !important; border-left: none !important;">
+        <div class="stat-icon blue" style="width: 82px !important; height: 82px !important; min-width: 82px !important; flex-shrink: 0 !important; border-radius: 18px !important; background: rgba(52, 152, 219, 0.18) !important; color: #3498db !important; display: flex !important; justify-content: center !important; align-items: center !important; font-size: 2.4rem !important;">
+          <i class="fa-solid fa-clock"></i>
         </div>
+        <div class="stat-info" style="flex: 1 !important; min-width: 0 !important; padding: 0 !important; margin: 0 !important; border: none !important; background: transparent !important;">
+          <h3 style="font-size: 1.15rem !important; font-weight: 800 !important; color: #f39c12 !important; margin: 0 0 6px 0 !important; text-transform: uppercase !important; letter-spacing: 0.8px !important; line-height: 1.25 !important; white-space: normal !important;">Bekleyen Talepler</h3>
+          <p id="statPendingRes" style="font-size: 3.6rem !important; font-weight: 900 !important; color: #ffffff !important; margin: 0 !important; line-height: 1 !important;">1</p>
+        </div>
+      </div>
 
-        <div class="stat-card">
-          <div class="stat-icon green"><i class="fa-solid fa-circle-check"></i></div>
-          <div class="stat-info">
-            <h3>Onaylananlar</h3>
-            <p id="statApprovedRes">0</p>
-          </div>
+      <!-- Kart 3: Onaylananlar -->
+      <div class="stat-card" style="flex: 1 1 0 !important; width: 25% !important; min-width: 0 !important; padding: 40px 26px !important; display: flex !important; align-items: center !important; gap: 20px !important; border-right: 1px solid rgba(255, 255, 255, 0.12) !important; margin: 0 !important; background: transparent !important; box-shadow: none !important; border-top: none !important; border-bottom: none !important; border-left: none !important;">
+        <div class="stat-icon green" style="width: 82px !important; height: 82px !important; min-width: 82px !important; flex-shrink: 0 !important; border-radius: 18px !important; background: rgba(46, 204, 113, 0.18) !important; color: #2ecc71 !important; display: flex !important; justify-content: center !important; align-items: center !important; font-size: 2.4rem !important;">
+          <i class="fa-solid fa-circle-check"></i>
         </div>
+        <div class="stat-info" style="flex: 1 !important; min-width: 0 !important; padding: 0 !important; margin: 0 !important; border: none !important; background: transparent !important;">
+          <h3 style="font-size: 1.15rem !important; font-weight: 800 !important; color: #f39c12 !important; margin: 0 0 6px 0 !important; text-transform: uppercase !important; letter-spacing: 0.8px !important; line-height: 1.25 !important; white-space: normal !important;">Onaylananlar</h3>
+          <p id="statApprovedRes" style="font-size: 3.6rem !important; font-weight: 900 !important; color: #ffffff !important; margin: 0 !important; line-height: 1 !important;">3</p>
+        </div>
+      </div>
 
-        <div class="stat-card">
-          <div class="stat-icon red"><i class="fa-solid fa-envelope-open-text"></i></div>
-          <div class="stat-info">
-            <h3>Okunmamış Mesajlar</h3>
-            <p id="statUnreadMessages">0</p>
-          </div>
+      <!-- Kart 4: Okunmamış Mesajlar -->
+      <div class="stat-card" style="flex: 1 1 0 !important; width: 25% !important; min-width: 0 !important; padding: 40px 26px !important; display: flex !important; align-items: center !important; gap: 20px !important; border: none !important; margin: 0 !important; background: transparent !important; box-shadow: none !important;">
+        <div class="stat-icon red" style="width: 82px !important; height: 82px !important; min-width: 82px !important; flex-shrink: 0 !important; border-radius: 18px !important; background: rgba(231, 76, 60, 0.18) !important; color: #e74c3c !important; display: flex !important; justify-content: center !important; align-items: center !important; font-size: 2.4rem !important;">
+          <i class="fa-solid fa-envelope-open-text"></i>
         </div>
-      </section>
+        <div class="stat-info" style="flex: 1 !important; min-width: 0 !important; padding: 0 !important; margin: 0 !important; border: none !important; background: transparent !important;">
+          <h3 style="font-size: 1.15rem !important; font-weight: 800 !important; color: #f39c12 !important; margin: 0 0 6px 0 !important; text-transform: uppercase !important; letter-spacing: 0.8px !important; line-height: 1.25 !important; white-space: normal !important;">Okunmamış Mesajlar</h3>
+          <p id="statUnreadMessages" style="font-size: 3.6rem !important; font-weight: 900 !important; color: #ffffff !important; margin: 0 !important; line-height: 1 !important;">3</p>
+        </div>
+      </div>
+
+    </section>
 
       <!-- Tab Controller -->
       <div class="dashboard-tabs">
@@ -788,7 +913,7 @@
                   <th>Masa No</th>
                   <th>Notlar</th>
                   <th>Durum</th>
-                  <th style="width: 260px;">İşlemler</th>
+                 <th style="width: 310px; text-align: center;">İşlemler</th>
                 </tr>
               </thead>
               <tbody id="reservationsTableBody">
@@ -839,27 +964,33 @@
         <div class="tab-panel" id="panelMenu">
           <div class="panel-header">
             <h2>Menü Yemek Listesi</h2>
-            <div style="display: flex; gap: 10px;">
-              <button class="btn-refresh" onclick="loadMenuItems()"><i class="fa-solid fa-arrows-rotate"></i> Yenile</button>
-              <button class="btn-refresh" onclick="openAddMenuModal()" style="background: linear-gradient(135deg, #f39c12, #d35400); color: white; border: none; padding: 10px 18px; border-radius: 8px; font-weight: 600;"><i class="fa-solid fa-plus"></i> Yeni Yemek Ekle</button>
+            <div style="display: flex; gap: 10px; align-items: center;">
+              <button class="btn-refresh" onclick="loadMenuItems(true)"><i class="fa-solid fa-arrows-rotate"></i> Yenile</button>
+              <button class="btn-action" onclick="openAddMenuModal()" style="background: linear-gradient(135deg, #f39c12, #d35400); color: white; padding: 10px 18px; border-radius: 8px; font-weight: 600; font-size: 0.9rem;">
+                <i class="fa-solid fa-plus"></i> Yeni Yemek Ekle
+              </button>
             </div>
           </div>
+
+          <!-- Kategori Filtre Hapları -->
+          <div id="categoryFilterContainer" class="category-filter-wrapper"></div>
 
           <div class="table-container">
             <table class="admin-table">
               <thead>
                 <tr>
                   <th style="width: 80px;">ID</th>
-                  <th style="width: 140px;">Kategori</th>
+                  <th style="width: 150px;">Kategori</th>
                   <th>Yemek Adı</th>
-                  <th style="width: 120px;">Fiyat</th>
+                  <th style="width: 110px;">Fiyat</th>
                   <th>Açıklama</th>
-                  <th style="width: 160px;">Durum</th>
+                  <th style="width: 250px;">Durum</th>
+                  <th style="width: 180px; text-align: center;">İşlemler</th>
                 </tr>
               </thead>
               <tbody id="menuTableBody">
                 <tr>
-                  <td colspan="6" style="text-align: center; padding: 40px; color: #7f8c8d;">
+                  <td colspan="7" style="text-align: center; padding: 40px; color: #7f8c8d;">
                     <i class="fa-solid fa-spinner fa-spin" style="font-size: 1.5rem; margin-bottom: 10px;"></i><br>
                     Yükleniyor...
                   </td>
@@ -873,7 +1004,7 @@
     </main>
   </div>
 
-  <!-- Modal Dialog: Delete Confirm -->
+  <!-- Modal: Delete Confirm -->
   <div class="confirm-modal" id="confirmModal">
     <div class="confirm-dialog">
       <h3 id="confirmTitle">Kaydı Sil</h3>
@@ -885,7 +1016,7 @@
     </div>
   </div>
 
-  <!-- Modal Dialog: Expand Notes -->
+  <!-- Modal: Expand Notes -->
   <div class="note-expanded-modal" id="noteExpandedModal">
     <div class="note-expanded-dialog">
       <h3 id="noteModalTitle">Müşteri Notu</h3>
@@ -896,7 +1027,7 @@
     </div>
   </div>
 
-  <!-- Modal Dialog: Yeni Yemek Ekle -->
+  <!-- Modal: Yeni Yemek Ekle -->
   <div class="note-expanded-modal" id="addProductModal">
     <div class="note-expanded-dialog" style="max-width: 550px;">
       <h3 style="margin-bottom: 20px;">Yeni Yemek Ekle</h3>
@@ -922,7 +1053,7 @@
         <div class="form-group-modal" style="display: grid; grid-template-columns: 1fr 2fr; gap: 15px;">
           <div>
             <label for="menuFiyat">Fiyat (TL) *</label>
-            <input type="number" id="menuFiyat" step="0.01" min="0" placeholder="Örn: 350.00 " required>
+            <input type="number" id="menuFiyat" step="0.01" min="0" placeholder="Örn: 350.00" required>
           </div>
           <div>
             <label for="menuGorsel">Görsel Bağlantısı (URL) *</label>
@@ -950,6 +1081,64 @@
     </div>
   </div>
 
+  <!-- Modal: Yemek Düzenle -->
+  <div class="note-expanded-modal" id="editProductModal">
+    <div class="note-expanded-dialog" style="max-width: 550px;">
+      <h3 style="margin-bottom: 20px;">Yemek Düzenle</h3>
+      
+      <form id="editProductForm" onsubmit="submitEditProduct(event)">
+        <input type="hidden" id="editMenuId">
+        <div class="form-group-modal">
+          <label for="editMenuKategori">Kategori Seçimi *</label>
+          <select id="editMenuKategori" required>
+            <option value="" disabled selected>Kategori Yükleniyor...</option>
+          </select>
+        </div>
+
+        <div class="form-group-modal">
+          <label for="editMenuIsim">Yemek İsmi *</label>
+          <input type="text" id="editMenuIsim" placeholder="Örn: Adana Kebap" required>
+        </div>
+
+        <div class="form-group-modal">
+          <label for="editMenuAciklama">Açıklama</label>
+          <textarea id="editMenuAciklama" rows="3" placeholder="Yemek malzemeleri ve sunum açıklaması..."></textarea>
+        </div>
+
+        <div class="form-group-modal" style="display: grid; grid-template-columns: 1fr 2fr; gap: 15px;">
+          <div>
+            <label for="editMenuFiyat">Fiyat (TL) *</label>
+            <input type="number" id="editMenuFiyat" step="0.01" min="0" placeholder="Örn: 350.00" required>
+          </div>
+          <div>
+            <label for="editMenuGorsel">Görsel Bağlantısı (URL) *</label>
+            <input type="text" id="editMenuGorsel" placeholder="Örn: ../public/images/Adana-Kebab.jpg" required>
+          </div>
+        </div>
+
+        <div class="form-group-modal" style="display: flex; gap: 20px; margin-top: 15px; margin-bottom: 20px; flex-wrap: wrap;">
+          <label class="checkbox-label">
+            <input type="checkbox" id="editMenuAktif"> Yayında (Menüde Göster)
+          </label>
+          <label class="checkbox-label">
+            <input type="checkbox" id="editMenuOneCikan"> Öne Çıkan
+          </label>
+          <label class="checkbox-label">
+            <input type="checkbox" id="editMenuSefinOnerisi"> Şefin Önerisi
+          </label>
+          <label class="checkbox-label">
+            <input type="checkbox" id="editMenuVejetaryen"> Vejetaryen
+          </label>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn-dialog btn-dialog-no" onclick="closeEditMenuModal()">İptal</button>
+          <button type="submit" class="btn-dialog btn-dialog-yes" style="background: linear-gradient(135deg, #27ae60, #2ecc71); border-color: #27ae60; color: white;">Güncelle</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- Toast Alert -->
   <div class="toast" id="toastAlert">
     <i class="fa-solid fa-circle-check" style="color: #2ecc71; font-size: 1.2rem;"></i>
@@ -957,587 +1146,724 @@
   </div>
 
   <script>
-    let currentDeleteId = null;
-    let currentDeleteType = null; // 'reservation' veya 'message'
+ let currentDeleteId = null;
+let currentDeleteType = null; // 'reservation', 'message' veya 'menu'
+let cachedMenuItems = null;
+let categoriesList = [];
+let currentCategoryFilter = 'all';
 
-    document.addEventListener('DOMContentLoaded', async () => {
-      // 1. Yetki Kontrolü
-      try {
-        const response = await fetch('/api/admin/check-auth');
-        const data = await response.json();
-        if (!data.authenticated) {
-          window.location.href = 'login.html';
-          return;
-        }
-        document.getElementById('adminUsername').textContent = data.username || 'Yönetici';
-      } catch (err) {
-        console.error('Oturum kontrolü başarısız:', err);
-        window.location.href = 'login.html';
-        return;
-      }
-
-      // 2. Tab Değiştirme Mantığı
-      const tabs = document.querySelectorAll('.dash-tab-btn');
-      tabs.forEach(tab => {
-        tab.addEventListener('click', () => {
-          tabs.forEach(t => t.classList.remove('active'));
-          tab.classList.add('active');
-
-          const target = tab.getAttribute('data-target');
-          document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-          document.getElementById(target).classList.add('active');
-
-          if (target === 'panelReservations') {
-            loadReservations();
-          } else if (target === 'panelMessages') {
-            loadMessages();
-          } else if (target === 'panelMenu') {
-            loadMenuItems();
-          }
-        });
-      });
-
-      // 3. Verileri İlk Kez Çek
-      loadReservations();
-      loadMessages();
-
-      // 4. Logout Butonu
-      document.getElementById('logoutBtn').addEventListener('click', async () => {
-        try {
-          const response = await fetch('/api/admin/logout', { method: 'POST' });
-          const result = await response.json();
-          if (result.success) {
-            showToast('Başarıyla çıkış yapıldı.');
-            setTimeout(() => {
-              window.location.href = 'login.html';
-            }, 1000);
-          }
-        } catch (err) {
-          showToast('Çıkış işlemi başarısız.', true);
-        }
-      });
-    });
-
-    // REZERVASYONLARI YÜKLE
-    async function loadReservations() {
-      const tableBody = document.getElementById('reservationsTableBody');
-      try {
-        const response = await fetch('/api/rezervasyonlar');
-        if (!response.ok) throw new Error('Yetkisiz veya sunucu hatası');
-        
-        const result = await response.json();
-        const items = result.data || [];
-        
-        // İstatistikleri güncelle
-        document.getElementById('statTotalRes').textContent = items.length;
-        document.getElementById('statPendingRes').textContent = items.filter(x => x.durum === 'Beklemede').length;
-        document.getElementById('statApprovedRes').textContent = items.filter(x => x.durum === 'Onaylandı').length;
-
-        if (items.length === 0) {
-          tableBody.innerHTML = `
-            <tr>
-              <td colspan="8">
-                <div class="empty-state">
-                  <i class="fa-regular fa-calendar-minus"></i>
-                  <p>Henüz rezervasyon kaydı bulunmamaktadır.</p>
-                </div>
-              </td>
-            </tr>
-          `;
-          return;
-        }
-
-        tableBody.innerHTML = items.map(item => {
-          // Masa No ve Konum Çözümü
-          const masaNo = String((item.id % 18) + 1).padStart(2, '0');
-          const konumlar = ['(Geleneksel Odun Ateşi Katı)', '(Tarihi Avlu Tarafı)', '(Taş Fırın Yanı)', '(Üst Kat Balkon)', '(VIP Salon)'];
-          const konum = konumlar[item.id % konumlar.length];
-
-          // Tarih Formatlama (YYYY-MM-DD -> DD.MM.YYYY)
-          let dateStr = item.tarih;
-          if (dateStr.includes('-')) {
-            const parts = dateStr.split('-');
-            if (parts.length === 3) dateStr = `${parts[2]}.${parts[1]}.${parts[0]}`;
-          }
-
-          // Durum badge sınıfı
-          let badgeClass = 'badge-pending';
-          if (item.durum === 'Onaylandı') badgeClass = 'badge-approved';
-          if (item.durum === 'İptal Edildi') badgeClass = 'badge-cancelled';
-
-          const notText = item.notlar ? item.notlar.trim() : '';
-          const shortNot = notText.length > 25 ? notText.substring(0, 22) + '...' : notText || '---';
-
-          return `
-            <tr>
-              <td><strong>#${item.id}</strong></td>
-              <td>
-                <div style="font-weight: 600; color: #fff;">${escapeHTML(item.ad_soyad)}</div>
-                <div style="font-size: 0.82rem; color: #95a5a6;"><i class="fa-solid fa-phone"></i> ${escapeHTML(item.telefon)}</div>
-              </td>
-              <td>
-                <div><i class="fa-regular fa-calendar"></i> ${dateStr}</div>
-                <div style="font-size: 0.85rem; color: #bdc3c7;"><i class="fa-regular fa-clock"></i> ${escapeHTML(item.saat)}</div>
-              </td>
-              <td><span style="font-weight: 600; color: #f39c12;">${item.kisi_sayisi}</span> Kişi</td>
-              <td>
-                <div style="font-weight: 600;">Masa ${masaNo}</div>
-                <div style="font-size: 0.75rem; color: #bdc3c7;">${konum}</div>
-              </td>
-              <td>
-                ${notText ? `<span class="note-cell" onclick="showNoteModal('${escapeHTML(notText)}', 'Müşteri Notu')">${escapeHTML(shortNot)}</span>` : '<span style="opacity: 0.5;">---</span>'}
-              </td>
-              <td><span class="badge ${badgeClass}">${item.durum}</span></td>
-              <td>
-                <div class="actions-cell">
-                  ${item.durum !== 'Onaylandı' ? `
-                    <button class="btn-action btn-action-approve" onclick="updateReservationStatus(${item.id}, 'Onaylandı')">
-                      <i class="fa-solid fa-check"></i> Onayla
-                    </button>
-                  ` : ''}
-                  ${item.durum !== 'İptal Edildi' ? `
-                    <button class="btn-action btn-action-cancel" onclick="updateReservationStatus(${item.id}, 'İptal Edildi')">
-                      <i class="fa-solid fa-ban"></i> İptal Et
-                    </button>
-                  ` : ''}
-                  <button class="btn-action btn-action-delete" onclick="askDelete(${item.id}, 'reservation')">
-                    <i class="fa-regular fa-trash-can"></i> Sil
-                  </button>
-                </div>
-              </td>
-            </tr>
-          `;
-        }).join('');
-      } catch (err) {
-        console.error(err);
-        tableBody.innerHTML = `
-          <tr>
-            <td colspan="8" style="text-align: center; padding: 40px; color: #e74c3c;">
-              <i class="fa-solid fa-triangle-exclamation" style="font-size: 1.5rem; margin-bottom: 10px;"></i><br>
-              Rezervasyon verileri yüklenemedi. Lütfen oturumunuzu kontrol edin.
-            </td>
-          </tr>
-        `;
-      }
+document.addEventListener('DOMContentLoaded', async () => {
+  // 1. Yetki Kontrolü
+  try {
+    const response = await fetch('/api/admin/check-auth');
+    const data = await response.json();
+    if (!data.authenticated) {
+      window.location.href = 'login.html';
+      return;
     }
+    const adminUserEl = document.getElementById('adminUsername');
+    if (adminUserEl) adminUserEl.textContent = data.username || 'Yönetici';
+  } catch (err) {
+    console.error('Oturum kontrolü başarısız:', err);
+    window.location.href = 'login.html';
+    return;
+  }
 
-    // REZERVASYON DURUMUNU GÜNCELLE
-    async function updateReservationStatus(id, newStatus) {
-      try {
-        const response = await fetch(`/api/rezervasyonlar/durum/${id}`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ durum: newStatus })
-        });
-        const result = await response.json();
-        if (result.success) {
-          showToast(`Rezervasyon durumu "${newStatus}" olarak güncellendi.`);
-          loadReservations();
-        } else {
-          showToast(result.message || 'Durum güncellenemedi.', true);
-        }
-      } catch (err) {
-        console.error(err);
-        showToast('Sunucu hatası oluştu.', true);
-      }
-    }
+  // 2. Tab Değiştirme Mantığı
+  const tabs = document.querySelectorAll('.dash-tab-btn');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
 
-    // İLETİŞİM MESAJLARINI YÜKLE
-    async function loadMessages() {
-      const tableBody = document.getElementById('messagesTableBody');
-      try {
-        const response = await fetch('/api/mesajlar');
-        if (!response.ok) throw new Error('Yetkisiz veya sunucu hatası');
-        
-        const result = await response.json();
-        const items = result.data || [];
-        
-        document.getElementById('statUnreadMessages').textContent = items.filter(x => x.durum === 'Okunmadı').length;
+      const target = tab.getAttribute('data-target');
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      const activePanel = document.getElementById(target);
+      if (activePanel) activePanel.classList.add('active');
 
-        if (items.length === 0) {
-          tableBody.innerHTML = `
-            <tr>
-              <td colspan="7">
-                <div class="empty-state">
-                  <i class="fa-regular fa-envelope"></i>
-                  <p>Henüz gelen iletişim mesajı bulunmamaktadır.</p>
-                </div>
-              </td>
-            </tr>
-          `;
-          return;
-        }
-
-        tableBody.innerHTML = items.map(item => {
-          const badgeClass = item.durum === 'Okundu' ? 'badge-read' : 'badge-unread';
-          const isUnread = item.durum !== 'Okundu';
-          const shortMsg = item.mesaj.length > 30 ? item.mesaj.substring(0, 27) + '...' : item.mesaj;
-
-          // Tarih formatlama
-          const date = new Date(item.olusturulma_tarihi);
-          const dateFormatted = isNaN(date.getTime()) ? item.olusturulma_tarihi : date.toLocaleString('tr-TR');
-
-          return `
-            <tr style="${isUnread ? 'background: rgba(52, 152, 219, 0.03);' : ''}">
-              <td><strong>#${item.id}</strong></td>
-              <td>
-                <div style="font-weight: 600; color: #fff;">${escapeHTML(item.ad_soyad)}</div>
-                <div style="font-size: 0.82rem; color: #95a5a6;"><i class="fa-regular fa-envelope"></i> ${escapeHTML(item.eposta)}</div>
-              </td>
-              <td><div style="font-weight: 500;">${escapeHTML(item.konu)}</div></td>
-              <td>
-                <span class="note-cell" style="color: #cbd5e1;" onclick="showAndReadMessage(${item.id}, '${escapeHTML(item.ad_soyad)}', '${escapeHTML(item.mesaj)}')">
-                  ${escapeHTML(shortMsg)}
-                </span>
-              </td>
-              <td style="font-size: 0.85rem; color: #bdc3c7;">${dateFormatted}</td>
-              <td><span class="badge ${badgeClass}">${item.durum}</span></td>
-              <td>
-                <div class="actions-cell">
-                  ${isUnread ? `
-                    <button class="btn-action btn-action-read" onclick="markMessageRead(${item.id}, 'Okundu')">
-                      <i class="fa-regular fa-envelope-open"></i> Okundu
-                    </button>
-                  ` : `
-                    <button class="btn-action btn-refresh" style="padding: 6px 10px;" onclick="markMessageRead(${item.id}, 'Okunmadı')">
-                      <i class="fa-regular fa-envelope"></i> Okunmadı Yap
-                    </button>
-                  `}
-                  <button class="btn-action btn-action-delete" onclick="askDelete(${item.id}, 'message')">
-                    <i class="fa-regular fa-trash-can"></i> Sil
-                  </button>
-                </div>
-              </td>
-            </tr>
-          `;
-        }).join('');
-      } catch (err) {
-        console.error(err);
-        tableBody.innerHTML = `
-          <tr>
-            <td colspan="7" style="text-align: center; padding: 40px; color: #e74c3c;">
-              <i class="fa-solid fa-triangle-exclamation" style="font-size: 1.5rem; margin-bottom: 10px;"></i><br>
-              Mesaj verileri yüklenemedi. Lütfen oturumunuzu kontrol edin.
-            </td>
-          </tr>
-        `;
-      }
-    }
-
-    // MESAJ DURUMUNU GÜNCELLE
-    async function markMessageRead(id, status) {
-      try {
-        const response = await fetch(`/api/mesajlar/durum/${id}`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ durum: status })
-        });
-        const result = await response.json();
-        if (result.success) {
-          showToast(`Mesaj durumu güncellendi.`);
-          loadMessages();
-        }
-      } catch (err) {
-        console.error(err);
-      }
-    }
-
-    // MESAJI DETAYLI GÖSTER VE OKUNDU YAP
-    async function showAndReadMessage(id, name, msg) {
-      showNoteModal(msg, `${name} Tarafından Gönderilen Mesaj`);
-      // Okundu yapalım otomatik
-      try {
-        await fetch(`/api/mesajlar/durum/${id}`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ durum: 'Okundu' })
-        });
+      if (target === 'panelReservations') {
+        loadReservations();
+      } else if (target === 'panelMessages') {
         loadMessages();
-      } catch (err) {
-        console.error(err);
-      }
-    }
-
-    // SİLME ONAY MODALİ
-    function askDelete(id, type) {
-      currentDeleteId = id;
-      currentDeleteType = type;
-      
-      const modal = document.getElementById('confirmModal');
-      const title = document.getElementById('confirmTitle');
-      const message = document.getElementById('confirmMessage');
-
-      if (type === 'reservation') {
-        title.textContent = 'Rezervasyonu Sil';
-        message.textContent = `#${id} numaralı rezervasyon kaydını silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.`;
-      } else {
-        title.textContent = 'Mesajı Sil';
-        message.textContent = `#${id} numaralı iletişim mesajını silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.`;
-      }
-
-      modal.style.display = 'flex';
-    }
-
-    function closeConfirmModal() {
-      document.getElementById('confirmModal').style.display = 'none';
-      currentDeleteId = null;
-      currentDeleteType = null;
-    }
-
-    // Gerçek Silme İsteği
-    document.getElementById('btnConfirmDelete').addEventListener('click', async () => {
-      if (!currentDeleteId || !currentDeleteType) return;
-
-      const endpoint = currentDeleteType === 'reservation' 
-        ? `/api/rezervasyonlar/${currentDeleteId}` 
-        : `/api/mesajlar/${currentDeleteId}`;
-
-      try {
-        const response = await fetch(endpoint, { method: 'DELETE' });
-        const result = await response.json();
-        if (result.success) {
-          showToast('Kayıt başarıyla silindi.');
-          closeConfirmModal();
-          if (currentDeleteType === 'reservation') {
-            loadReservations();
-          } else {
-            loadMessages();
-          }
-        } else {
-          showToast(result.message || 'Silme işlemi başarısız.', true);
-        }
-      } catch (err) {
-        console.error(err);
-        showToast('Sunucu hatası oluştu.', true);
+      } else if (target === 'panelMenu') {
+        loadMenuItems();
       }
     });
+  });
 
-    // MÜŞTERİ NOTU/MESAJ DETAY MODALİ
-    function showNoteModal(text, title) {
-      document.getElementById('noteModalTitle').textContent = title || 'Müşteri Notu';
-      document.getElementById('noteModalText').textContent = text;
-      document.getElementById('noteExpandedModal').style.display = 'flex';
-    }
+  // 3. İlk Verileri Çek
+  loadReservations();
+  loadMessages();
+  loadCategoriesSelect();
 
-    // Modal dışına tıklayınca kapatma
-    window.onclick = function(event) {
-      const confirmModal = document.getElementById('confirmModal');
-      const noteModal = document.getElementById('noteExpandedModal');
-      const addProductModal = document.getElementById('addProductModal');
-      if (event.target === confirmModal) {
-        closeConfirmModal();
+  // 4. Logout Butonu
+  const logoutBtn = document.getElementById('logoutBtn');
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', async () => {
+      try {
+        const response = await fetch('/api/admin/logout', { method: 'POST' });
+        const result = await response.json();
+        if (result.success) {
+          showToast('Başarıyla çıkış yapıldı.');
+          setTimeout(() => { window.location.href = 'login.html'; }, 1000);
+        }
+      } catch (err) {
+        showToast('Çıkış işlemi başarısız.', true);
       }
-      if (event.target === noteModal) {
-        closeNoteModal();
-      }
-      if (event.target === addProductModal) {
-        closeAddMenuModal();
-      }
-    }
+    });
+  }
 
-    function closeNoteModal() {
-      document.getElementById('noteExpandedModal').style.display = 'none';
-    }
+  // 5. Silme Onay Butonu
+  const confirmBtn = document.getElementById('btnConfirmDelete');
+  if (confirmBtn) {
+    confirmBtn.addEventListener('click', handleConfirmDelete);
+  }
+});
 
-    // TOAST BİLDİRİMİ
-    function showToast(message, isError = false) {
-      const toast = document.getElementById('toastAlert');
-      const toastMsg = document.getElementById('toastMessage');
-      const toastIcon = toast.querySelector('i');
+// ==========================================
+// 1. REZERVASYON İŞLEMLERİ (BEKLEMEYE AL DAHİL)
+// ==========================================
 
-      toastMsg.textContent = message;
+async function loadReservations() {
+  const tableBody = document.getElementById('reservationsTableBody');
+  try {
+    const response = await fetch('/api/rezervasyonlar');
+    if (!response.ok) throw new Error('Yetkisiz');
 
-      if (isError) {
-        toast.classList.add('toast-error');
-        toastIcon.className = 'fa-solid fa-circle-exclamation';
-        toastIcon.style.color = '#e74c3c';
-      } else {
-        toast.classList.remove('toast-error');
-        toastIcon.className = 'fa-solid fa-circle-check';
-        toastIcon.style.color = '#2ecc71';
-      }
+    const result = await response.json();
+    const items = result.data || [];
 
-      toast.classList.add('active');
+    // İstatistik Kartlarını Güncelle
+    const totalEl = document.getElementById('statTotalRes');
+    const pendingEl = document.getElementById('statPendingRes');
+    const approvedEl = document.getElementById('statApprovedRes');
 
-      setTimeout(() => {
-        toast.classList.remove('active');
-      }, 3000);
-    }
+    if (totalEl) totalEl.textContent = items.length;
+    if (pendingEl) pendingEl.textContent = items.filter(x => x.durum === 'Beklemede').length;
+    if (approvedEl) approvedEl.textContent = items.filter(x => x.durum === 'Onaylandı').length;
 
-    // MENÜ YEMEKLERİNİ YÜKLE
-    async function loadMenuItems() {
-      const tableBody = document.getElementById('menuTableBody');
+    if (items.length === 0) {
       tableBody.innerHTML = `
         <tr>
-          <td colspan="6" style="text-align: center; padding: 40px; color: #7f8c8d;">
-            <i class="fa-solid fa-spinner fa-spin" style="font-size: 1.5rem; margin-bottom: 10px;"></i><br>
-            Yükleniyor...
+          <td colspan="8">
+            <div class="empty-state">
+              <i class="fa-regular fa-calendar-minus"></i>
+              <p>Henüz rezervasyon kaydı bulunmamaktadır.</p>
+            </div>
           </td>
         </tr>
       `;
-
-      try {
-        const response = await fetch('/api/menu');
-        const result = await response.json();
-        
-        loadCategoriesSelect();
-
-        if (response.ok && result.success) {
-          const items = result.data || result;
-          if (items.length === 0) {
-            tableBody.innerHTML = `
-              <tr>
-                <td colspan="6" style="text-align: center; padding: 40px; color: #7f8c8d;">
-                  Menüde kayıtlı yemek bulunamadı.
-                </td>
-              </tr>
-            `;
-            return;
-          }
-
-          let html = '';
-          items.forEach(item => {
-            let durumHTML = '';
-            if (item.sefinOnerisi || item.sefin_onerisi) durumHTML += '<span class="status-badge approved" style="margin-right: 5px; font-size: 0.72rem; padding: 2px 6px;">⭐ Şefin Önerisi</span>';
-            if (item.oneCikan || item.one_cikan) durumHTML += '<span class="status-badge pending" style="margin-right: 5px; font-size: 0.72rem; padding: 2px 6px;">🔥 Öne Çıkan</span>';
-            if (item.vejetaryen) durumHTML += '<span class="status-badge" style="background: rgba(46, 204, 113, 0.15); color: #2ecc71; border: 1px solid rgba(46, 204, 113, 0.3); margin-right: 5px; font-size: 0.72rem; padding: 2px 6px;">🌱 Vejetaryen</span>';
-            if (!durumHTML) durumHTML = '<span class="status-badge" style="background: rgba(52, 152, 219, 0.15); color: #3498db; border: 1px solid rgba(52, 152, 219, 0.3); font-size: 0.72rem; padding: 2px 6px;">Aktif</span>';
-
-            html += `
-              <tr>
-                <td><strong>#${item.id}</strong></td>
-                <td><span style="color: #f39c12; font-weight: 500;">${escapeHTML(item.kategoriAdi || item.kategori)}</span></td>
-                <td><strong style="color: #ffffff;">${escapeHTML(item.ad)}</strong></td>
-                <td><span style="color: #2ecc71; font-weight: 600;">₺${item.fiyat}</span></td>
-                <td style="max-width: 250px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${escapeHTML(item.aciklama || '')}">
-                  ${escapeHTML(item.aciklama || '---')}
-                </td>
-                <td>${durumHTML}</td>
-              </tr>
-            `;
-          });
-          tableBody.innerHTML = html;
-        } else {
-          tableBody.innerHTML = `
-            <tr>
-              <td colspan="6" style="text-align: center; padding: 40px; color: #e74c3c;">
-                Menü verileri sunucudan alınamadı: ${result.message || 'Bilinmeyen hata'}
-              </td>
-            </tr>
-          `;
-        }
-      } catch (err) {
-        console.error('Menü yüklenirken hata oluştu:', err);
-        tableBody.innerHTML = `
-          <tr>
-            <td colspan="6" style="text-align: center; padding: 40px; color: #e74c3c;">
-              Sunucu ile bağlantı kurulamadı.
-            </td>
-          </tr>
-        `;
-      }
+      return;
     }
 
-    let categoriesList = [];
+    tableBody.innerHTML = items.map(item => {
+      const masaNo = String((item.id % 18) + 1).padStart(2, '0');
+      const konumlar = ['(Geleneksel Odun Ateşi Katı)', '(Tarihi Avlu Tarafı)', '(Taş Fırın Yanı)', '(Üst Kat Balkon)', '(VIP Salon)'];
+      const konum = item.masa_bolgesi ? `(${item.masa_bolgesi} Bölgesi)` : konumlar[item.id % konumlar.length];
 
-    async function loadCategoriesSelect() {
-      try {
-        const response = await fetch('/api/kategoriler');
-        const result = await response.json();
-        if (response.ok && result.success) {
-          categoriesList = result.data || [];
-          const selectElement = document.getElementById('menuKategori');
-          if (selectElement) {
-            let html = '<option value="" disabled selected>Kategori Seçiniz</option>';
-            categoriesList.forEach(cat => {
-              html += `<option value="${cat.id}">${escapeHTML(cat.ad)}</option>`;
-            });
-            selectElement.innerHTML = html;
-          }
-        }
-      } catch (err) {
-        console.error('Kategoriler yüklenemedi:', err);
-      }
-    }
-
-    function openAddMenuModal() {
-      document.getElementById('addProductForm').reset();
-      document.getElementById('addProductModal').style.display = 'flex';
-      loadCategoriesSelect();
-    }
-
-    function closeAddMenuModal() {
-      document.getElementById('addProductModal').style.display = 'none';
-    }
-
-    async function submitAddProduct(event) {
-      event.preventDefault();
-      
-      const kategori_id = parseInt(document.getElementById('menuKategori').value);
-      const ad = document.getElementById('menuIsim').value.trim();
-      const aciklama = document.getElementById('menuAciklama').value.trim();
-      const fiyat = parseFloat(document.getElementById('menuFiyat').value);
-      const resim = document.getElementById('menuGorsel').value.trim();
-      const one_cikan = document.getElementById('menuOneCikan').checked ? 1 : 0;
-      const sefin_onerisi = document.getElementById('menuSefinOnerisi').checked ? 1 : 0;
-      const vejetaryen = document.getElementById('menuVejetaryen').checked ? 1 : 0;
-
-      if (!kategori_id || !ad || isNaN(fiyat) || !resim) {
-        showToast('Lütfen tüm zorunlu alanları doldurun.', true);
-        return;
+      let dateStr = item.tarih || '';
+      if (dateStr.includes('-')) {
+        const parts = dateStr.split('-');
+        if (parts.length === 3) dateStr = `${parts[2]}.${parts[1]}.${parts[0]}`;
       }
 
-      const submitBtn = event.target.querySelector('button[type="submit"]');
-      submitBtn.disabled = true;
-      submitBtn.textContent = 'Ekleniyor...';
+      let badgeClass = item.durum === 'Onaylandı' ? 'badge-approved' : (item.durum === 'İptal Edildi' ? 'badge-cancelled' : 'badge-pending');
+      const notText = item.notlar ? item.notlar.trim() : '';
+      const shortNot = notText.length > 25 ? notText.substring(0, 22) + '...' : notText || '---';
 
-      try {
-        const response = await fetch('/admin/urun', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            kategori_id,
-            ad,
-            aciklama,
-            fiyat,
-            resim,
-            one_cikan,
-            sefin_onerisi,
-            vejetaryen
-          })
+      return `
+        <tr>
+          <td><strong>#${item.id}</strong></td>
+          <td>
+            <div style="font-weight: 600; color: #fff;">${escapeHTML(item.ad_soyad)}</div>
+            <div style="font-size: 0.82rem; color: #95a5a6;"><i class="fa-solid fa-phone"></i> ${escapeHTML(item.telefon)}</div>
+          </td>
+          <td>
+            <div><i class="fa-regular fa-calendar"></i> ${dateStr}</div>
+            <div style="font-size: 0.85rem; color: #bdc3c7;"><i class="fa-regular fa-clock"></i> ${escapeHTML(item.saat)}</div>
+          </td>
+          <td>
+            <span style="font-weight: 600; color: #f39c12;">${item.kisi_sayisi}</span> Kişi
+            <div style="font-size: 0.78rem; color: #bdc3c7; margin-top: 2px;"><i class="fa-solid fa-chair" style="color: #f39c12; font-size: 0.7rem; margin-right: 2px;"></i> ${escapeHTML(item.masa_bolgesi || 'İç Mekan')}</div>
+          </td>
+          <td>
+            <div style="font-weight: 600;">Masa ${masaNo}</div>
+            <div style="font-size: 0.75rem; color: #bdc3c7;">${konum}</div>
+          </td>
+          <td>
+            ${notText ? `<span class="note-cell" onclick="showNoteModal('${escapeHTML(notText)}', 'Müşteri Notu')">${escapeHTML(shortNot)}</span>` : '<span style="opacity: 0.5;">---</span>'}
+          </td>
+          <td><span class="badge ${badgeClass}">${item.durum}</span></td>
+          <td>
+            <div class="actions-cell">
+              ${item.durum !== 'Onaylandı' ? `
+                <button class="btn-action btn-action-approve" onclick="updateReservationStatus(${item.id}, 'Onaylandı')">
+                  <i class="fa-solid fa-check"></i> Onayla
+                </button>
+              ` : ''}
+              
+              ${item.durum !== 'İptal Edildi' ? `
+                <button class="btn-action btn-action-cancel" onclick="updateReservationStatus(${item.id}, 'İptal Edildi')">
+                  <i class="fa-solid fa-ban"></i> İptal
+                </button>
+              ` : ''}
+
+              ${item.durum !== 'Beklemede' ? `
+                <button class="btn-action" style="background: rgba(243, 156, 18, 0.15); color: #f39c12; border: 1px solid rgba(243, 156, 18, 0.3);" onclick="updateReservationStatus(${item.id}, 'Beklemede')">
+                  <i class="fa-solid fa-rotate-left"></i> Beklemeye Al
+                </button>
+              ` : ''}
+
+              <button class="btn-action btn-action-delete" onclick="askDelete(${item.id}, 'reservation')">
+                <i class="fa-regular fa-trash-can"></i> Sil
+              </button>
+            </div>
+          </td>
+        </tr>
+      `;
+    }).join('');
+  } catch (err) {
+    console.error('Rezervasyon yükleme hatası:', err);
+  }
+}
+
+async function updateReservationStatus(id, newStatus) {
+  try {
+    const res = await fetch(`/api/rezervasyonlar/durum/${id}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ durum: newStatus })
+    });
+    const result = await res.json();
+    if (result.success) {
+      showToast(`Rezervasyon durumu "${newStatus}" olarak güncellendi.`);
+      loadReservations();
+    } else {
+      showToast(result.message || 'Durum güncellenemedi.', true);
+    }
+  } catch (err) {
+    showToast('Sunucu ile bağlantı hatası oluştu.', true);
+  }
+}
+
+// ==========================================
+// 2. İLETİŞİM MESAJLARI İŞLEMLERİ
+// ==========================================
+
+async function loadMessages() {
+  const tableBody = document.getElementById('messagesTableBody');
+  try {
+    const response = await fetch('/api/mesajlar');
+    if (!response.ok) throw new Error('Yetkisiz');
+
+    const result = await response.json();
+    const items = result.data || [];
+
+    const unreadEl = document.getElementById('statUnreadMessages');
+    if (unreadEl) unreadEl.textContent = items.filter(x => x.durum === 'Okunmadı').length;
+
+    if (items.length === 0) {
+      tableBody.innerHTML = `
+        <tr>
+          <td colspan="7">
+            <div class="empty-state">
+              <i class="fa-regular fa-envelope"></i>
+              <p>Henüz gelen iletişim mesajı bulunmamaktadır.</p>
+            </div>
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
+    tableBody.innerHTML = items.map(item => {
+      const isUnread = item.durum !== 'Okundu';
+      const shortMsg = item.mesaj.length > 30 ? item.mesaj.substring(0, 27) + '...' : item.mesaj;
+
+      return `
+        <tr style="${isUnread ? 'background: rgba(52, 152, 219, 0.03);' : ''}">
+          <td><strong>#${item.id}</strong></td>
+          <td>
+            <div style="font-weight: 600; color: #fff;">${escapeHTML(item.ad_soyad)}</div>
+            <div style="font-size: 0.82rem; color: #95a5a6;"><i class="fa-regular fa-envelope"></i> ${escapeHTML(item.eposta)}</div>
+          </td>
+          <td>${escapeHTML(item.konu)}</td>
+          <td>
+            <span class="note-cell" style="color: #cbd5e1;" onclick="showAndReadMessage(${item.id}, '${escapeHTML(item.ad_soyad)}', '${escapeHTML(item.mesaj)}')">
+              ${escapeHTML(shortMsg)}
+            </span>
+          </td>
+          <td>${new Date(item.olusturulma_tarihi).toLocaleDateString('tr-TR')}</td>
+          <td><span class="badge ${item.durum === 'Okundu' ? 'badge-read' : 'badge-unread'}">${item.durum}</span></td>
+          <td>
+            <div class="actions-cell">
+              ${isUnread ? `
+                <button class="btn-action btn-action-read" onclick="markMessageRead(${item.id}, 'Okundu')">
+                  <i class="fa-regular fa-envelope-open"></i> Okundu
+                </button>
+              ` : `
+                <button class="btn-action" style="background: rgba(255,255,255,0.06); color:#bdc3c7;" onclick="markMessageRead(${item.id}, 'Okunmadı')">
+                  <i class="fa-regular fa-envelope"></i> Okunmadı
+                </button>
+              `}
+              <button class="btn-action btn-action-delete" onclick="askDelete(${item.id}, 'message')">
+                <i class="fa-regular fa-trash-can"></i> Sil
+              </button>
+            </div>
+          </td>
+        </tr>
+      `;
+    }).join('');
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+async function markMessageRead(id, status) {
+  try {
+    const response = await fetch(`/api/mesajlar/durum/${id}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ durum: status })
+    });
+    const result = await response.json();
+    if (result.success) {
+      showToast('Mesaj durumu güncellendi.');
+      loadMessages();
+    }
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+async function showAndReadMessage(id, name, msg) {
+  showNoteModal(msg, `${name} Tarafından Gönderilen Mesaj`);
+  try {
+    await fetch(`/api/mesajlar/durum/${id}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ durum: 'Okundu' })
+    });
+    loadMessages();
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+// ==========================================
+// 3. MENÜ İŞLEMLERİ (KATEGORİ AYRIMLI)
+// ==========================================
+
+async function loadMenuItems(forceReload = false) {
+  const tableBody = document.getElementById('menuTableBody');
+
+  if (cachedMenuItems && !forceReload) {
+    renderCategoryFilterButtons(cachedMenuItems);
+    filterMenuByCategory(currentCategoryFilter, null);
+    return;
+  }
+
+  tableBody.innerHTML = `
+    <tr>
+      <td colspan="7" style="text-align: center; padding: 40px; color: #7f8c8d;">
+        <i class="fa-solid fa-spinner fa-spin" style="font-size: 1.5rem; margin-bottom: 10px;"></i><br>
+        Yükleniyor...
+      </td>
+    </tr>
+  `;
+
+  try {
+    const response = await fetch('/api/menu');
+    const result = await response.json();
+
+    if (response.ok && result.success) {
+      const items = result.data || result;
+      cachedMenuItems = items;
+      window.menuItems = items;
+      renderCategoryFilterButtons(items);
+      renderMenuRows(items);
+    } else {
+      tableBody.innerHTML = `
+        <tr>
+          <td colspan="7" style="text-align: center; padding: 40px; color: #e74c3c;">
+            Menü verileri alınamadı: ${result.message || 'Bilinmeyen hata'}
+          </td>
+        </tr>
+      `;
+    }
+  } catch (err) {
+    console.error('Menü yüklenirken hata:', err);
+    tableBody.innerHTML = `
+      <tr>
+        <td colspan="7" style="text-align: center; padding: 40px; color: #e74c3c;">
+          Sunucu ile bağlantı kurulamadı.
+        </td>
+      </tr>
+    `;
+  }
+}
+
+function renderCategoryFilterButtons(items) {
+  const container = document.getElementById('categoryFilterContainer');
+  if (!container) return;
+
+  const categories = [...new Set(items.map(x => x.kategoriAdi || x.kategori).filter(Boolean))];
+
+  let buttonsHtml = `
+    <button class="cat-filter-btn ${currentCategoryFilter === 'all' ? 'active' : ''}" 
+      onclick="filterMenuByCategory('all', this)">
+      Tümü (${items.length})
+    </button>
+  `;
+
+  categories.forEach(cat => {
+    const count = items.filter(x => (x.kategoriAdi || x.kategori) === cat).length;
+    const isActive = currentCategoryFilter === cat;
+    buttonsHtml += `
+      <button class="cat-filter-btn ${isActive ? 'active' : ''}" 
+        onclick="filterMenuByCategory('${escapeHTML(cat)}', this)">
+        ${escapeHTML(cat)} (${count})
+      </button>
+    `;
+  });
+
+  container.innerHTML = buttonsHtml;
+}
+
+function filterMenuByCategory(categoryName, btnElement) {
+  currentCategoryFilter = categoryName;
+
+  document.querySelectorAll('#categoryFilterContainer .cat-filter-btn').forEach(btn => {
+    btn.classList.remove('active');
+  });
+  if (btnElement) btnElement.classList.add('active');
+
+  if (categoryName === 'all') {
+    renderMenuRows(window.menuItems || []);
+  } else {
+    const filtered = (window.menuItems || []).filter(x => (x.kategoriAdi || x.kategori) === categoryName);
+    renderMenuRows(filtered, true);
+  }
+}
+
+function renderMenuRows(items, isSingleCategory = false) {
+  const tableBody = document.getElementById('menuTableBody');
+  if (!items || items.length === 0) {
+    tableBody.innerHTML = `
+      <tr>
+        <td colspan="7" style="text-align: center; padding: 40px; color: #7f8c8d;">
+          Kayıtlı yemek bulunamadı.
+        </td>
+      </tr>
+    `;
+    return;
+  }
+
+  if (!isSingleCategory && currentCategoryFilter === 'all') {
+    const grouped = items.reduce((acc, item) => {
+      const cat = item.kategoriAdi || item.kategori || 'Diğer';
+      if (!acc[cat]) acc[cat] = [];
+      acc[cat].push(item);
+      return acc;
+    }, {});
+
+    let fullHtml = '';
+    Object.keys(grouped).forEach(catName => {
+      fullHtml += `
+        <tr class="category-divider-row">
+          <td colspan="7">
+            <i class="fa-solid fa-utensils" style="margin-right: 8px;"></i> ${escapeHTML(catName)} (${grouped[catName].length} Ürün)
+          </td>
+        </tr>
+      `;
+      fullHtml += grouped[catName].map(item => generateItemRowHTML(item)).join('');
+    });
+    tableBody.innerHTML = fullHtml;
+  } else {
+    tableBody.innerHTML = items.map(item => generateItemRowHTML(item)).join('');
+  }
+}
+
+function generateItemRowHTML(item) {
+  let durumHTML = '';
+  if (item.sefinOnerisi || item.sefin_onerisi) durumHTML += '<span class="status-badge approved" style="margin-right: 5px;">⭐ Şefin Önerisi</span>';
+  if (item.oneCikan || item.one_cikan) durumHTML += '<span class="status-badge pending" style="margin-right: 5px;">🔥 Öne Çıkan</span>';
+  if (item.vejetaryen) durumHTML += '<span class="status-badge" style="background: rgba(46, 204, 113, 0.15); color: #2ecc71; border: 1px solid rgba(46, 204, 113, 0.3); margin-right: 5px; text-decoration: none !important;"><i class="fa-solid fa-leaf" style="margin-right: 4px; font-size: 0.75rem;"></i> Vejetaryen</span>';
+
+  durumHTML += item.aktif
+    ? '<span class="status-badge approved">Yayında</span>'
+    : '<span class="status-badge cancelled">Gizli</span>';
+
+  return `
+    <tr>
+      <td><strong>#${item.id}</strong></td>
+      <td><span style="color: #f39c12; font-weight: 500;">${escapeHTML(item.kategoriAdi || item.kategori)}</span></td>
+      <td><strong style="color: #ffffff;">${escapeHTML(item.ad)}</strong></td>
+      <td><span style="color: #2ecc71; font-weight: 600;">₺${item.fiyat}</span></td>
+      <td style="max-width: 250px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${escapeHTML(item.aciklama || '')}">
+        ${escapeHTML(item.aciklama || '---')}
+      </td>
+      <td>${durumHTML}</td>
+      <td style="text-align: center;">
+        <div style="display: flex; gap: 6px; justify-content: center;">
+          <button class="btn-action btn-action-read" style="padding: 6px 10px;" onclick="openEditMenuModal(${item.id})">
+            <i class="fa-solid fa-pen-to-square"></i> Düzenle
+          </button>
+          <button class="btn-action btn-action-delete" style="padding: 6px 10px;" onclick="askDelete(${item.id}, 'menu')">
+            <i class="fa-solid fa-trash"></i> Sil
+          </button>
+        </div>
+      </td>
+    </tr>
+  `;
+}
+
+async function loadCategoriesSelect() {
+  if (categoriesList.length > 0) return categoriesList;
+  try {
+    const response = await fetch('/api/kategoriler');
+    const result = await response.json();
+    if (response.ok && result.success) {
+      categoriesList = result.data || result;
+      const selectAdd = document.getElementById('menuKategori');
+      if (selectAdd) {
+        let html = '<option value="" disabled selected>Kategori Seçiniz</option>';
+        categoriesList.forEach(cat => {
+          html += `<option value="${cat.id}">${escapeHTML(cat.ad || cat.name)}</option>`;
         });
-
-        const result = await response.json();
-
-        if (response.ok && result.success) {
-          showToast('Yemek başarıyla menüye eklendi!');
-          closeAddMenuModal();
-          loadMenuItems();
-        } else {
-          showToast(result.message || 'Yemek eklenemedi.', true);
-        }
-      } catch (err) {
-        console.error('Yemek ekleme hatası:', err);
-        showToast('Sunucu ile bağlantı kurulamadı.', true);
-      } finally {
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Ekle';
+        selectAdd.innerHTML = html;
       }
+      return categoriesList;
     }
+  } catch (err) {
+    console.error('Kategoriler yüklenemedi:', err);
+  }
+  return [];
+}
 
-    // HTML Kaçış (Güvenlik için)
-    function escapeHTML(str) {
-      if (!str) return '';
-      return str.replace(/[&<>'"]/g, 
-        tag => ({
-          '&': '&amp;',
-          '<': '&lt;',
-          '>': '&gt;',
-          "'": '&#39;',
-          '"': '&quot;'
-        }[tag] || tag)
-      );
+// ==========================================
+// 4. YEMEK EKLEME & DÜZENLEME MODALLARI
+// ==========================================
+
+function openAddMenuModal() {
+  document.getElementById('addProductForm').reset();
+  document.getElementById('addProductModal').style.display = 'flex';
+  loadCategoriesSelect();
+}
+
+function closeAddMenuModal() {
+  document.getElementById('addProductModal').style.display = 'none';
+}
+
+async function submitAddProduct(event) {
+  event.preventDefault();
+  const kategori_id = parseInt(document.getElementById('menuKategori').value);
+  const ad = document.getElementById('menuIsim').value.trim();
+  const aciklama = document.getElementById('menuAciklama').value.trim();
+  const fiyat = parseFloat(document.getElementById('menuFiyat').value);
+  const resim = document.getElementById('menuGorsel').value.trim();
+  const one_cikan = document.getElementById('menuOneCikan').checked ? 1 : 0;
+  const sefin_onerisi = document.getElementById('menuSefinOnerisi').checked ? 1 : 0;
+  const vejetaryen = document.getElementById('menuVejetaryen').checked ? 1 : 0;
+
+  if (!kategori_id || !ad || isNaN(fiyat) || !resim) {
+    showToast('Lütfen tüm zorunlu alanları doldurun.', true);
+    return;
+  }
+
+  const submitBtn = event.target.querySelector('button[type="submit"]');
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Ekleniyor...';
+
+  try {
+    const response = await fetch('/admin/urun', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ kategori_id, ad, aciklama, fiyat, resim, one_cikan, sefin_onerisi, vejetaryen })
+    });
+    const result = await response.json();
+    if (response.ok && result.success) {
+      showToast('Yemek başarıyla menüye eklendi!');
+      closeAddMenuModal();
+      loadMenuItems(true);
+    } else {
+      showToast(result.message || 'Yemek eklenemedi.', true);
     }
+  } catch (err) {
+    showToast('Sunucu ile bağlantı kurulamadı.', true);
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Ekle';
+  }
+}
+
+function openEditMenuModal(id) {
+  const item = (window.menuItems || []).find(x => x.id === id);
+  if (!item) return;
+
+  document.getElementById('editMenuId').value = item.id;
+  document.getElementById('editMenuIsim').value = item.ad;
+  document.getElementById('editMenuAciklama').value = item.aciklama || '';
+  document.getElementById('editMenuFiyat').value = item.fiyat;
+  document.getElementById('editMenuGorsel').value = item.resim;
+
+  document.getElementById('editMenuAktif').checked = item.aktif;
+  document.getElementById('editMenuOneCikan').checked = item.oneCikan || item.one_cikan;
+  document.getElementById('editMenuSefinOnerisi').checked = item.sefinOnerisi || item.sefin_onerisi;
+  document.getElementById('editMenuVejetaryen').checked = item.vejetaryen;
+
+  const selectEdit = document.getElementById('editMenuKategori');
+  if (selectEdit && categoriesList.length > 0) {
+    let html = '<option value="" disabled>Kategori Seçiniz</option>';
+    categoriesList.forEach(cat => {
+      const isSelected = (cat.id === (item.kategori_id || item.kategoriId)) ? 'selected' : '';
+      html += `<option value="${cat.id}" ${isSelected}>${escapeHTML(cat.ad || cat.name)}</option>`;
+    });
+    selectEdit.innerHTML = html;
+  }
+
+  document.getElementById('editProductModal').style.display = 'flex';
+}
+
+function closeEditMenuModal() {
+  document.getElementById('editProductModal').style.display = 'none';
+}
+
+async function submitEditProduct(event) {
+  event.preventDefault();
+  const id = document.getElementById('editMenuId').value;
+  const kategori_id = parseInt(document.getElementById('editMenuKategori').value);
+  const ad = document.getElementById('editMenuIsim').value.trim();
+  const aciklama = document.getElementById('editMenuAciklama').value.trim();
+  const fiyat = parseFloat(document.getElementById('editMenuFiyat').value);
+  const resim = document.getElementById('editMenuGorsel').value.trim();
+  const aktif = document.getElementById('editMenuAktif').checked ? 1 : 0;
+  const one_cikan = document.getElementById('editMenuOneCikan').checked ? 1 : 0;
+  const sefin_onerisi = document.getElementById('editMenuSefinOnerisi').checked ? 1 : 0;
+  const vejetaryen = document.getElementById('editMenuVejetaryen').checked ? 1 : 0;
+
+  if (!id || !kategori_id || !ad || isNaN(fiyat) || !resim) {
+    showToast('Lütfen tüm zorunlu alanları doldurun.', true);
+    return;
+  }
+
+  const submitBtn = event.target.querySelector('button[type="submit"]');
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Güncelleniyor...';
+
+  try {
+    const response = await fetch(`/admin/urun/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ kategori_id, ad, aciklama, fiyat, resim, aktif, one_cikan, sefin_onerisi, vejetaryen })
+    });
+    const result = await response.json();
+    if (response.ok && result.success) {
+      showToast('Yemek güncellendi!');
+      closeEditMenuModal();
+      loadMenuItems(true);
+    } else {
+      showToast(result.message || 'Güncelleme başarısız.', true);
+    }
+  } catch (err) {
+    showToast('Sunucu hatası.', true);
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Güncelle';
+  }
+}
+
+// ==========================================
+// 5. SİLME VE YARDIMCILAR
+// ==========================================
+
+function askDelete(id, type) {
+  currentDeleteId = id;
+  currentDeleteType = type;
+  const modal = document.getElementById('confirmModal');
+  const title = document.getElementById('confirmTitle');
+  const message = document.getElementById('confirmMessage');
+
+  if (type === 'reservation') {
+    title.textContent = 'Rezervasyonu Sil';
+    message.textContent = `#${id} numaralı rezervasyon kaydını silmek istediğinizden emin misiniz?`;
+  } else if (type === 'menu') {
+    title.textContent = 'Yemeği Sil';
+    message.textContent = `#${id} ID'li yemeği menüden tamamen silmek istediğinizden emin misiniz?`;
+  } else {
+    title.textContent = 'Mesajı Sil';
+    message.textContent = `#${id} numaralı iletişim mesajını silmek istediğinizden emin misiniz?`;
+  }
+
+  if (modal) modal.style.display = 'flex';
+}
+
+function closeConfirmModal() {
+  document.getElementById('confirmModal').style.display = 'none';
+  currentDeleteId = null;
+  currentDeleteType = null;
+}
+
+async function handleConfirmDelete() {
+  if (!currentDeleteId || !currentDeleteType) return;
+  const endpoint = currentDeleteType === 'reservation' ? `/api/rezervasyonlar/${currentDeleteId}` :
+                   currentDeleteType === 'menu' ? `/admin/urun/${currentDeleteId}` : `/api/mesajlar/${currentDeleteId}`;
+
+  try {
+    const res = await fetch(endpoint, { method: 'DELETE' });
+    const result = await res.json();
+    if (result.success) {
+      showToast('Kayıt başarıyla silindi.');
+      closeConfirmModal();
+      if (currentDeleteType === 'reservation') loadReservations();
+      else if (currentDeleteType === 'menu') loadMenuItems(true);
+      else loadMessages();
+    } else {
+      showToast(result.message || 'Silme işlemi başarısız.', true);
+    }
+  } catch (err) {
+    showToast('Sunucu hatası oluştu.', true);
+  }
+}
+
+function showNoteModal(text, title) {
+  document.getElementById('noteModalTitle').textContent = title || 'Müşteri Notu';
+  document.getElementById('noteModalText').textContent = text;
+  document.getElementById('noteExpandedModal').style.display = 'flex';
+}
+
+function closeNoteModal() {
+  document.getElementById('noteExpandedModal').style.display = 'none';
+}
+
+window.onclick = function(e) {
+  if (e.target === document.getElementById('confirmModal')) closeConfirmModal();
+  if (e.target === document.getElementById('noteExpandedModal')) closeNoteModal();
+  if (e.target === document.getElementById('addProductModal')) closeAddMenuModal();
+  if (e.target === document.getElementById('editProductModal')) closeEditMenuModal();
+};
+
+function showToast(message, isError = false) {
+  const toast = document.getElementById('toastAlert');
+  const toastMsg = document.getElementById('toastMessage');
+  if (!toast || !toastMsg) return;
+
+  toastMsg.textContent = message;
+  toast.classList.toggle('toast-error', isError);
+  toast.classList.add('active');
+  setTimeout(() => toast.classList.remove('active'), 3000);
+}
+
+function escapeHTML(str) {
+  if (!str) return '';
+  return String(str).replace(/[&<>'"]/g, tag => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    "'": '&#39;',
+    '"': '&quot;'
+  }[tag] || tag));
+}
   </script>
 </body>
 </html>

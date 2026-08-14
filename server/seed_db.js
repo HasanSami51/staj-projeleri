@@ -57,13 +57,13 @@ db.serialize(() => {
   // ------------------------------------------
   // 1. KATEGORİLERİ EKLEME
   // ------------------------------------------
-  const katStmt = db.prepare(`INSERT OR IGNORE INTO kategoriler (id, ad, slug, sira) VALUES (?, ?, ?, ?)`);
+ const katStmt = db.prepare(`INSERT OR REPLACE INTO kategoriler (id, ad, slug, sira) VALUES (?, ?, ?, ?)`);
   katStmt.run(1, 'Çorbalar', 'corba', 1);
   katStmt.run(2, 'Kebaplar & Izgaralar', 'kebap', 2);
   katStmt.run(3, 'Pideler & Lahmacunlar', 'pide', 3);
   katStmt.run(4, 'Zeytinyağlılar & Mezeler', 'zeytinyagli', 4);
   katStmt.run(5, 'Geleneksel Tatlılar', 'tatli', 5);
-  katStmt.run(6, 'Soğuk & Sıcak İçecekler', 'icecek', 6);
+  katStmt.run(6, 'İçecekler', 'icecek', 6);
   katStmt.finalize();
 
   console.log('✅ Kategoriler eklendi.');
@@ -104,7 +104,7 @@ db.serialize(() => {
   });
   urunStmt.finalize();
 
-  console.log('✅ 42 Adet Lezzet veritabanına eklendi.');
+  console.log('✅ 43 Adet Lezzet veritabanına eklendi.');
 
   // ------------------------------------------
   // 3. ÖRNEK ADMİN KULLANICISI EKLEME

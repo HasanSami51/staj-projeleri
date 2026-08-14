@@ -32,6 +32,28 @@ db.run(`
   }
 });
 
+// SQLite'a 'masa_bolgesi' sütununu ekleme (Eğer önceden yoksa)
+db.serialize(() => {
+  db.run("ALTER TABLE rezervasyonlar ADD COLUMN masa_bolgesi TEXT DEFAULT 'İç Mekan'", [], (err) => {
+    if (err) {
+      // Sütun zaten varsa SQLite hata verir, bunu yok sayıyoruz
+    } else {
+      console.log('✅ rezervasyonlar tablosuna "masa_bolgesi" sütunu eklendi.');
+    }
+  });
+});
+
+// SQLite'a 'aktif' (yayında/gizli) durum sütununu ekleme (Eğer önceden yoksa)
+db.serialize(() => {
+  db.run("ALTER TABLE urunler ADD COLUMN aktif INTEGER DEFAULT 1", [], (err) => {
+    if (err) {
+      // Sütun zaten varsa SQLite hata verir, bunu yok sayıyoruz
+    } else {
+      console.log('✅ urunler tablosuna "aktif" (durum) sütunu eklendi.');
+    }
+  });
+});
+
 // Admin Tablosunu Kontrol Et ve Varsayılan Admin Hesabını Seed Et
 db.run(`
   CREATE TABLE IF NOT EXISTS admin (
@@ -112,7 +134,11 @@ db.run(`
 // CORS Desteği (Farklı Portlardan veya Live Server Üzerinden Gelen Fetch İstekleri İçin)
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(200);
+  }
   next();
 });
 
@@ -176,21 +202,25 @@ app.get('/api/kategoriler', (req, res) => {
 
 // 2. TÜM MENÜ VE YEMEKLERİ GETİREN API (GET /api/menu)
 app.get('/api/menu', (req, res) => {
+  const isAdmin = req.session && req.session.isAdmin;
   const sql = `
     SELECT 
       u.id, 
       u.ad, 
       k.slug AS kategori, 
       k.ad AS kategoriAdi,
+      u.kategori_id AS kategori_id,
       u.fiyat, 
       u.aciklama, 
       u.resim, 
       u.loading, 
       u.one_cikan AS oneCikan, 
       u.sefin_onerisi AS sefinOnerisi, 
-      u.vejetaryen
+      u.vejetaryen,
+      u.aktif
     FROM urunler u
     JOIN kategoriler k ON u.kategori_id = k.id
+    ${isAdmin ? '' : 'WHERE u.aktif = 1'}
     ORDER BY k.sira ASC, u.id ASC
   `;
 
@@ -203,7 +233,8 @@ app.get('/api/menu', (req, res) => {
       ...r,
       oneCikan: Boolean(r.oneCikan),
       sefinOnerisi: Boolean(r.sefinOnerisi),
-      vejetaryen: Boolean(r.vejetaryen)
+      vejetaryen: Boolean(r.vejetaryen),
+      aktif: r.aktif !== undefined ? Boolean(r.aktif) : true
     }));
 
     res.json({
@@ -216,7 +247,7 @@ app.get('/api/menu', (req, res) => {
 
 // 3. REZERVASYON OLUŞTURMA VE VERİTABANINA KAYDETME (POST /api/rezervasyon)
 app.post('/api/rezervasyon', (req, res) => {
-  const { name, phone, date, time, guests, notes } = req.body;
+  const { name, phone, date, time, guests, area, notes } = req.body;
 
   // --- SUNUCU TARAFI DOĞRULAMA (İstemci doğrulaması güvenlik değildir) ---
   const errors = [];
@@ -246,6 +277,12 @@ app.post('/api/rezervasyon', (req, res) => {
   const guestCount = parseInt(guests, 10);
   if (isNaN(guestCount) || guestCount < 1 || guestCount > 10) {
     errors.push('Kişi sayısı 1 ile 10 arasında olmalıdır.');
+  }
+
+  // 6. Masa Bölgesi
+  const selectedArea = area || 'Geleneksel Odun Ateşi Katı';
+  if (!['Geleneksel Odun Ateşi Katı', 'Tarihi Avlu Tarafı', 'Taş Fırın Yanı', 'Üst Kat Balkon', 'VIP Salon'].includes(selectedArea)) {
+    errors.push('Geçersiz masa bölgesi seçimi.');
   }
 
   if (errors.length > 0) {
@@ -288,19 +325,20 @@ app.post('/api/rezervasyon', (req, res) => {
 
   // --- VERİTABANINA KAYDET ---
   const sql = `
-    INSERT INTO rezervasyonlar (ad_soyad, telefon, tarih, saat, kisi_sayisi, notlar)
-    VALUES (?, ?, ?, ?, ?, ?)
+    INSERT INTO rezervasyonlar (ad_soyad, telefon, tarih, saat, kisi_sayisi, masa_bolgesi, notlar)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
   `;
 
-  db.run(sql, [name.trim(), phone.trim(), formattedDate, time.trim(), guestCount, notes ? notes.trim() : ''], function(err) {
+  db.run(sql, [name.trim(), phone.trim(), formattedDate, time.trim(), guestCount, selectedArea, notes ? notes.trim() : ''], function(err) {
     if (err) {
       return res.status(500).json({ success: false, message: 'Rezervasyon kaydı sırasında bir sunucu hatası oluştu.', error: err.message });
     }
 
     const id = this.lastID;
     const masaNo = String((id % 18) + 1).padStart(2, '0');
-    const konumlar = ['(Geleneksel Odun Ateşi Katı)', '(Tarihi Avlu Tarafı)', '(Taş Fırın Yanı)', '(Üst Kat Balkon)', '(VIP Salon)'];
-    const konum = konumlar[id % konumlar.length];
+    const konum = selectedArea.includes('Katı') || selectedArea.includes('Tarafı') || selectedArea.includes('Yanı') || selectedArea.includes('Salon') || selectedArea.includes('Bölgesi')
+      ? selectedArea
+      : `${selectedArea} Bölgesi`;
 
     res.status(201).json({
       success: true,
@@ -312,6 +350,7 @@ app.post('/api/rezervasyon', (req, res) => {
         date,
         time: time.trim(),
         guests: guestCount,
+        area: selectedArea,
         notes: notes ? notes.trim() : '',
         masaNo,
         konum
@@ -336,7 +375,7 @@ app.get('/api/rezervasyon-sorgula', (req, res) => {
 
     // SQL Injection koruması: Değerler ? ile parametreli sorgulanır.
     const sql = `
-      SELECT id, ad_soyad, telefon, tarih, saat, kisi_sayisi, notlar, durum
+      SELECT id, ad_soyad, telefon, tarih, saat, kisi_sayisi, masa_bolgesi, notlar, durum
       FROM rezervasyonlar
       WHERE telefon = ?
       ORDER BY id DESC
@@ -359,11 +398,14 @@ app.get('/api/rezervasyon-sorgula', (req, res) => {
         });
       }
 
-      // Deterministik masa no ve konum eşleşmesi (böylece rezervasyon her çağrıldığında aynı masa gelir)
+      // Deterministik masa no ve konum eşleşmesi
       const id = row.id;
       const masaNo = String((id % 18) + 1).padStart(2, '0');
-      const konumlar = ['(Geleneksel Odun Ateşi Katı)', '(Tarihi Avlu Tarafı)', '(Taş Fırın Yanı)', '(Üst Kat Balkon)', '(VIP Salon)'];
-      const konum = konumlar[id % konumlar.length];
+      const konum = row.masa_bolgesi
+        ? (row.masa_bolgesi.includes('Katı') || row.masa_bolgesi.includes('Tarafı') || row.masa_bolgesi.includes('Yanı') || row.masa_bolgesi.includes('Salon') || row.masa_bolgesi.includes('Bölgesi')
+            ? row.masa_bolgesi
+            : `${row.masa_bolgesi} Bölgesi`)
+        : 'Geleneksel Odun Ateşi Katı';
 
       return res.status(200).json({
         success: true,
@@ -375,6 +417,7 @@ app.get('/api/rezervasyon-sorgula', (req, res) => {
           date: row.tarih,
           time: row.saat,
           guests: row.kisi_sayisi,
+          area: row.masa_bolgesi || 'İç Mekan',
           notes: row.notlar || '',
           masaNo,
           konum,
@@ -667,8 +710,8 @@ app.post(['/admin/urun', '/api/admin/urun'], (req, res) => {
   }
 
   const sql = `
-    INSERT INTO urunler (kategori_id, ad, aciklama, fiyat, resim, loading, one_cikan, sefin_onerisi, vejetaryen)
-    VALUES (?, ?, ?, ?, ?, 'lazy', ?, ?, ?)
+    INSERT INTO urunler (kategori_id, ad, aciklama, fiyat, resim, loading, one_cikan, sefin_onerisi, vejetaryen, aktif)
+    VALUES (?, ?, ?, ?, ?, 'lazy', ?, ?, ?, 1)
   `;
 
   db.run(sql, [kategori_id, ad, aciklama, fiyat, resim, one_cikan, sefin_onerisi, vejetaryen], function(err) {
@@ -678,6 +721,68 @@ app.post(['/admin/urun', '/api/admin/urun'], (req, res) => {
     }
     console.log(`➕ Yeni ürün eklendi: ID ${this.lastID} - ${ad}`);
     res.json({ success: true, message: 'Ürün başarıyla eklendi.', id: this.lastID });
+  });
+});
+
+
+// 10. Yemek Güncelle (PUT /admin/urun/:id veya /api/admin/urun/:id) - Korunmalı
+app.put(['/admin/urun/:id', '/api/admin/urun/:id'], (req, res) => {
+  if (!req.session || !req.session.isAdmin) {
+    return res.status(401).json({ success: false, error: 'unauthorized', message: 'Yetkisiz erişim.' });
+  }
+
+  const { id } = req.params;
+  const kategori_id = req.body.kategori_id || req.body.kategoriId || req.body.kategori;
+  const ad = req.body.ad || req.body.isim || req.body.name;
+  const aciklama = req.body.aciklama || req.body.description || '';
+  const fiyat = parseFloat(req.body.fiyat || req.body.price);
+  const resim = req.body.resim || req.body.gorsel || req.body.image || '';
+  const one_cikan = req.body.one_cikan !== undefined ? (req.body.one_cikan ? 1 : 0) : 0;
+  const sefin_onerisi = req.body.sefin_onerisi !== undefined ? (req.body.sefin_onerisi ? 1 : 0) : 0;
+  const vejetaryen = req.body.vejetaryen !== undefined ? (req.body.vejetaryen ? 1 : 0) : 0;
+  const aktif = req.body.aktif !== undefined ? (req.body.aktif ? 1 : 0) : 1;
+
+  if (!kategori_id || !ad || isNaN(fiyat)) {
+    return res.status(400).json({ success: false, message: 'Kategori, isim ve fiyat alanları zorunludur.' });
+  }
+
+  const sql = `
+    UPDATE urunler 
+    SET kategori_id = ?, ad = ?, aciklama = ?, fiyat = ?, resim = ?, one_cikan = ?, sefin_onerisi = ?, vejetaryen = ?, aktif = ?
+    WHERE id = ?
+  `;
+
+  db.run(sql, [kategori_id, ad, aciklama, fiyat, resim, one_cikan, sefin_onerisi, vejetaryen, aktif, id], function(err) {
+    if (err) {
+      console.error('❌ Ürün güncelleme hatası:', err.message);
+      return res.status(500).json({ success: false, message: 'Ürün güncellenemedi.', error: err.message });
+    }
+    if (this.changes === 0) {
+      return res.status(404).json({ success: false, message: 'Belirtilen ürün bulunamadı.' });
+    }
+    console.log(`📝 Ürün güncellendi: ID ${id} - ${ad}`);
+    res.json({ success: true, message: 'Ürün başarıyla güncellendi.' });
+  });
+});
+
+
+// 11. Yemek Sil (DELETE /admin/urun/:id veya /api/admin/urun/:id) - Korunmalı
+app.delete(['/admin/urun/:id', '/api/admin/urun/:id'], (req, res) => {
+  if (!req.session || !req.session.isAdmin) {
+    return res.status(401).json({ success: false, error: 'unauthorized', message: 'Yetkisiz erişim.' });
+  }
+
+  const { id } = req.params;
+  db.run("DELETE FROM urunler WHERE id = ?", [id], function(err) {
+    if (err) {
+      console.error('❌ Ürün silme hatası:', err.message);
+      return res.status(500).json({ success: false, message: 'Ürün silinemedi.', error: err.message });
+    }
+    if (this.changes === 0) {
+      return res.status(404).json({ success: false, message: 'Belirtilen ürün bulunamadı.' });
+    }
+    console.log(`🗑️ Ürün silindi: ID ${id}`);
+    res.json({ success: true, message: 'Ürün başarıyla silindi.' });
   });
 });
 
