@@ -287,11 +287,18 @@ document.addEventListener("DOMContentLoaded", () => {
   // 1. Ekranı Yumuşak Kaydırma (Smooth Scroll)
   function yumusakKaydir(hedef, offset = 90) {
     if (!hedef) return;
-    const element = typeof hedef === "string" ? document.querySelector(hedef) : hedef;
-    if (!element) return;
-    const elementPosition = element.getBoundingClientRect().top;
-    const offsetPosition = elementPosition + window.pageYOffset - offset;
-    window.scrollTo({ top: offsetPosition, behavior: "smooth" });
+    try {
+      const element = typeof hedef === "string" ? document.querySelector(hedef) : hedef;
+      if (!element) return;
+      const elementPosition = element.getBoundingClientRect().top;
+      const currentScroll = window.scrollY !== undefined ? window.scrollY : (window.pageYOffset !== undefined ? window.pageYOffset : (document.documentElement.scrollTop || 0));
+      const offsetPosition = elementPosition + currentScroll - offset;
+      if (!isNaN(offsetPosition)) {
+        window.scrollTo({ top: offsetPosition, behavior: "smooth" });
+      }
+    } catch (err) {
+      console.warn("yumusakKaydir hatası:", err);
+    }
   }
 
   // 2. Türkçe Karakter Uyumlu Küçük Harfe Çevirici
@@ -656,23 +663,49 @@ document.addEventListener("DOMContentLoaded", () => {
   const notesInput = document.getElementById('resNotes');
 
   let lastSubmittedTicketData = null;
+  let lastEditingReservationId = null; // Düzenleme modunda sorgudan gelen rezervasyon ID'si
 
-  // --- HAMBURGER MENÜ TIKLAMA İŞLEYİCİSİ ---
+  // --- MOBİL DROPDOWN MENÜ ---
   const hamburgerBtn = document.getElementById('hamburgerBtn');
   const mainNavbar = document.getElementById('mainNavbar');
 
   if (hamburgerBtn && mainNavbar) {
+    // Overlay oluştur
+    let navOverlay = document.querySelector('.mobile-nav-overlay');
+    if (!navOverlay) {
+      navOverlay = document.createElement('div');
+      navOverlay.className = 'mobile-nav-overlay';
+      document.body.appendChild(navOverlay);
+    }
+
+    const openMenu = () => {
+      mainNavbar.classList.add('active');
+      navOverlay.classList.add('active');
+      hamburgerBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>';
+    };
+
+    const closeMenu = () => {
+      mainNavbar.classList.remove('active');
+      navOverlay.classList.remove('active');
+      hamburgerBtn.innerHTML = '<i class="fa-solid fa-bars"></i>';
+    };
+
     hamburgerBtn.addEventListener('click', (e) => {
       e.stopPropagation();
-      mainNavbar.classList.toggle('active');
+      mainNavbar.classList.contains('active') ? closeMenu() : openMenu();
     });
 
-    document.addEventListener('click', (e) => {
-      if (!mainNavbar.contains(e.target) && !hamburgerBtn.contains(e.target)) {
-        mainNavbar.classList.remove('active');
-      }
+    navOverlay.addEventListener('click', closeMenu);
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeMenu();
+    });
+
+    mainNavbar.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', closeMenu);
     });
   }
+
 
   if (reservationForm) {
     reservationForm.addEventListener('submit', (e) => {
@@ -829,12 +862,27 @@ document.addEventListener("DOMContentLoaded", () => {
         }, 1000);
       };
 
-      // --- EXPRESS BACKEND API POST VEYA YEREL SİMÜLASYON ---
+      // --- EXPRESS BACKEND API POST (YENİ) VEYA PUT (DÜZENLEME) ---
       const isLocalHost3000 = window.location.origin.includes(':3000');
-      const apiUrl = isLocalHost3000 ? '/api/rezervasyon' : 'http://localhost:3000/api/rezervasyon';
+      const baseUrl = isLocalHost3000 ? '' : 'http://localhost:3000';
+
+      // Eğer düzenleme modundaysa PUT, değilse POST
+      const editingId = lastEditingReservationId;
+      const apiUrl = editingId
+        ? `${baseUrl}/api/rezervasyon/${editingId}`
+        : `${baseUrl}/api/rezervasyon`;
+      const apiMethod = editingId ? 'PUT' : 'POST';
+
+      // Düzenleme modunu sıfırla (API çağrısından önce)
+      lastEditingReservationId = null;
+
+      // Submit butonunu eski haline getirme fonksiyonu
+      const restoreSubmitBtn = () => {
+        if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = originalBtnHtml; }
+      };
 
       fetch(apiUrl, {
-        method: 'POST',
+        method: apiMethod,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name: nameVal,
@@ -848,20 +896,21 @@ document.addEventListener("DOMContentLoaded", () => {
       })
       .then(res => res.json())
       .then(result => {
-        // Butonu eski haline getir
-        if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = originalBtnHtml; }
-
+        restoreSubmitBtn();
         if (result && result.success && result.data) {
-          alertGoster(resFormAlert, 'success', '<i class="fa-solid fa-circle-check"></i> <span>Rezervasyon talebiniz alındı.</span>');
+          const successMsg = editingId
+            ? '<i class="fa-solid fa-circle-check"></i> <span>Rezervasyonunuz başarıyla güncellendi!</span>'
+            : '<i class="fa-solid fa-circle-check"></i> <span>Rezervasyon talebiniz alındı.</span>';
+          alertGoster(resFormAlert, 'success', successMsg);
           renderTicket(result.data);
         } else {
-          const msg = (result && result.message) ? result.message : 'Rezervasyon gönderilemedi.';
+          const msg = (result && result.message) ? result.message : (editingId ? 'Rezervasyon güncellenemedi.' : 'Rezervasyon gönderilemedi.');
           alertGoster(resFormAlert, 'error', `<i class="fa-solid fa-triangle-exclamation"></i> <span>${msg}</span>`);
           renderTicket({});
         }
       })
       .catch(err => {
-        if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = originalBtnHtml; }
+        restoreSubmitBtn();
         alertGoster(resFormAlert, 'error', '<i class="fa-solid fa-triangle-exclamation"></i> <span>İşlem sırasında bir hata oluştu.</span>');
         renderTicket({});
       });
@@ -970,6 +1019,17 @@ document.addEventListener("DOMContentLoaded", () => {
               const cardTicketStatus = document.getElementById('cardTicketStatus');
 
               const data = result.data;
+
+              // Düzenleme modu için bilet verisini kaydet
+              lastSubmittedTicketData = {
+                name: data.name || '',
+                phone: data.phone || '',
+                date: data.date || '',
+                time: data.time || '',
+                guests: data.guests || '1',
+                area: data.area || '',
+                notes: data.notes || ''
+              };
               if (cardTableNumber) cardTableNumber.innerHTML = `Masa No: ${data.masaNo} <small>${data.konum}</small>`;
               if (cardTicketName) cardTicketName.textContent = data.name || 'Girilmedi';
               if (cardTicketPhone) cardTicketPhone.textContent = data.phone || '---';
@@ -1004,9 +1064,19 @@ document.addEventListener("DOMContentLoaded", () => {
                 cardTicketWaBtn.href = `https://wa.me/902325137567?text=Merhaba,%20Masa%20No:%20${data.masaNo}%20${encodeURIComponent(data.konum)}%20rezervasyonum%20hakkinda%20bilgi%20almak%20istiyorum.`;
               }
 
-              // Bilgileri düzenle butonunu gizle (Sorgulanan biletler için geçerli değildir)
+              // Bilgileri düzenle butonunu göster ve sorgu ID'sini kaydet
+              lastEditingReservationId = null; // Önce sıfırla
               const btnEditReservation = document.getElementById('btnEditReservation');
-              if (btnEditReservation) {
+              if (btnEditReservation && data.id) {
+                // Sadece beklemede olan rezervasyonlar düzenlenebilir
+                if (data.durum !== 'Onaylandı' && data.durum !== 'İptal Edildi') {
+                  btnEditReservation.style.display = 'inline-block';
+                  // Bu rezervasyonu düzenle modunda işaretle
+                  btnEditReservation.dataset.editId = data.id;
+                } else {
+                  btnEditReservation.style.display = 'none';
+                }
+              } else if (btnEditReservation) {
                 btnEditReservation.style.display = 'none';
               }
 
@@ -1102,10 +1172,26 @@ document.addEventListener("DOMContentLoaded", () => {
     const btnEditReservation = document.getElementById('btnEditReservation');
     if (btnEditReservation) {
       btnEditReservation.addEventListener('click', () => {
+        // Sorgu modundan geliyorsa düzenleme ID'sini kaydet
+        const editId = btnEditReservation.dataset.editId;
+        if (editId) {
+          lastEditingReservationId = parseInt(editId);
+        }
+
         const ticketContainer = document.getElementById('resTicketContainer');
         if (ticketContainer) {
           ticketContainer.style.display = 'none';
         }
+
+        // Formu doğru sekmeye geç
+        const toggleNewResBtn = document.getElementById('toggleNewResBtn');
+        const toggleQueryResBtn = document.getElementById('toggleQueryResBtn');
+        const reservationQueryForm = document.getElementById('reservationQueryForm');
+        if (toggleNewResBtn) toggleNewResBtn.classList.add('active');
+        if (toggleQueryResBtn) toggleQueryResBtn.classList.remove('active');
+        if (reservationQueryForm) reservationQueryForm.style.display = 'none';
+        if (reservationForm) reservationForm.style.display = 'block';
+
         if (lastSubmittedTicketData) {
           const elName = document.getElementById('resName');
           const elPhone = document.getElementById('resPhone');
@@ -1114,6 +1200,7 @@ document.addEventListener("DOMContentLoaded", () => {
           const elTime = document.getElementById('resTime');
           const elNativeTime = document.getElementById('hiddenNativeTime');
           const elGuests = document.getElementById('resGuests');
+          const elArea = document.getElementById('resMasaBolgesi');
           const elNotes = document.getElementById('resNotes');
 
           if (elName) elName.value = lastSubmittedTicketData.name || '';
@@ -1123,8 +1210,16 @@ document.addEventListener("DOMContentLoaded", () => {
           if (elTime) elTime.value = lastSubmittedTicketData.time || '';
           if (elNativeTime) elNativeTime.value = lastSubmittedTicketData.time || '';
           if (elGuests) elGuests.value = lastSubmittedTicketData.guests || '1';
+          if (elArea && lastSubmittedTicketData.area) elArea.value = lastSubmittedTicketData.area;
           if (elNotes) elNotes.value = lastSubmittedTicketData.notes || '';
         }
+
+        // Submit butonunu güncelleme modu olarak işaretle (görsel ipucu)
+        const submitBtn = reservationForm ? reservationForm.querySelector('button[type="submit"]') : null;
+        if (submitBtn && lastEditingReservationId) {
+          submitBtn.innerHTML = '<i class="fa-solid fa-pen-to-square"></i> Rezervasyonu Güncelle';
+        }
+
         const resFormAlert = document.getElementById('resFormAlert');
         if (resFormAlert) {
           resFormAlert.style.display = 'none';
@@ -1328,90 +1423,102 @@ document.addEventListener("DOMContentLoaded", () => {
   const contactForm = document.getElementById('contactForm');
   const contactFormAlert = document.getElementById('formAlert');
 
+  // Sayfa başarıyla gönderildikten sonra yenilendi mi kontrol et (URL parametresi üzerinden)
+  if (contactFormAlert && window.location.search.includes("success=true")) {
+    alertGoster(contactFormAlert, 'success', `<i class="fa-solid fa-circle-check"></i> <span>${t('contact-form-success', 'Mesajınız restorana başarıyla iletildi! En kısa sürede sizinle iletişime geçeceğiz.')}</span>`);
+    // URL'deki parametreyi temizle ki tekrar yenilendiğinde durduk yere çıkmasın
+    try {
+      window.history.replaceState({}, document.title, window.location.pathname);
+    } catch (e) {}
+  }
+
   if (contactForm) {
     contactForm.addEventListener('submit', (e) => {
       e.preventDefault();
-      hatalariTemizle();
+      try {
+        hatalariTemizle();
 
-      const cName = document.getElementById('contactName');
-      const cEmail = document.getElementById('contactEmail');
-      const cSubject = document.getElementById('contactSubject');
-      const cMessage = document.querySelector('#contactForm textarea') || document.getElementById('contactMessage');
+        const cName = document.getElementById('contactName');
+        const cEmail = document.getElementById('contactEmail');
+        const cSubject = document.getElementById('contactSubject');
+        const cMessage = document.querySelector('#contactForm textarea') || document.getElementById('contactMessage');
 
-      let hasError = false;
+        let hasError = false;
 
-      if (!cName || !cName.value.trim() || cName.value.trim().length < 3) {
-        hataGoster(cName, t('err-contact-name', 'Lütfen adınızı ve soyadınızı giriniz.'));
-        if (!hasError && cName) { cName.focus(); hasError = true; }
-      }
-
-      const emailVal = cEmail ? cEmail.value.trim() : '';
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!cEmail || !emailVal || !emailRegex.test(emailVal)) {
-        hataGoster(cEmail, t('err-contact-email', 'Lütfen geçerli bir e-posta adresi giriniz.'));
-        if (!hasError && cEmail) { cEmail.focus(); hasError = true; }
-      }
-
-      if (!cSubject || !cSubject.value.trim() || cSubject.value.trim().length < 3) {
-        hataGoster(cSubject, t('err-contact-subject', 'Lütfen mesaj konusunu giriniz.'));
-        if (!hasError && cSubject) { cSubject.focus(); hasError = true; }
-      }
-
-      if (!cMessage || !cMessage.value.trim() || cMessage.value.trim().length < 5) {
-        hataGoster(cMessage, t('err-contact-message', 'Lütfen mesajınızı buraya yazınız.'));
-        if (!hasError && cMessage) { cMessage.focus(); hasError = true; }
-      }
-
-      if (hasError) {
-        alertGoster(contactFormAlert, 'error', `<i class="fa-solid fa-triangle-exclamation"></i> <span>${t('err-contact-fill', 'Lütfen tüm zorunlu alanları eksiksiz ve doğru doldurunuz.')}</span>`);
-        return;
-      }
-
-      const sendingMsg = (localStorage.getItem('language') || 'tr') === 'en' ? 'Sending Message...' : 'Mesajınız Gönderiliyor...';
-      formGonderimSimuleEt(contactForm, contactFormAlert, sendingMsg, 900);
-
-      const isLocalHost3000 = window.location.origin.includes(':3000');
-      const apiUrl = isLocalHost3000 ? '/api/iletisim' : 'http://localhost:3000/api/iletisim';
-
-      fetch(apiUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ad_soyad: cName.value.trim(),
-          eposta: cEmail.value.trim(),
-          konu: cSubject.value.trim(),
-          mesaj: cMessage.value.trim()
-        })
-      })
-      .then(res => {
-        // res.ok = HTTP 200-299 arasi (201 dahil basarili)
-        // res.ok degil = 400 veya 500, backend hata mesajini al
-        return res.json().then(data => ({ ok: res.ok, status: res.status, data }));
-      })
-      .then(({ ok, status, data }) => {
-        if (ok && data.success) {
-          // 201: Basarili kayit
-          alertGoster(contactFormAlert, 'success', `<i class="fa-solid fa-circle-check"></i> <span>${t('contact-form-success', 'Mesajınız restorana başarıyla iletildi! En kısa sürede sizinle iletişime geçeceğiz.')}</span>`);
-          contactForm.reset();
-        } else if (status === 400) {
-          // 400: Eksik alan, gecersiz e-posta, kisa mesaj vb. (backend mesaji goster)
-          let hataMetni = '';
-          if ((localStorage.getItem('language') || 'tr') === 'en') {
-            hataMetni = (data && data.mesaj_en) ? data.mesaj_en : 'Please fill in all fields completely and correctly.';
-          } else {
-            hataMetni = (data && data.mesaj) ? data.mesaj : 'Lütfen tüm alanları eksiksiz ve doğru doldurunuz.';
-          }
-          alertGoster(contactFormAlert, 'error', `<i class="fa-solid fa-triangle-exclamation"></i> <span>${hataMetni}</span>`);
-        } else {
-          // 500 veya beklenmedik durum
-          alertGoster(contactFormAlert, 'error', `<i class="fa-solid fa-triangle-exclamation"></i> <span>${t('err-contact-submit', 'Mesaj gönderilemedi. Lütfen tekrar deneyiniz.')}</span>`);
+        if (!cName || !cName.value.trim() || cName.value.trim().length < 3) {
+          hataGoster(cName, t('err-contact-name', 'Lütfen adınızı ve soyadınızı giriniz.'));
+          if (!hasError && cName) { cName.focus(); hasError = true; }
         }
-      })
-      .catch((err) => {
-        // Sunucuya baglanamadi (internet yok, server kapali vb.)
-        console.error('İletişim formu bağlantı hatası:', err);
-        alertGoster(contactFormAlert, 'error', `<i class="fa-solid fa-wifi"></i> <span>${t('err-server-connection', 'Sunucuya bağlanılamadı. Lütfen internet bağlantınızı kontrol edip tekrar deneyiniz.')}</span>`);
-      });
+
+        const emailVal = cEmail ? cEmail.value.trim() : '';
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!cEmail || !emailVal || !emailRegex.test(emailVal)) {
+          hataGoster(cEmail, t('err-contact-email', 'Lütfen geçerli bir e-posta adresi giriniz.'));
+          if (!hasError && cEmail) { cEmail.focus(); hasError = true; }
+        }
+
+        if (!cSubject || !cSubject.value.trim() || cSubject.value.trim().length < 3) {
+          hataGoster(cSubject, t('err-contact-subject', 'Lütfen mesaj konusunu giriniz.'));
+          if (!hasError && cSubject) { cSubject.focus(); hasError = true; }
+        }
+
+        if (!cMessage || !cMessage.value.trim() || cMessage.value.trim().length < 5) {
+          hataGoster(cMessage, t('err-contact-message', 'Lütfen mesajınızı buraya yazınız.'));
+          if (!hasError && cMessage) { cMessage.focus(); hasError = true; }
+        }
+
+        if (hasError) {
+          alertGoster(contactFormAlert, 'error', `<i class="fa-solid fa-triangle-exclamation"></i> <span>${t('err-contact-fill', 'Lütfen tüm zorunlu alanları eksiksiz ve doğru doldurunuz.')}</span>`);
+          return;
+        }
+
+        const sendingMsg = (localStorage.getItem('language') || 'tr') === 'en' ? 'Sending Message...' : 'Mesajınız Gönderiliyor...';
+        formGonderimSimuleEt(contactForm, contactFormAlert, sendingMsg, 900);
+
+        const isLocalHost3000 = window.location.origin.includes(':3000');
+        const apiUrl = isLocalHost3000 ? '/api/iletisim' : 'http://localhost:3000/api/iletisim';
+
+        fetch(apiUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            ad_soyad: cName.value.trim(),
+            eposta: cEmail.value.trim(),
+            konu: cSubject.value.trim(),
+            mesaj: cMessage.value.trim()
+          })
+        })
+        .then(res => res.json())
+        .then(result => {
+          if (result && result.success) {
+            window.location.href = window.location.pathname + "?success=true";
+          } else {
+            // Butonu her durumda geri al
+            const submitBtn = contactForm.querySelector('button[type="submit"]');
+            if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> <span>${(localStorage.getItem('language') || 'tr') === 'en' ? 'Send Message' : 'Mesajı Gönder'}</span>`; }
+
+            let hataMetni = '';
+            if (result && result.mesaj) {
+              hataMetni = result.mesaj;
+            } else {
+              hataMetni = (localStorage.getItem('language') || 'tr') === 'en'
+                ? 'Message could not be sent. Please try again.'
+                : 'Mesaj gönderilemedi. Lütfen tekrar deneyiniz.';
+            }
+            alertGoster(contactFormAlert, 'error', `<i class="fa-solid fa-triangle-exclamation"></i> <span>${hataMetni}</span>`);
+          }
+        })
+        .catch((err) => {
+          // Butonu geri al
+          const submitBtn = contactForm.querySelector('button[type="submit"]');
+          if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> <span>${(localStorage.getItem('language') || 'tr') === 'en' ? 'Send Message' : 'Mesajı Gönder'}</span>`; }
+
+          console.error('İletişim formu bağlantı hatası:', err);
+          alertGoster(contactFormAlert, 'error', `<i class="fa-solid fa-wifi"></i> <span>${t('err-server-connection', 'Sunucuya bağlanılamadı. Lütfen internet bağlantınızı kontrol edip tekrar deneyiniz.')}</span>`);
+        });
+      } catch (submitErr) {
+        console.error("Gönderim handler hatası:", submitErr);
+      }
     });
   }
 
@@ -1616,10 +1723,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const langSelector = selectorInstance || document.getElementById('langSelector');
     if (!langSelector) return;
 
-    const isDesktop = window.matchMedia('(min-width: 769px)').matches;
     const statusWrapper = document.querySelector('.header-status-wrapper');
-    const mainNavbarUl = document.querySelector('#mainNavbar ul');
-
     langSelector.classList.remove('open');
     
     // Temizleme: Eski boş veya aktif nav-item kapsayıcılarını temizleyelim
@@ -1629,31 +1733,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-    if (isDesktop && mainNavbarUl) {
-      // Masaüstü: Dil seçiciyi Anasayfa linkinin hemen yanına (soluna) yerleştir
-      let navItem = langSelector.closest('.lang-selector-nav-item');
-      if (!navItem) {
-        navItem = document.createElement('li');
-        navItem.className = 'lang-selector-nav-item';
-      }
-      navItem.appendChild(langSelector);
-      
-      const homeLi = mainNavbarUl.querySelector('li'); // İlk eleman Anasayfa'dır
-      if (homeLi) {
-        mainNavbarUl.insertBefore(navItem, homeLi);
-      } else {
-        mainNavbarUl.appendChild(navItem);
-      }
-      return;
-    }
-
     if (statusWrapper) {
-      // Mobil: Li kapsayıcısından çıkarıp direkt durum rozetinin yanına koy
-      const navItem = langSelector.closest('.lang-selector-nav-item');
-      if (navItem) {
-        navItem.remove();
-      }
-
       const statusBadge = statusWrapper.querySelector('.live-status-badge');
       if (statusBadge) {
         statusBadge.insertAdjacentElement('afterend', langSelector);
@@ -1766,17 +1846,22 @@ document.addEventListener("DOMContentLoaded", () => {
     translateElements.forEach(el => {
       const key = el.getAttribute('data-translate');
       if (window.translations[lang] && window.translations[lang][key] !== undefined) {
-        // Metin düğümünü (Text Node) bozmadan değiştirme
-        let textNodeFound = false;
-        for (let node of el.childNodes) {
-          if (node.nodeType === Node.TEXT_NODE && node.nodeValue.trim() !== '') {
-            node.nodeValue = window.translations[lang][key];
-            textNodeFound = true;
-            break;
+        const val = window.translations[lang][key];
+        if (val.includes('\n')) {
+          el.innerHTML = val.replace(/\n/g, '<br>');
+        } else {
+          // Metin düğümünü (Text Node) bozmadan değiştirme
+          let textNodeFound = false;
+          for (let node of el.childNodes) {
+            if (node.nodeType === Node.TEXT_NODE && node.nodeValue.trim() !== '') {
+              node.nodeValue = val;
+              textNodeFound = true;
+              break;
+            }
           }
-        }
-        if (!textNodeFound && el.children.length === 0) {
-          el.textContent = window.translations[lang][key];
+          if (!textNodeFound && el.children.length === 0) {
+            el.textContent = val;
+          }
         }
       }
     });

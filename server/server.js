@@ -359,7 +359,61 @@ app.post('/api/rezervasyon', (req, res) => {
   });
 });
 
-// 3b. REZERVASYON SORGULAMA (GET /api/rezervasyon-sorgula)
+// 3c. REZERVASYON GÜNCELLEME (PUT /api/rezervasyon/:id)
+app.put('/api/rezervasyon/:id', (req, res) => {
+  const { id } = req.params;
+  const { name, phone, date, time, guests, area, notes } = req.body;
+
+  if (!id || isNaN(parseInt(id))) {
+    return res.status(400).json({ success: false, message: 'Geçersiz rezervasyon ID.' });
+  }
+
+  if (!name || !phone || !date || !time || !guests || !area) {
+    return res.status(400).json({ success: false, message: 'Lütfen tüm zorunlu alanları doldurunuz.' });
+  }
+
+  const guestCount = parseInt(guests);
+  if (isNaN(guestCount) || guestCount < 1 || guestCount > 50) {
+    return res.status(400).json({ success: false, message: 'Geçersiz kişi sayısı.' });
+  }
+
+  // Tarih DD.MM.YYYY → YYYY-MM-DD
+  let formattedDate = date;
+  if (date.includes('.')) {
+    const parts = date.split('.');
+    if (parts.length === 3) formattedDate = `${parts[2]}-${parts[1]}-${parts[0]}`;
+  }
+
+  const validAreas = ['İç Mekan', 'Geleneksel Odun Ateşi Katı', 'Tarihi Avlu Tarafı', 'Taş Fırın Yanı', 'Üst Kat Balkon', 'VIP Salon'];
+  const selectedArea = validAreas.find(a => a === area) || area;
+
+  const sql = `
+    UPDATE rezervasyonlar
+    SET ad_soyad=?, telefon=?, tarih=?, saat=?, kisi_sayisi=?, masa_bolgesi=?, notlar=?, durum='Beklemede'
+    WHERE id=?
+  `;
+
+  db.run(sql, [name.trim(), phone.trim(), formattedDate, time.trim(), guestCount, selectedArea, notes ? notes.trim() : '', parseInt(id)], function(err) {
+    if (err) {
+      return res.status(500).json({ success: false, message: 'Güncelleme sırasında sunucu hatası oluştu.', error: err.message });
+    }
+    if (this.changes === 0) {
+      return res.status(404).json({ success: false, message: 'Güncellenecek rezervasyon bulunamadı.' });
+    }
+
+    const masaNo = String((parseInt(id) % 18) + 1).padStart(2, '0');
+    const konum = selectedArea.includes('Katı') || selectedArea.includes('Tarafı') || selectedArea.includes('Yanı') || selectedArea.includes('Salon') || selectedArea.includes('Bölgesi')
+      ? selectedArea : `${selectedArea} Bölgesi`;
+
+    res.status(200).json({
+      success: true,
+      message: 'Rezervasyonunuz başarıyla güncellendi!',
+      data: { id: parseInt(id), name: name.trim(), phone: phone.trim(), date, time: time.trim(), guests: guestCount, area: selectedArea, notes: notes ? notes.trim() : '', masaNo, konum }
+    });
+  });
+});
+
+
 app.get('/api/rezervasyon-sorgula', (req, res) => {
   try {
     const { telefon } = req.query;

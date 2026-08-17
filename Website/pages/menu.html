@@ -30,7 +30,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="preload" as="image" href="../public/images/mercimek-corbasi.jpg" fetchpriority="high">
     <link rel="preload" as="image" href="../public/images/patlican-corbasi.jpg" fetchpriority="high">
-    <link rel="stylesheet" href="../public/css/style.css">
+    <link rel="stylesheet" href="../public/css/style.css?v=38">
 
     <!-- Structured Data JSON-LD Schema -->
     <script type="application/ld+json">
@@ -54,34 +54,57 @@
     <video id="globalBgVideo" autoplay loop muted playsinline class="global-bg-video">
         <source src="../public/images/video.mp4" type="video/mp4">
     </video>
-    <header class="main-header">
-        <div class="container header-container">
-  <div class="logo">
-     <a href="index.html" class="logo-link" title="Lezzet Mührü 1932&#10;Gaziantep Menüsü"><img src="../public/images/logo.png" class="logo-img" alt="Lezzet Mührü 1932 Logo"></a>
-     <div class="brand-text-wrapper">
-         <span class="brand-title">Lezzet Mührü</span>
-         <span class="brand-subtitle" data-translate="brand-sub">1932'den Beri</span>
-     </div>
-     <div class="header-status-wrapper">
-         <div class="header-divider"></div>
-         <div class="live-status-badge"></div>
-     </div>
-  </div>
-   <button class="hamburger-btn" id="hamburgerBtn" aria-label="Menüyü Aç/Kapat">
-               <i class="fa-solid fa-bars"></i>
-   </button>
-      <nav class="main-navbar" id="mainNavbar">
-         <ul>
-             <li><a href="index.html" data-translate="nav-home">Anasayfa</a></li>
-             <li><a href="menu.html" class="active" data-translate="nav-menu">Menü</a></li>
-             <li><a href="rezervasyon.html" data-translate="nav-reservation">Rezervasyon</a></li>
-             <li><a href="hakkimizda.html" data-translate="nav-about">Hakkımızda</a></li>
-             <li><a href="galeri.html" data-translate="nav-gallery">Galeri</a></li>
-             <li><a href="iletisim.html" class="nav-btn" data-translate="nav-contact">İletişim</a></li>
-         </ul>
-             </nav>
+      <header class="main-header">
+    <div class="top-bar">
+      <div class="container top-bar-container">
+        <div class="header-status-wrapper">
+          <div class="live-status-badge"></div>
+          <!-- atmosphereToggleBtn ve langSelector buraya JS tarafından yerleştirilecek -->
         </div>
-    </header>
+      </div>
+    </div>
+    <div class="container header-container">
+      <!-- SOL NAV -->
+      <nav class="main-navbar navbar-left">
+        <ul>
+          <li><a href="index.html" class="" data-translate="nav-home">Anasayfa</a></li>
+          <li><a href="menu.html" class="active" data-translate="nav-menu">Menü</a></li>
+          <li><a href="galeri.html" class="" data-translate="nav-gallery">Galeri</a></li>
+        </ul>
+      </nav>
+
+      <!-- ORTA LOGO -->
+      <div class="logo">
+        <a href="index.html" class="logo-link" title="Lezzet Mührü 1932"><img src="../public/images/logo.png" class="logo-img" alt="Lezzet Mührü 1932 Logo"></a>
+      </div>
+
+      <!-- SAĞ NAV -->
+      <nav class="main-navbar navbar-right">
+        <ul>
+          <li><a href="hakkimizda.html" class="" data-translate="nav-about">Hakkımızda</a></li>
+          <li><a href="rezervasyon.html" class="" data-translate="nav-reservation">Rezervasyon</a></li>
+          <li><a href="iletisim.html" class="nav-btn" data-translate="nav-contact">İletişim</a></li>
+        </ul>
+      </nav>
+
+      <!-- MOBİL HAMBURGER -->
+      <button class="hamburger-btn" id="hamburgerBtn" aria-label="Menüyü Aç/Kapat">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+
+      <!-- MOBİL MENÜ (JS ID UYUMU İÇİN mainNavbar) -->
+      <nav class="main-navbar mobile-navbar" id="mainNavbar">
+        <ul>
+          <li><a href="index.html" class="" data-translate="nav-home">Anasayfa</a></li>
+          <li><a href="menu.html" class="active" data-translate="nav-menu">Menü</a></li>
+          <li><a href="galeri.html" class="" data-translate="nav-gallery">Galeri</a></li>
+          <li><a href="hakkimizda.html" class="" data-translate="nav-about">Hakkımızda</a></li>
+          <li><a href="rezervasyon.html" class="" data-translate="nav-reservation">Rezervasyon</a></li>
+          <li><a href="iletisim.html" class="nav-btn" data-translate="nav-contact">İletişim</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
 
     
     <main class="main-content">
@@ -220,6 +243,6 @@
 
     
     <script src="../public/js/translations.js"></script>
-  <script src="../public/js/main.js?v=2.1"></script>
+  <script src="../public/js/main.js?v=38.1"></script>
 </body>
 </html>

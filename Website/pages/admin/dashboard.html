@@ -336,6 +336,40 @@ body {
   border-color: #ffffff;
 }
 
+/* Masa Rezervasyon Filtreleri */
+.res-filters {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.btn-filter {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #bdc3c7;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-filter:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+}
+
+.btn-filter.active {
+  background: rgba(243, 156, 18, 0.18);
+  border-color: rgba(243, 156, 18, 0.4);
+  color: #f39c12;
+  font-weight: 600;
+}
+
 /* =========================================================
    5. KATEGORİ FİLTRE HAPLARI
    ========================================================= */
@@ -833,14 +867,14 @@ body {
   <!-- Quick Stats Card Section (Büyük Başlıklar & Sayılar) -->
     <section class="stats-grid" style="display: flex !important; flex-direction: row !important; width: 100% !important; background: rgba(15, 22, 28, 0.85) !important; border: 2px solid rgba(243, 156, 18, 0.45) !important; border-radius: 22px !important; overflow: hidden !important; margin-bottom: 45px !important; box-shadow: 0 25px 50px rgba(0,0,0,0.6) !important;">
       
-      <!-- Kart 1: Toplam Rezervasyon -->
+      <!-- Kart 1: Bugünün Rezervasyonları -->
       <div class="stat-card" style="flex: 1 1 0 !important; width: 25% !important; min-width: 0 !important; padding: 40px 26px !important; display: flex !important; align-items: center !important; gap: 20px !important; border-right: 1px solid rgba(255, 255, 255, 0.12) !important; margin: 0 !important; background: transparent !important; box-shadow: none !important; border-top: none !important; border-bottom: none !important; border-left: none !important;">
         <div class="stat-icon" style="width: 82px !important; height: 82px !important; min-width: 82px !important; flex-shrink: 0 !important; border-radius: 18px !important; background: rgba(243, 156, 18, 0.18) !important; color: #f39c12 !important; display: flex !important; justify-content: center !important; align-items: center !important; font-size: 2.4rem !important;">
           <i class="fa-solid fa-calendar-check"></i>
         </div>
         <div class="stat-info" style="flex: 1 !important; min-width: 0 !important; padding: 0 !important; margin: 0 !important; border: none !important; background: transparent !important;">
-          <h3 style="font-size: 1.15rem !important; font-weight: 800 !important; color: #f39c12 !important; margin: 0 0 6px 0 !important; text-transform: uppercase !important; letter-spacing: 0.8px !important; line-height: 1.25 !important; white-space: normal !important;">Toplam Rezervasyon</h3>
-          <p id="statTotalRes" style="font-size: 3.6rem !important; font-weight: 900 !important; color: #ffffff !important; margin: 0 !important; line-height: 1 !important;">4</p>
+          <h3 style="font-size: 1.15rem !important; font-weight: 800 !important; color: #f39c12 !important; margin: 0 0 6px 0 !important; text-transform: uppercase !important; letter-spacing: 0.8px !important; line-height: 1.25 !important; white-space: normal !important;">Bugünün Rezervasyonları</h3>
+          <p id="statTodayRes" style="font-size: 3.6rem !important; font-weight: 900 !important; color: #ffffff !important; margin: 0 !important; line-height: 1 !important;">0</p>
         </div>
       </div>
 
@@ -900,6 +934,18 @@ body {
           <div class="panel-header">
             <h2>Masa Rezervasyonları</h2>
             <button class="btn-refresh" onclick="loadReservations()"><i class="fa-solid fa-arrows-rotate"></i> Yenile</button>
+          </div>
+
+          <div class="res-filters">
+            <button class="btn-filter active" id="filterResAll" onclick="setReservationFilter('all')">
+              <i class="fa-solid fa-list"></i> Tümü
+            </button>
+            <button class="btn-filter" id="filterResFuture" onclick="setReservationFilter('future')">
+              <i class="fa-solid fa-calendar-days"></i> Gelecek Rezervasyonlar
+            </button>
+            <button class="btn-filter" id="filterResPast" onclick="setReservationFilter('past')">
+              <i class="fa-solid fa-clock-rotate-left"></i> Geçmiş Rezervasyonlar
+            </button>
           </div>
 
           <div class="table-container">
@@ -1224,107 +1270,167 @@ document.addEventListener('DOMContentLoaded', async () => {
 // 1. REZERVASYON İŞLEMLERİ (BEKLEMEYE AL DAHİL)
 // ==========================================
 
+// Global rezervasyon verisi ve filtre durumu
+let allReservations = [];
+let currentReservationFilter = 'all';
+
 async function loadReservations() {
-  const tableBody = document.getElementById('reservationsTableBody');
   try {
     const response = await fetch('/api/rezervasyonlar');
     if (!response.ok) throw new Error('Yetkisiz');
 
     const result = await response.json();
-    const items = result.data || [];
+    allReservations = result.data || [];
 
     // İstatistik Kartlarını Güncelle
-    const totalEl = document.getElementById('statTotalRes');
+    const todayEl = document.getElementById('statTodayRes');
     const pendingEl = document.getElementById('statPendingRes');
     const approvedEl = document.getElementById('statApprovedRes');
 
-    if (totalEl) totalEl.textContent = items.length;
-    if (pendingEl) pendingEl.textContent = items.filter(x => x.durum === 'Beklemede').length;
-    if (approvedEl) approvedEl.textContent = items.filter(x => x.durum === 'Onaylandı').length;
+    // Bugünün tarihini YYYY-MM-DD formatında bul
+    const d = new Date();
+    const todayStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 
-    if (items.length === 0) {
-      tableBody.innerHTML = `
-        <tr>
-          <td colspan="8">
-            <div class="empty-state">
-              <i class="fa-regular fa-calendar-minus"></i>
-              <p>Henüz rezervasyon kaydı bulunmamaktadır.</p>
-            </div>
-          </td>
-        </tr>
-      `;
-      return;
-    }
+    if (todayEl) todayEl.textContent = allReservations.filter(x => x.tarih === todayStr).length;
+    if (pendingEl) pendingEl.textContent = allReservations.filter(x => x.durum === 'Beklemede').length;
+    if (approvedEl) approvedEl.textContent = allReservations.filter(x => x.durum === 'Onaylandı').length;
 
-    tableBody.innerHTML = items.map(item => {
-      const masaNo = String((item.id % 18) + 1).padStart(2, '0');
-      const konumlar = ['(Geleneksel Odun Ateşi Katı)', '(Tarihi Avlu Tarafı)', '(Taş Fırın Yanı)', '(Üst Kat Balkon)', '(VIP Salon)'];
-      const konum = item.masa_bolgesi ? `(${item.masa_bolgesi} Bölgesi)` : konumlar[item.id % konumlar.length];
-
-      let dateStr = item.tarih || '';
-      if (dateStr.includes('-')) {
-        const parts = dateStr.split('-');
-        if (parts.length === 3) dateStr = `${parts[2]}.${parts[1]}.${parts[0]}`;
-      }
-
-      let badgeClass = item.durum === 'Onaylandı' ? 'badge-approved' : (item.durum === 'İptal Edildi' ? 'badge-cancelled' : 'badge-pending');
-      const notText = item.notlar ? item.notlar.trim() : '';
-      const shortNot = notText.length > 25 ? notText.substring(0, 22) + '...' : notText || '---';
-
-      return `
-        <tr>
-          <td><strong>#${item.id}</strong></td>
-          <td>
-            <div style="font-weight: 600; color: #fff;">${escapeHTML(item.ad_soyad)}</div>
-            <div style="font-size: 0.82rem; color: #95a5a6;"><i class="fa-solid fa-phone"></i> ${escapeHTML(item.telefon)}</div>
-          </td>
-          <td>
-            <div><i class="fa-regular fa-calendar"></i> ${dateStr}</div>
-            <div style="font-size: 0.85rem; color: #bdc3c7;"><i class="fa-regular fa-clock"></i> ${escapeHTML(item.saat)}</div>
-          </td>
-          <td>
-            <span style="font-weight: 600; color: #f39c12;">${item.kisi_sayisi}</span> Kişi
-            <div style="font-size: 0.78rem; color: #bdc3c7; margin-top: 2px;"><i class="fa-solid fa-chair" style="color: #f39c12; font-size: 0.7rem; margin-right: 2px;"></i> ${escapeHTML(item.masa_bolgesi || 'İç Mekan')}</div>
-          </td>
-          <td>
-            <div style="font-weight: 600;">Masa ${masaNo}</div>
-            <div style="font-size: 0.75rem; color: #bdc3c7;">${konum}</div>
-          </td>
-          <td>
-            ${notText ? `<span class="note-cell" onclick="showNoteModal('${escapeHTML(notText)}', 'Müşteri Notu')">${escapeHTML(shortNot)}</span>` : '<span style="opacity: 0.5;">---</span>'}
-          </td>
-          <td><span class="badge ${badgeClass}">${item.durum}</span></td>
-          <td>
-            <div class="actions-cell">
-              ${item.durum !== 'Onaylandı' ? `
-                <button class="btn-action btn-action-approve" onclick="updateReservationStatus(${item.id}, 'Onaylandı')">
-                  <i class="fa-solid fa-check"></i> Onayla
-                </button>
-              ` : ''}
-              
-              ${item.durum !== 'İptal Edildi' ? `
-                <button class="btn-action btn-action-cancel" onclick="updateReservationStatus(${item.id}, 'İptal Edildi')">
-                  <i class="fa-solid fa-ban"></i> İptal
-                </button>
-              ` : ''}
-
-              ${item.durum !== 'Beklemede' ? `
-                <button class="btn-action" style="background: rgba(243, 156, 18, 0.15); color: #f39c12; border: 1px solid rgba(243, 156, 18, 0.3);" onclick="updateReservationStatus(${item.id}, 'Beklemede')">
-                  <i class="fa-solid fa-rotate-left"></i> Beklemeye Al
-                </button>
-              ` : ''}
-
-              <button class="btn-action btn-action-delete" onclick="askDelete(${item.id}, 'reservation')">
-                <i class="fa-regular fa-trash-can"></i> Sil
-              </button>
-            </div>
-          </td>
-        </tr>
-      `;
-    }).join('');
+    renderReservations();
   } catch (err) {
     console.error('Rezervasyon yükleme hatası:', err);
   }
+}
+
+function setReservationFilter(filter) {
+  currentReservationFilter = filter;
+
+  // Filtre butonlarının aktiflik sınıflarını güncelle
+  document.querySelectorAll('.res-filters .btn-filter').forEach(btn => {
+    btn.classList.remove('active');
+  });
+
+  // Tıklanan butona active ekle
+  let btnId = '';
+  if (filter === 'all') btnId = 'filterResAll';
+  else if (filter === 'future') btnId = 'filterResFuture';
+  else if (filter === 'past') btnId = 'filterResPast';
+
+  const activeBtn = document.getElementById(btnId);
+  if (activeBtn) activeBtn.classList.add('active');
+
+  renderReservations();
+}
+
+function renderReservations() {
+  const tableBody = document.getElementById('reservationsTableBody');
+  if (!tableBody) return;
+
+  const d = new Date();
+  const todayStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+
+  // 1. Filtrele
+  let filtered = [];
+  if (currentReservationFilter === 'all') {
+    filtered = [...allReservations];
+  } else if (currentReservationFilter === 'future') {
+    filtered = allReservations.filter(x => x.tarih >= todayStr);
+  } else if (currentReservationFilter === 'past') {
+    filtered = allReservations.filter(x => x.tarih < todayStr);
+  }
+
+  // 2. Sırala
+  // Gelecek: En yakın tarih/saat en üstte (kronolojik artan)
+  // Geçmiş veya Tümü: En yeni tarih/saat en üstte (ters kronolojik azalan)
+  filtered.sort((a, b) => {
+    const dateTimeA = new Date(`${a.tarih}T${a.saat || '00:00'}`);
+    const dateTimeB = new Date(`${b.tarih}T${b.saat || '00:00'}`);
+    if (currentReservationFilter === 'future') {
+      return dateTimeA - dateTimeB;
+    } else {
+      return dateTimeB - dateTimeA;
+    }
+  });
+
+  if (filtered.length === 0) {
+    tableBody.innerHTML = `
+      <tr>
+        <td colspan="8">
+          <div class="empty-state" style="text-align: center; padding: 40px; color: #7f8c8d;">
+            <i class="fa-regular fa-calendar-minus" style="font-size: 2rem; margin-bottom: 10px; display: block;"></i>
+            <p>Filtreye uygun rezervasyon kaydı bulunmamaktadır.</p>
+          </div>
+        </td>
+      </tr>
+    `;
+    return;
+  }
+
+  tableBody.innerHTML = filtered.map(item => {
+    const masaNo = String((item.id % 18) + 1).padStart(2, '0');
+    const konumlar = ['(Geleneksel Odun Ateşi Katı)', '(Tarihi Avlu Tarafı)', '(Taş Fırın Yanı)', '(Üst Kat Balkon)', '(VIP Salon)'];
+    const konum = item.masa_bolgesi ? `(${item.masa_bolgesi} Bölgesi)` : konumlar[item.id % konumlar.length];
+
+    let dateStr = item.tarih || '';
+    if (dateStr.includes('-')) {
+      const parts = dateStr.split('-');
+      if (parts.length === 3) dateStr = `${parts[2]}.${parts[1]}.${parts[0]}`;
+    }
+
+    let badgeClass = item.durum === 'Onaylandı' ? 'badge-approved' : (item.durum === 'İptal Edildi' ? 'badge-cancelled' : 'badge-pending');
+    const notText = item.notlar ? item.notlar.trim() : '';
+    const shortNot = notText.length > 25 ? notText.substring(0, 22) + '...' : notText || '---';
+
+    return `
+      <tr>
+        <td><strong>#${item.id}</strong></td>
+        <td>
+          <div style="font-weight: 600; color: #fff;">${escapeHTML(item.ad_soyad)}</div>
+          <div style="font-size: 0.82rem; color: #95a5a6;"><i class="fa-solid fa-phone"></i> ${escapeHTML(item.telefon)}</div>
+        </td>
+        <td>
+          <div><i class="fa-regular fa-calendar"></i> ${dateStr}</div>
+          <div style="font-size: 0.85rem; color: #bdc3c7;"><i class="fa-regular fa-clock"></i> ${escapeHTML(item.saat)}</div>
+        </td>
+        <td>
+          <span style="font-weight: 600; color: #f39c12;">${item.kisi_sayisi}</span> Kişi
+          <div style="font-size: 0.78rem; color: #bdc3c7; margin-top: 2px;"><i class="fa-solid fa-chair" style="color: #f39c12; font-size: 0.7rem; margin-right: 2px;"></i> ${escapeHTML(item.masa_bolgesi || 'İç Mekan')}</div>
+        </td>
+        <td>
+          <div style="font-weight: 600;">Masa ${masaNo}</div>
+          <div style="font-size: 0.75rem; color: #bdc3c7;">${konum}</div>
+        </td>
+        <td>
+          ${notText ? `<span class="note-cell" onclick="showNoteModal('${escapeHTML(notText)}', 'Müşteri Notu')">${escapeHTML(shortNot)}</span>` : '<span style="opacity: 0.5;">---</span>'}
+        </td>
+        <td><span class="badge ${badgeClass}">${item.durum}</span></td>
+        <td>
+          <div class="actions-cell">
+            ${item.durum !== 'Onaylandı' ? `
+              <button class="btn-action btn-action-approve" onclick="updateReservationStatus(${item.id}, 'Onaylandı')">
+                <i class="fa-solid fa-check"></i> Onayla
+              </button>
+            ` : ''}
+            
+            ${item.durum !== 'İptal Edildi' ? `
+              <button class="btn-action btn-action-cancel" onclick="updateReservationStatus(${item.id}, 'İptal Edildi')">
+                <i class="fa-solid fa-ban"></i> İptal
+              </button>
+            ` : ''}
+
+            ${item.durum !== 'Beklemede' ? `
+              <button class="btn-action" style="background: rgba(243, 156, 18, 0.15); color: #f39c12; border: 1px solid rgba(243, 156, 18, 0.3);" onclick="updateReservationStatus(${item.id}, 'Beklemede')">
+                <i class="fa-solid fa-rotate-left"></i> Beklemeye Al
+              </button>
+            ` : ''}
+
+            <button class="btn-action btn-action-delete" onclick="askDelete(${item.id}, 'reservation')">
+              <i class="fa-regular fa-trash-can"></i> Sil
+            </button>
+          </div>
+        </td>
+      </tr>
+    `;
+  }).join('');
 }
 
 async function updateReservationStatus(id, newStatus) {
