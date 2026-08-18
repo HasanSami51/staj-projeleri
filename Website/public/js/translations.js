@@ -220,7 +220,7 @@ window.translations = {
     "ticket-status-label": "DURUM",
     "ticket-edit-btn": "Bilgileri Düzenle",
     "ticket-notice-text": "⚠️ Lütfen rezervasyon bilgilerinizin doğru olduğundan emin olunuz. İptal ve değişiklik talepleriniz için lütfen restoranımız ile iletişime geçiniz.",
-    "ticket-btn-save": "Telefonuna Kaydet (PDF)",
+    "ticket-btn-save": "PDF Olarak İndir",
     "ticket-btn-wa": "WhatsApp ile Masanı Teyit Et",
 
     // Galeri Sayfası (galeri.html)
@@ -235,7 +235,7 @@ window.translations = {
 
     "gallery-img-1": "Odun Ateşinde Kebap",
     "gallery-img-2": "Taş Fırın Pide",
-    "gallery-img-3": "Geleneksel Baklava",
+    "gallery-img-3": "Geleneksel Havuç Dilimi Baklava",
     "gallery-img-4": "Restoran İç Mekan",
     "gallery-img-5": "Izgara Çeşitleri",
     "gallery-img-6": "Çıtır Künefe",
@@ -607,7 +607,7 @@ window.translations = {
     "ticket-status-label": "STATUS",
     "ticket-edit-btn": "Edit Details",
     "ticket-notice-text": "⚠️ Please ensure your reservation information is correct. For cancellation and modification requests, please contact our restaurant.",
-    "ticket-btn-save": "Save to Phone (PDF)",
+    "ticket-btn-save": "Download as PDF",
     "ticket-btn-wa": "Confirm Table via WhatsApp",
 
     // Galeri Sayfası (galeri.html)
@@ -622,7 +622,7 @@ window.translations = {
 
     "gallery-img-1": "Wood-Fired Kebab",
     "gallery-img-2": "Stone-Oven Pide",
-    "gallery-img-3": "Traditional Baklava",
+    "gallery-img-3": "Traditional Carrot-Slice Baklava",
     "gallery-img-4": "Restaurant Interior",
     "gallery-img-5": "Grill Varieties",
     "gallery-img-6": "Crispy Kunefe",

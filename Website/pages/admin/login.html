@@ -346,9 +346,9 @@
             }, 1000);
           } else {
             showAlert(result.message || 'Kullanıcı adı veya şifre hatalı.', 'danger');
-            submitBtn.disabled = false;
-            btnSpinner.style.display = 'none';
-            btnText.textContent = 'Giriş Yap';
+            setTimeout(() => {
+              window.location.reload();
+            }, 1500);
           }
         } catch (err) {
           console.error('Giriş hatası:', err);

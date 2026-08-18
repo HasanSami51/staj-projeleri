@@ -1952,3 +1952,87 @@ document.addEventListener("DOMContentLoaded", () => {
   window.initLanguageSystem = initLanguageSystem;
   window.updateAtmosphereBtnTranslation = updateAtmosphereBtnTranslation;
 });
+
+// =====================================================
+// 🖨️ PDF BİLET İNDİRME FONKSİYONU (Global)
+// =====================================================
+window.downloadTicketPDF = async function() {
+  const ticketCard = document.querySelector('.vintage-ticket-card');
+  const btn = document.getElementById('btnDownloadPdf');
+
+  if (!ticketCard) {
+    alert('Bilet bulunamadı!');
+    return;
+  }
+
+  // Düğmeyi yükleniyor moduna al
+  const originalHTML = btn ? btn.innerHTML : '';
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Hazırlanıyor...';
+  }
+
+  // Aksiyon butonlarını geçici gizle (PDF'e girmesin)
+  const actionsDiv = ticketCard.querySelector('.res-ticket-actions');
+  if (actionsDiv) actionsDiv.style.display = 'none';
+
+  try {
+    const canvas = await html2canvas(ticketCard, {
+      scale: 2.5,
+      useCORS: true,
+      backgroundColor: null,
+      logging: false,
+      onclone: (clonedDoc) => {
+        // Klonlanan dokümanda da aksiyon butonlarını gizle
+        const clonedActions = clonedDoc.querySelector('.res-ticket-actions');
+        if (clonedActions) clonedActions.style.display = 'none';
+      }
+    });
+
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({
+      orientation: 'portrait',
+      unit: 'mm',
+      format: 'a5'
+    });
+
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = pdf.internal.pageSize.getHeight();
+
+    const imgWidth = canvas.width;
+    const imgHeight = canvas.height;
+    const ratio = imgWidth / imgHeight;
+
+    let finalWidth = pdfWidth - 16; // 8mm kenar boşlukları
+    let finalHeight = finalWidth / ratio;
+
+    // Sayfaya sığmazsa dikey olarak küçült
+    if (finalHeight > pdfHeight - 16) {
+      finalHeight = pdfHeight - 16;
+      finalWidth = finalHeight * ratio;
+    }
+
+    const xOffset = (pdfWidth - finalWidth) / 2;
+    const yOffset = (pdfHeight - finalHeight) / 2;
+
+    const imgData = canvas.toDataURL('image/png');
+    pdf.addImage(imgData, 'PNG', xOffset, yOffset, finalWidth, finalHeight);
+
+    // Dosya adını bilet verilerinden oluştur
+    const name = document.getElementById('cardTicketName')?.textContent?.trim().replace(/\s+/g, '_') || 'rezervasyon';
+    const date = document.getElementById('cardTicketDate')?.textContent?.trim().replace(/\./g, '-') || '';
+    const fileName = `Rezervasyon_Bileti_${name}${date ? '_' + date : ''}.pdf`;
+
+    pdf.save(fileName);
+  } catch (err) {
+    console.error('PDF oluşturulurken hata oluştu:', err);
+    alert('PDF oluşturulurken bir hata oluştu. Lütfen tekrar deneyiniz.');
+  } finally {
+    // Aksiyon butonlarını geri göster
+    if (actionsDiv) actionsDiv.style.display = '';
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = originalHTML;
+    }
+  }
+};

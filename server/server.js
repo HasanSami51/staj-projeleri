@@ -180,6 +180,15 @@ app.use((req, res, next) => {
 app.use(express.static(path.join(__dirname, '../Website/pages')));
 app.use(express.static(path.join(__dirname, '../Website')));
 
+// Admin Paneline Kısa Yol ve Yanlış Link Yönlendirmeleri
+app.get(['/admin', '/admin/', '/admin.html'], (req, res) => {
+  if (req.session && req.session.isAdmin) {
+    res.redirect('/admin/dashboard.html');
+  } else {
+    res.redirect('/admin/login.html');
+  }
+});
+
 // Ana sayfa için açık rota (Index Rota)
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../Website/pages/index.html'));
@@ -281,7 +290,7 @@ app.post('/api/rezervasyon', (req, res) => {
 
   // 6. Masa Bölgesi
   const selectedArea = area || 'Geleneksel Odun Ateşi Katı';
-  if (!['Geleneksel Odun Ateşi Katı', 'Tarihi Avlu Tarafı', 'Taş Fırın Yanı', 'Üst Kat Balkon', 'VIP Salon'].includes(selectedArea)) {
+  if (!['İç Mekan', 'Geleneksel Odun Ateşi Katı', 'Tarihi Avlu Tarafı', 'Taş Fırın Yanı', 'Üst Kat Balkon', 'VIP Salon'].includes(selectedArea)) {
     errors.push('Geçersiz masa bölgesi seçimi.');
   }
 
@@ -372,20 +381,80 @@ app.put('/api/rezervasyon/:id', (req, res) => {
     return res.status(400).json({ success: false, message: 'Lütfen tüm zorunlu alanları doldurunuz.' });
   }
 
-  const guestCount = parseInt(guests);
-  if (isNaN(guestCount) || guestCount < 1 || guestCount > 50) {
-    return res.status(400).json({ success: false, message: 'Geçersiz kişi sayısı.' });
+  // --- SUNUCU TARAFI DOĞRULAMA ---
+  const errors = [];
+
+  // 1. Ad Soyad
+  if (typeof name !== 'string' || name.trim().length < 3) {
+    errors.push('Ad soyad en az 3 karakter olmalıdır.');
   }
 
-  // Tarih DD.MM.YYYY → YYYY-MM-DD
-  let formattedDate = date;
-  if (date.includes('.')) {
-    const parts = date.split('.');
-    if (parts.length === 3) formattedDate = `${parts[2]}-${parts[1]}-${parts[0]}`;
+  // 2. Telefon (05XXXXXXXXX)
+  const phoneRegex = /^05[0-9]{9}$/;
+  if (!phoneRegex.test(phone.trim())) {
+    errors.push('Telefon numarası 05 ile başlayan 11 haneli format olmalıdır.');
   }
 
-  const validAreas = ['İç Mekan', 'Geleneksel Odun Ateşi Katı', 'Tarihi Avlu Tarafı', 'Taş Fırın Yanı', 'Üst Kat Balkon', 'VIP Salon'];
-  const selectedArea = validAreas.find(a => a === area) || area;
+  // 3. Tarih
+  if (typeof date !== 'string') {
+    errors.push('Geçerli bir tarih giriniz.');
+  }
+
+  // 4. Saat
+  if (typeof time !== 'string') {
+    errors.push('Geçerli bir saat giriniz.');
+  }
+
+  // 5. Kişi Sayısı
+  const guestCount = parseInt(guests, 10);
+  if (isNaN(guestCount) || guestCount < 1 || guestCount > 10) {
+    errors.push('Kişi sayısı 1 ile 10 arasında olmalıdır.');
+  }
+
+  // 6. Masa Bölgesi
+  const selectedArea = area || 'Geleneksel Odun Ateşi Katı';
+  const allowedAreas = ['İç Mekan', 'Geleneksel Odun Ateşi Katı', 'Tarihi Avlu Tarafı', 'Taş Fırın Yanı', 'Üst Kat Balkon', 'VIP Salon'];
+  if (!allowedAreas.includes(selectedArea)) {
+    errors.push('Geçersiz masa bölgesi seçimi.');
+  }
+
+  if (errors.length > 0) {
+    return res.status(400).json({ success: false, message: errors.join(' | '), errors });
+  }
+
+  // Tarih Formatını Standartlaştırma (DD.MM.YYYY -> YYYY-MM-DD)
+  let formattedDate = date.trim();
+  if (formattedDate.includes('.')) {
+    const parts = formattedDate.split('.');
+    if (parts.length === 3) {
+      formattedDate = `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
+    }
+  }
+
+  // 7. Geçmişe rezervasyon engellensin
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const selectedDate = new Date(formattedDate);
+  if (isNaN(selectedDate.getTime()) || selectedDate < today) {
+    return res.status(400).json({ success: false, message: 'Geçmiş bir tarihe rezervasyon yapılamaz.' });
+  }
+
+  // 8. Pazar günü kontrolü (0 = Pazar)
+  const dayOfWeek = selectedDate.getDay();
+  if (dayOfWeek === 0) {
+    return res.status(400).json({ success: false, message: 'Pazar günleri restoranımız kapalıdır.' });
+  }
+
+  // 9. Çalışma saatleri kontrolü
+  const [hours, minutes] = time.trim().split(':').map(Number);
+  const totalMinutes = hours * 60 + minutes;
+  const minMinutes = 10 * 60; // 10:00
+  const maxMinutes = (dayOfWeek === 5 || dayOfWeek === 6) ? 23 * 60 : 22 * 60; // Cum-Cmt: 23:00, diğer: 22:00
+
+  if (isNaN(hours) || isNaN(minutes) || totalMinutes < minMinutes || totalMinutes > maxMinutes) {
+    const maxStr = (dayOfWeek === 5 || dayOfWeek === 6) ? '23:00' : '22:00';
+    return res.status(400).json({ success: false, message: `Çalışma saatlerimiz bu gün için 10:00 - ${maxStr} arasındadır.` });
+  }
 
   const sql = `
     UPDATE rezervasyonlar

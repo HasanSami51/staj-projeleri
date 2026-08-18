@@ -139,78 +139,86 @@ body {
 }
 
 /* =========================================================
-   3. BİRLEŞİK İSTATİSTİK KARTLARI (KUSURSUZ SIĞMA & HİZALAMA)
+   3. BİRLEŞİK İSTATİSTİK KARTLARI (Çakışmaları önlemek için dash-metric-* olarak yeniden yazıldı)
    ========================================================= */
-.stats-grid {
-  display: flex !important;
-  flex-direction: row !important;
-  width: 100% !important;
-  margin-bottom: 35px !important;
-  background: rgba(15, 22, 28, 0.75) !important;
-  backdrop-filter: blur(15px) !important;
-  border: 1px solid rgba(243, 156, 18, 0.25) !important;
-  border-radius: 16px !important;
-  overflow: hidden !important;
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3) !important;
-  box-sizing: border-box !important;
+.dash-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  width: 100%;
+  margin-bottom: 35px;
+  box-sizing: border-box;
 }
 
-.stat-card {
-  flex: 1 1 0 !important;
-  width: auto !important;
-  min-width: 0 !important;
-  padding: 22px 20px !important;
+.dash-metric-card {
+  background: rgba(15, 22, 28, 0.75) !important;
+  backdrop-filter: blur(15px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+  border-radius: 16px !important;
+  padding: 34px 20px !important; /* Yüksekliği aşağıya doğru uzatmak için padding artırıldı */
   display: flex !important;
   align-items: center !important;
   gap: 16px !important;
-  background: transparent !important;
-  border: none !important;
-  border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
-  border-radius: 0 !important;
-  margin: 0 !important;
-  box-shadow: none !important;
-  transition: background 0.3s ease !important;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3) !important;
   box-sizing: border-box !important;
+  transition: all 0.3s ease !important;
 }
 
-.stat-card:last-child {
-  border-right: none !important;
+/* Masaüstü Hover Renkleri */
+.dash-metric-card-orange:hover {
+  border-color: rgba(243, 156, 18, 0.45) !important;
+  background: rgba(243, 156, 18, 0.02) !important;
+  transform: translateY(-2px);
+}
+.dash-metric-card-blue:hover {
+  border-color: rgba(52, 152, 219, 0.45) !important;
+  background: rgba(52, 152, 219, 0.02) !important;
+  transform: translateY(-2px);
+}
+.dash-metric-card-green:hover {
+  border-color: rgba(46, 204, 113, 0.45) !important;
+  background: rgba(46, 204, 113, 0.02) !important;
+  transform: translateY(-2px);
+}
+.dash-metric-card-red:hover {
+  border-color: rgba(231, 76, 60, 0.45) !important;
+  background: rgba(231, 76, 60, 0.02) !important;
+  transform: translateY(-2px);
 }
 
-.stat-card:hover {
-  background: rgba(255, 255, 255, 0.03) !important;
-}
-
-.stat-icon {
+.dash-metric-icon {
   width: 48px !important;
   height: 48px !important;
   min-width: 48px !important;
   flex-shrink: 0 !important;
   border-radius: 12px !important;
-  background: rgba(243, 156, 18, 0.12) !important;
-  color: #f39c12 !important;
   display: flex !important;
   justify-content: center !important;
   align-items: center !important;
   font-size: 1.35rem !important;
 }
 
-.stat-icon.blue {
+.dash-metric-icon.orange {
+  background: rgba(243, 156, 18, 0.12) !important;
+  color: #f39c12 !important;
+}
+
+.dash-metric-icon.blue {
   background: rgba(52, 152, 219, 0.12) !important;
   color: #3498db !important;
 }
 
-.stat-icon.green {
+.dash-metric-icon.green {
   background: rgba(46, 204, 113, 0.12) !important;
-  color: #2ecc71 !important;
+  color: #2ecc71;
 }
 
-.stat-icon.red {
+.dash-metric-icon.red {
   background: rgba(231, 76, 60, 0.12) !important;
   color: #e74c3c !important;
 }
 
-.stat-info {
+.dash-metric-info {
   flex: 1 !important;
   min-width: 0 !important;
   padding: 0 !important;
@@ -220,24 +228,41 @@ body {
   box-shadow: none !important;
 }
 
-.stat-info h3 {
+.dash-metric-info h3 {
   font-size: 0.82rem !important;
   font-weight: 700 !important;
-  color: #f39c12 !important;
   margin: 0 0 4px 0 !important;
   text-transform: uppercase !important;
   letter-spacing: 0.5px !important;
   white-space: normal !important;
   word-break: normal !important;
   line-height: 1.25 !important;
+  font-family: 'Inter', sans-serif !important;
+  text-shadow: none !important;
 }
 
-.stat-info p {
+/* Kartların Kendi Tema Renklerine Göre Başlık Yazısı Renkleri */
+.dash-metric-card-orange h3 {
+  color: #f39c12 !important;
+}
+.dash-metric-card-blue h3 {
+  color: #3498db !important;
+}
+.dash-metric-card-green h3 {
+  color: #2ecc71 !important;
+}
+.dash-metric-card-red h3 {
+  color: #e74c3c !important;
+}
+
+.dash-metric-info p {
   font-size: 1.7rem !important;
   font-weight: 800 !important;
   color: #ffffff !important;
   margin: 0 !important;
   line-height: 1 !important;
+  font-family: 'Inter', sans-serif !important;
+  text-shadow: none !important;
 }
 
 /* =========================================================
@@ -421,36 +446,38 @@ body {
 }
 
 .admin-table {
-  width: 100%;
-  border-collapse: collapse;
-  text-align: left;
-  font-size: 0.9rem;
+  width: 100% !important;
+  border-collapse: collapse !important;
+  text-align: left !important;
+  font-size: 0.9rem !important;
+  background: transparent !important;
 }
 
 .admin-table th {
-  background: rgba(255, 255, 255, 0.04);
-  padding: 15px 20px;
-  font-weight: 600;
-  color: #bdc3c7;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  text-transform: uppercase;
-  font-size: 0.8rem;
-  letter-spacing: 0.5px;
+  background: rgba(255, 255, 255, 0.04) !important;
+  padding: 15px 20px !important;
+  font-weight: 600 !important;
+  color: #bdc3c7 !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+  text-transform: uppercase !important;
+  font-size: 0.8rem !important;
+  letter-spacing: 0.5px !important;
 }
 
 .admin-table td {
-  padding: 16px 20px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-  color: #e2e8f0;
-  vertical-align: middle;
+  background: transparent !important;
+  padding: 16px 20px !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04) !important;
+  color: #e2e8f0 !important;
+  vertical-align: middle !important;
 }
 
 .admin-table tr:hover td {
-  background: rgba(255, 255, 255, 0.02);
+  background: rgba(255, 255, 255, 0.02) !important;
 }
 
 .admin-table tr:last-child td {
-  border-bottom: none;
+  border-bottom: none !important;
 }
 
 /* Kategori Başlık Satırı */
@@ -469,14 +496,15 @@ body {
    7. ROZETLER (BADGES) & AKSİYON BUTONLARI
    ========================================================= */
 .badge, .status-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 5px 12px;
-  border-radius: 20px;
-  font-size: 0.78rem;
-  font-weight: 600;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 5px !important;
+  padding: 5px 12px !important;
+  border-radius: 20px !important;
+  font-size: 0.78rem !important;
+  font-weight: 600 !important;
   text-decoration: none !important;
+  margin: 4px 6px 4px 0 !important; /* Rozetlerin sarıldığında dikey ve yatay yapışmasını önler */
 }
 
 .badge-pending, .status-badge.pending {
@@ -660,35 +688,39 @@ body {
   width: 100%;
 }
 
-.modal-actions button, .confirm-actions button {
-  flex: 1;
-  padding: 12px 20px;
-  border-radius: 8px;
-  font-size: 0.95rem;
-  font-weight: 600;
-  cursor: pointer;
-  border: none;
-  transition: all 0.2s ease;
+.btn-dialog, .modal-actions button, .confirm-actions button {
+  padding: 10px 22px !important;
+  border-radius: 8px !important;
+  font-size: 0.92rem !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  border: none !important;
+  transition: all 0.2s ease !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-width: 100px !important;
 }
 
 .btn-dialog-yes {
-  background: linear-gradient(135deg, #f39c12, #d35400);
-  color: #ffffff;
-  box-shadow: 0 4px 12px rgba(211, 84, 0, 0.3);
+  background: linear-gradient(135deg, #f39c12, #d35400) !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 12px rgba(211, 84, 0, 0.3) !important;
 }
 
 .btn-dialog-yes:hover {
-  background: #c0392b;
+  background: #c0392b !important;
 }
 
 .btn-dialog-no {
-  background-color: #212832;
-  color: #ffffff;
+  background-color: #212832 !important;
+  color: #ffffff !important;
   border: 1px solid rgba(255, 255, 255, 0.15) !important;
 }
 
 .btn-dialog-no:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.08) !important;
+  border-color: rgba(255, 255, 255, 0.35) !important;
 }
 
 .note-cell {
@@ -811,30 +843,274 @@ body {
 /* =========================================================
    11. RESPONSIVE DÜZENLEME
    ========================================================= */
+/* --- Tablet (≤1024px) --- */
 @media (max-width: 1024px) {
   .stats-grid {
-    flex-wrap: wrap !important;
+    flex-wrap: wrap;
   }
   .stat-card {
-    flex: 1 1 45% !important;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+    flex: 1 1 45%;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  .stat-card:nth-child(2n) {
+    border-right: none;
   }
 }
 
-@media (max-width: 768px) {
-  .admin-main {
-    padding: 20px 15px;
-  }
-  .dashboard-tabs {
+/* --- Tablet (≤1024px) --- */
+@media (max-width: 1024px) {
+  .stats-grid {
     flex-wrap: wrap;
   }
-  .dash-tab-btn {
-    flex: 1;
-    justify-content: center;
-  }
   .stat-card {
+    flex: 1 1 45%;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  .stat-card:nth-child(2n) {
+    border-right: none;
+  }
+}
+
+/* --- Mobil (≤768px) --- */
+@media (max-width: 768px) {
+  /* Header: 1. Fotoğraf için Orijinal Yatay Düzen */
+  .admin-header {
+    padding: 10px 14px !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 0 !important;
+    text-align: left !important;
+  }
+  
+  .admin-logo-section {
+    flex-direction: row !important;
+    gap: 8px !important;
+  }
+  
+  .admin-logo-img {
+    width: 32px !important;
+    height: 32px !important;
+  }
+  
+  .admin-logo-text h1 {
+    font-size: 0.95rem !important;
+  }
+  
+  .admin-logo-text p {
+    font-size: 0.6rem !important;
+  }
+  
+  .admin-user-menu {
+    width: auto !important;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    gap: 8px !important;
+    border-top: none !important;
+    padding-top: 0 !important;
+    margin-top: 0 !important;
+  }
+  
+  .admin-user-info {
+    font-size: 0.75rem !important;
+    margin-right: 2px !important;
+    white-space: nowrap !important;
+  }
+  
+  .btn-logout {
+    padding: 5px 10px !important;
+    font-size: 0.72rem !important;
+    white-space: nowrap !important;
+  }
+
+  /* Main alan */
+  .admin-main {
+    padding: 15px 10px !important;
+  }
+
+  /* İstatistik Kartları: Tek satırda 4 adet yan yana, dikey büzüşmeyi önleyici */
+  .dash-metrics-grid {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    gap: 6px !important;
+    width: 100% !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    overflow: hidden !important;
+    margin-bottom: 20px !important;
+  }
+  
+  .dash-metric-card {
+    flex: 1 1 25% !important;
+    width: 25% !important;
+    min-width: 0 !important;
+    padding: 8px 4px !important; /* Yüksekliği kısaltmak için padding küçüldü */
+    gap: 4px !important;
+    border: 1px solid rgba(255, 255, 255, 0.05) !important;
+    border-radius: 10px !important;
+    background: rgba(15, 22, 28, 0.75) !important;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    margin: 0 !important;
+  }
+
+  .dash-metric-icon {
+    width: 28px !important; /* İkon boyutu küçüldü */
+    height: 28px !important;
+    min-width: 28px !important;
+    font-size: 0.85rem !important;
+    border-radius: 6px !important;
+    margin: 0 auto !important;
+  }
+
+  .dash-metric-info {
+    text-align: center !important;
+    width: 100% !important;
+  }
+
+  .dash-metric-info h3 {
+    display: block !important; /* Yazıyı göster */
+    font-size: 5.5px !important; /* Son derece küçük yaparak sığmasını sağlıyoruz */
+    margin: 2px 0 1px 0 !important;
+    line-height: 1 !important;
+    white-space: normal !important;
+    overflow: visible !important;
+    text-transform: uppercase !important;
+    font-weight: 700 !important;
+    letter-spacing: -0.2px !important;
+  }
+
+  .dash-metric-info p {
+    font-size: 1.1rem !important; /* Sayı fontu dengelendi */
+    font-weight: 800 !important;
+    margin-top: 1px !important;
+    line-height: 1 !important;
+  }
+
+  /* Desktop/Tablet Hover Renk Sınıfları */
+  .dash-metric-card-orange:hover {
+    border-color: rgba(243, 156, 18, 0.45) !important;
+    background: rgba(243, 156, 18, 0.02) !important;
+  }
+  .dash-metric-card-blue:hover {
+    border-color: rgba(52, 152, 219, 0.45) !important;
+    background: rgba(52, 152, 219, 0.02) !important;
+  }
+  .dash-metric-card-green:hover {
+    border-color: rgba(46, 204, 113, 0.45) !important;
+    background: rgba(46, 204, 113, 0.02) !important;
+  }
+  .dash-metric-card-red:hover {
+    border-color: rgba(231, 76, 60, 0.45) !important;
+    background: rgba(231, 76, 60, 0.02) !important;
+  }
+
+
+  /* Sekme butonları: Kompakt yan yana */
+  .dashboard-tabs {
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    gap: 6px !important;
+    padding-bottom: 10px !important;
+  }
+  
+  .dash-tab-btn {
+    flex: 1 1 calc(50% - 6px) !important;
+    padding: 8px 10px !important;
+    font-size: 0.78rem !important;
+    justify-content: center !important;
+  }
+  
+  .dash-tab-btn:first-child {
     flex: 1 1 100% !important;
-    border-right: none !important;
+  }
+
+  /* Panel Header ve Filtreler */
+  .panel-header {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 10px !important;
+  }
+  
+  .panel-header h2 {
+    font-size: 1.1rem !important;
+  }
+  
+  .panel-header div {
+    display: flex !important;
+    justify-content: space-between !important;
+    width: 100% !important;
+  }
+
+  .res-filters {
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    gap: 6px !important;
+  }
+  
+  .btn-filter {
+    flex: 1 1 calc(33.33% - 6px) !important;
+    justify-content: center !important;
+    font-size: 0.75rem !important;
+    padding: 6px 8px !important;
+    white-space: nowrap !important;
+  }
+
+  /* Tablo responsive sıkışma çözümü (3. Fotoğraf - Sağa kaydırma mesafesi kısaltıldı) */
+  .table-container {
+    overflow-x: auto !important;
+  }
+
+  .admin-table {
+    min-width: 680px !important; /* Mesafe kısaldı, sıkışmadan okunabiliyor */
+  }
+
+  .admin-table th, 
+  .admin-table td {
+    padding: 10px 8px !important; /* Hücreler daraltıldı */
+    font-size: 0.76rem !important;
+  }
+
+  /* İşlem butonlarını küçültme */
+  .actions-cell {
+    gap: 4px !important;
+  }
+
+  .btn-action {
+    padding: 4px 6px !important;
+    height: 26px !important;
+    font-size: 0.68rem !important;
+  }
+
+  /* Modallar mobilde sığsın */
+  .confirm-modal-content,
+  .note-expanded-modal-content {
+    width: 92% !important;
+    padding: 15px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-header {
+    padding: 8px 10px !important;
+  }
+  .admin-user-info {
+    font-size: 0.7rem !important;
+  }
+  .btn-logout {
+    padding: 4px 8px !important;
+    font-size: 0.7rem !important;
+  }
+  .stat-info h3 {
+    font-size: 0.48rem !important;
   }
 }
   </style>
@@ -863,51 +1139,50 @@ body {
       </div>
     </header>
 
-    <main class="admin-main">
   <!-- Quick Stats Card Section (Büyük Başlıklar & Sayılar) -->
-    <section class="stats-grid" style="display: flex !important; flex-direction: row !important; width: 100% !important; background: rgba(15, 22, 28, 0.85) !important; border: 2px solid rgba(243, 156, 18, 0.45) !important; border-radius: 22px !important; overflow: hidden !important; margin-bottom: 45px !important; box-shadow: 0 25px 50px rgba(0,0,0,0.6) !important;">
+    <section class="dash-metrics-grid">
       
-      <!-- Kart 1: Bugünün Rezervasyonları -->
-      <div class="stat-card" style="flex: 1 1 0 !important; width: 25% !important; min-width: 0 !important; padding: 40px 26px !important; display: flex !important; align-items: center !important; gap: 20px !important; border-right: 1px solid rgba(255, 255, 255, 0.12) !important; margin: 0 !important; background: transparent !important; box-shadow: none !important; border-top: none !important; border-bottom: none !important; border-left: none !important;">
-        <div class="stat-icon" style="width: 82px !important; height: 82px !important; min-width: 82px !important; flex-shrink: 0 !important; border-radius: 18px !important; background: rgba(243, 156, 18, 0.18) !important; color: #f39c12 !important; display: flex !important; justify-content: center !important; align-items: center !important; font-size: 2.4rem !important;">
+      <!-- Kart 1: Bugünün Rezervasyonları (Turuncu) -->
+      <div class="dash-metric-card dash-metric-card-orange">
+        <div class="dash-metric-icon orange">
           <i class="fa-solid fa-calendar-check"></i>
         </div>
-        <div class="stat-info" style="flex: 1 !important; min-width: 0 !important; padding: 0 !important; margin: 0 !important; border: none !important; background: transparent !important;">
-          <h3 style="font-size: 1.15rem !important; font-weight: 800 !important; color: #f39c12 !important; margin: 0 0 6px 0 !important; text-transform: uppercase !important; letter-spacing: 0.8px !important; line-height: 1.25 !important; white-space: normal !important;">Bugünün Rezervasyonları</h3>
-          <p id="statTodayRes" style="font-size: 3.6rem !important; font-weight: 900 !important; color: #ffffff !important; margin: 0 !important; line-height: 1 !important;">0</p>
+        <div class="dash-metric-info">
+          <h3>Bugünün Rezervasyonları</h3>
+          <p id="statTodayRes">0</p>
         </div>
       </div>
 
-      <!-- Kart 2: Bekleyen Talepler -->
-      <div class="stat-card" style="flex: 1 1 0 !important; width: 25% !important; min-width: 0 !important; padding: 40px 26px !important; display: flex !important; align-items: center !important; gap: 20px !important; border-right: 1px solid rgba(255, 255, 255, 0.12) !important; margin: 0 !important; background: transparent !important; box-shadow: none !important; border-top: none !important; border-bottom: none !important; border-left: none !important;">
-        <div class="stat-icon blue" style="width: 82px !important; height: 82px !important; min-width: 82px !important; flex-shrink: 0 !important; border-radius: 18px !important; background: rgba(52, 152, 219, 0.18) !important; color: #3498db !important; display: flex !important; justify-content: center !important; align-items: center !important; font-size: 2.4rem !important;">
+      <!-- Kart 2: Bekleyen Talepler (Mavi) -->
+      <div class="dash-metric-card dash-metric-card-blue">
+        <div class="dash-metric-icon blue">
           <i class="fa-solid fa-clock"></i>
         </div>
-        <div class="stat-info" style="flex: 1 !important; min-width: 0 !important; padding: 0 !important; margin: 0 !important; border: none !important; background: transparent !important;">
-          <h3 style="font-size: 1.15rem !important; font-weight: 800 !important; color: #f39c12 !important; margin: 0 0 6px 0 !important; text-transform: uppercase !important; letter-spacing: 0.8px !important; line-height: 1.25 !important; white-space: normal !important;">Bekleyen Talepler</h3>
-          <p id="statPendingRes" style="font-size: 3.6rem !important; font-weight: 900 !important; color: #ffffff !important; margin: 0 !important; line-height: 1 !important;">1</p>
+        <div class="dash-metric-info">
+          <h3>Bekleyen Talepler</h3>
+          <p id="statPendingRes">1</p>
         </div>
       </div>
 
-      <!-- Kart 3: Onaylananlar -->
-      <div class="stat-card" style="flex: 1 1 0 !important; width: 25% !important; min-width: 0 !important; padding: 40px 26px !important; display: flex !important; align-items: center !important; gap: 20px !important; border-right: 1px solid rgba(255, 255, 255, 0.12) !important; margin: 0 !important; background: transparent !important; box-shadow: none !important; border-top: none !important; border-bottom: none !important; border-left: none !important;">
-        <div class="stat-icon green" style="width: 82px !important; height: 82px !important; min-width: 82px !important; flex-shrink: 0 !important; border-radius: 18px !important; background: rgba(46, 204, 113, 0.18) !important; color: #2ecc71 !important; display: flex !important; justify-content: center !important; align-items: center !important; font-size: 2.4rem !important;">
+      <!-- Kart 3: Onaylananlar (Yeşil) -->
+      <div class="dash-metric-card dash-metric-card-green">
+        <div class="dash-metric-icon green">
           <i class="fa-solid fa-circle-check"></i>
         </div>
-        <div class="stat-info" style="flex: 1 !important; min-width: 0 !important; padding: 0 !important; margin: 0 !important; border: none !important; background: transparent !important;">
-          <h3 style="font-size: 1.15rem !important; font-weight: 800 !important; color: #f39c12 !important; margin: 0 0 6px 0 !important; text-transform: uppercase !important; letter-spacing: 0.8px !important; line-height: 1.25 !important; white-space: normal !important;">Onaylananlar</h3>
-          <p id="statApprovedRes" style="font-size: 3.6rem !important; font-weight: 900 !important; color: #ffffff !important; margin: 0 !important; line-height: 1 !important;">3</p>
+        <div class="dash-metric-info">
+          <h3>Onaylananlar</h3>
+          <p id="statApprovedRes">3</p>
         </div>
       </div>
 
-      <!-- Kart 4: Okunmamış Mesajlar -->
-      <div class="stat-card" style="flex: 1 1 0 !important; width: 25% !important; min-width: 0 !important; padding: 40px 26px !important; display: flex !important; align-items: center !important; gap: 20px !important; border: none !important; margin: 0 !important; background: transparent !important; box-shadow: none !important;">
-        <div class="stat-icon red" style="width: 82px !important; height: 82px !important; min-width: 82px !important; flex-shrink: 0 !important; border-radius: 18px !important; background: rgba(231, 76, 60, 0.18) !important; color: #e74c3c !important; display: flex !important; justify-content: center !important; align-items: center !important; font-size: 2.4rem !important;">
+      <!-- Kart 4: Okunmamış Mesajlar (Kırmızı) -->
+      <div class="dash-metric-card dash-metric-card-red">
+        <div class="dash-metric-icon red">
           <i class="fa-solid fa-envelope-open-text"></i>
         </div>
-        <div class="stat-info" style="flex: 1 !important; min-width: 0 !important; padding: 0 !important; margin: 0 !important; border: none !important; background: transparent !important;">
-          <h3 style="font-size: 1.15rem !important; font-weight: 800 !important; color: #f39c12 !important; margin: 0 0 6px 0 !important; text-transform: uppercase !important; letter-spacing: 0.8px !important; line-height: 1.25 !important; white-space: normal !important;">Okunmamış Mesajlar</h3>
-          <p id="statUnreadMessages" style="font-size: 3.6rem !important; font-weight: 900 !important; color: #ffffff !important; margin: 0 !important; line-height: 1 !important;">3</p>
+        <div class="dash-metric-info">
+          <h3>Okunmamış Mesajlar</h3>
+          <p id="statUnreadMessages">3</p>
         </div>
       </div>
 
@@ -1400,7 +1675,7 @@ function renderReservations() {
           <div style="font-size: 0.75rem; color: #bdc3c7;">${konum}</div>
         </td>
         <td>
-          ${notText ? `<span class="note-cell" onclick="showNoteModal('${escapeHTML(notText)}', 'Müşteri Notu')">${escapeHTML(shortNot)}</span>` : '<span style="opacity: 0.5;">---</span>'}
+          ${notText ? `<span class="note-cell" data-text="${escapeHTML(notText)}" onclick="showNoteModal(this.getAttribute('data-text'), 'Müşteri Notu')">${escapeHTML(shortNot)}</span>` : '<span style="opacity: 0.5;">---</span>'}
         </td>
         <td><span class="badge ${badgeClass}">${item.durum}</span></td>
         <td>
@@ -1495,7 +1770,7 @@ async function loadMessages() {
           </td>
           <td>${escapeHTML(item.konu)}</td>
           <td>
-            <span class="note-cell" style="color: #cbd5e1;" onclick="showAndReadMessage(${item.id}, '${escapeHTML(item.ad_soyad)}', '${escapeHTML(item.mesaj)}')">
+            <span class="note-cell" style="color: #cbd5e1;" data-name="${escapeHTML(item.ad_soyad)}" data-msg="${escapeHTML(item.mesaj)}" onclick="showAndReadMessage(${item.id}, this.getAttribute('data-name'), this.getAttribute('data-msg'))">
               ${escapeHTML(shortMsg)}
             </span>
           </td>
@@ -1700,14 +1975,17 @@ function generateItemRowHTML(item) {
     ? '<span class="status-badge approved">Yayında</span>'
     : '<span class="status-badge cancelled">Gizli</span>';
 
+  const descText = item.aciklama || '';
+  const shortDesc = descText.length > 35 ? descText.substring(0, 35) + '...' : descText;
+
   return `
     <tr>
       <td><strong>#${item.id}</strong></td>
       <td><span style="color: #f39c12; font-weight: 500;">${escapeHTML(item.kategoriAdi || item.kategori)}</span></td>
       <td><strong style="color: #ffffff;">${escapeHTML(item.ad)}</strong></td>
       <td><span style="color: #2ecc71; font-weight: 600;">₺${item.fiyat}</span></td>
-      <td style="max-width: 250px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${escapeHTML(item.aciklama || '')}">
-        ${escapeHTML(item.aciklama || '---')}
+      <td>
+        ${descText ? `<span class="note-cell" data-text="${escapeHTML(descText)}" data-title="${escapeHTML(item.ad)} Açıklaması" onclick="showNoteModal(this.getAttribute('data-text'), this.getAttribute('data-title'))">${escapeHTML(shortDesc)}</span>` : '<span style="opacity: 0.5;">---</span>'}
       </td>
       <td>${durumHTML}</td>
       <td style="text-align: center;">

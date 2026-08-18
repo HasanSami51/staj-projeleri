@@ -6650,6 +6650,10 @@ header .main-navbar ul li a.nav-btn:hover::after {
   width: 100% !important;
 }
 
+header .main-navbar ul li a.nav-btn.active {
+  color: #f4c842 !important;
+}
+
 header .main-navbar ul li a.nav-btn.active::after {
   width: 100% !important;
   box-shadow: 0 0 6px rgba(212, 175, 55, 0.55) !important;
@@ -6872,7 +6876,8 @@ main.main-content:not(:has(.hero-wrapper)):not(:has(.hero-section)) {
     font-weight: 500 !important;
     border-color: transparent !important;
   }
-  .main-header .mobile-navbar ul li a.nav-btn:hover {
+  .main-header .mobile-navbar ul li a.nav-btn:hover,
+  .main-header .mobile-navbar ul li a.nav-btn.active {
     background: none !important;
     color: #f4c842 !important;
     border-color: transparent !important;

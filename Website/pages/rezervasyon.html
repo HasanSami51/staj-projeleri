@@ -27,6 +27,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="../public/css/style.css?v=38">
+  <!-- PDF İndirme Kütüphaneleri -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
     <video id="globalBgVideo" autoplay loop muted playsinline class="global-bg-video">
@@ -243,7 +246,7 @@
                           </div>
 
                           <div class="res-ticket-actions">
-                            <button type="button" class="btn-ticket-action vintage-btn" onclick="window.print()"><i class="fa-solid fa-mobile-screen-button"></i> <span data-translate="ticket-btn-save">Telefonuna Kaydet (PDF)</span></button>
+                            <button type="button" class="btn-ticket-action vintage-btn" id="btnDownloadPdf" onclick="downloadTicketPDF()"><i class="fa-solid fa-file-pdf"></i> <span data-translate="ticket-btn-save">PDF Olarak İndir</span></button>
                             <a href="https://wa.me/902325137567?text=Merhaba,%20Masa%20No:%2007%20rezervasyonum%20hakkinda%20bilgi%20almak%20istiyorum." target="_blank" class="btn-ticket-action btn-wa vintage-btn-wa" id="cardTicketWaBtn"><i class="fa-brands fa-whatsapp"></i> <span data-translate="ticket-btn-wa">WhatsApp ile Masanı Teyit Et</span></a>
                             <button type="button" class="btn-ticket-action vintage-btn-edit" id="btnEditReservation" data-translate="ticket-edit-btn"><i class="fa-solid fa-pen-to-square"></i> Bilgileri Düzenle</button>
                           </div>
