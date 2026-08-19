@@ -26,7 +26,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <link rel="stylesheet" href="../public/css/style.css?v=38">
+  <link rel="stylesheet" href="../public/css/style.css?v=290">
   <!-- PDF İndirme Kütüphaneleri -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -58,7 +58,7 @@
 
       <!-- ORTA LOGO -->
       <div class="logo">
-        <a href="index.html" class="logo-link" title="Lezzet Mührü 1932"><img src="../public/images/logo.png" class="logo-img" alt="Lezzet Mührü 1932 Logo"></a>
+        <a href="index.html" class="logo-link" title="Lezzet Mührü 1932"><img src="../public/images/favicon-round.png" class="logo-img" alt="Lezzet Mührü 1932 Logo"></a>
       </div>
 
       <!-- SAĞ NAV -->
@@ -209,12 +209,13 @@
                       <!-- 1932 NOSTALJİK MASA MÜHRÜ REZERVAZYON BİLET KUTUSU -->
                       <div id="resTicketContainer" class="res-ticket-result-wrapper" style="display: none;">
                         <div class="vintage-ticket-card">
+                          <button type="button" class="btn-ticket-close" id="btnCloseTicket" aria-label="Bileti Kapat" title="Kapat"><i class="fa-solid fa-xmark"></i></button>
                           <div class="vintage-ticket-top">
                             <div class="vintage-stamp-badge">
                               <img src="../public/images/logo.png" alt="1932 Mühür" class="vintage-seal-img">
                               <span data-translate="ticket-logo-text">1932 LEZZET MÜHRÜ</span>
                             </div>
-                            <div class="vintage-status-pill">
+                            <div class="vintage-status-pill" id="cardTicketStatus">
                               <span class="pulse-dot-amber"></span> <span data-translate="ticket-status-approved">⏳ Restoran Onayı Bekliyor</span>
                             </div>
                           </div>
@@ -249,6 +250,7 @@
                             <button type="button" class="btn-ticket-action vintage-btn" id="btnDownloadPdf" onclick="downloadTicketPDF()"><i class="fa-solid fa-file-pdf"></i> <span data-translate="ticket-btn-save">PDF Olarak İndir</span></button>
                             <a href="https://wa.me/902325137567?text=Merhaba,%20Masa%20No:%2007%20rezervasyonum%20hakkinda%20bilgi%20almak%20istiyorum." target="_blank" class="btn-ticket-action btn-wa vintage-btn-wa" id="cardTicketWaBtn"><i class="fa-brands fa-whatsapp"></i> <span data-translate="ticket-btn-wa">WhatsApp ile Masanı Teyit Et</span></a>
                             <button type="button" class="btn-ticket-action vintage-btn-edit" id="btnEditReservation" data-translate="ticket-edit-btn"><i class="fa-solid fa-pen-to-square"></i> Bilgileri Düzenle</button>
+                            <button type="button" class="btn-ticket-action vintage-btn-close" id="btnCloseTicketBottom" data-translate="ticket-btn-close"><i class="fa-solid fa-arrow-left"></i> Kapat / Yeni Sorgu</button>
                           </div>
                        </div>
                      </div>

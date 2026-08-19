@@ -264,6 +264,8 @@ app.post('/api/rezervasyon', (req, res) => {
   // 1. Ad Soyad
   if (!name || typeof name !== 'string' || name.trim().length < 3) {
     errors.push('Ad soyad en az 3 karakter olmalıdır.');
+  } else if (name.trim().length > 100) {
+    errors.push('Ad soyad en fazla 100 karakter olabilir.');
   }
 
   // 2. Telefon (05XXXXXXXXX)
@@ -292,6 +294,11 @@ app.post('/api/rezervasyon', (req, res) => {
   const selectedArea = area || 'Geleneksel Odun Ateşi Katı';
   if (!['İç Mekan', 'Geleneksel Odun Ateşi Katı', 'Tarihi Avlu Tarafı', 'Taş Fırın Yanı', 'Üst Kat Balkon', 'VIP Salon'].includes(selectedArea)) {
     errors.push('Geçersiz masa bölgesi seçimi.');
+  }
+
+  // 7. Özel Notlar Uzunluk Kontrolü
+  if (notes && typeof notes === 'string' && notes.trim().length > 1000) {
+    errors.push('Özel notlar en fazla 1000 karakter olabilir.');
   }
 
   if (errors.length > 0) {
@@ -590,18 +597,18 @@ app.post('/api/iletisim', (req, res) => {
     const temizKonu  = konu ? String(konu).trim() : 'Genel Soru';
     const temizMesaj = String(mesaj).trim();
 
-    // 2a. Ad uzunluğu en az 3 karakter
-    if (temizAd.length < 3) {
+    // 2a. Ad uzunluğu en az 3, en fazla 100 karakter
+    if (temizAd.length < 3 || temizAd.length > 100) {
       return res.status(400).json({
         success: false,
         hata: 'gecersiz_ad',
-        mesaj: 'Ad Soyad en az 3 karakter olmalıdır.'
+        mesaj: 'Ad Soyad 3 ile 100 karakter arasında olmalıdır.'
       });
     }
 
-    // 2b. E-posta format doğrulaması (RFC benzeri regex)
+    // 2b. E-posta format doğrulaması (RFC benzeri regex) ve max 100 karakter
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-    if (!emailRegex.test(temizEposta)) {
+    if (!emailRegex.test(temizEposta) || temizEposta.length > 100) {
       return res.status(400).json({
         success: false,
         hata: 'gecersiz_eposta',
@@ -609,21 +616,21 @@ app.post('/api/iletisim', (req, res) => {
       });
     }
 
-    // 2c. Mesaj uzunluğu en az 10 karakter
-    if (temizMesaj.length < 10) {
+    // 2c. Mesaj uzunluğu en az 10, en fazla 2000 karakter
+    if (temizMesaj.length < 10 || temizMesaj.length > 2000) {
       return res.status(400).json({
         success: false,
-        hata: 'kisa_mesaj',
-        mesaj: 'Mesaj en az 10 karakter olmalıdır.'
+        hata: 'gecersiz_mesaj',
+        mesaj: 'Mesaj 10 ile 2000 karakter arasında olmalıdır.'
       });
     }
 
-    // 2d. Konu uzunluğu (opsiyonel ama doluysa min 3 karakter)
-    if (konu && temizKonu.length < 3) {
+    // 2d. Konu uzunluğu (opsiyonel ama doluysa 3-150 karakter)
+    if (konu && (temizKonu.length < 3 || temizKonu.length > 150)) {
       return res.status(400).json({
         success: false,
         hata: 'gecersiz_konu',
-        mesaj: 'Konu en az 3 karakter olmalıdır.'
+        mesaj: 'Konu 3 ile 150 karakter arasında olmalıdır.'
       });
     }
 
@@ -777,7 +784,7 @@ app.post('/api/rezervasyonlar/durum/:id', (req, res) => {
 });
 
 // 6. Tüm İletişim Mesajlarını Getir (GET /api/mesajlar) - Korunmalı
-app.get('/api/mesajlar', (req, res) => {
+app.get(['/api/mesajlar', '/api/admin/mesajlar', '/admin/messages'], (req, res) => {
   if (!req.session || !req.session.isAdmin) {
     return res.status(401).json({ success: false, error: 'unauthorized', message: 'Yetkisiz erişim.' });
   }
@@ -787,28 +794,37 @@ app.get('/api/mesajlar', (req, res) => {
   });
 });
 
-// 7. İletişim Mesajı Durumu Güncelle (POST /api/mesajlar/durum/:id) - Korunmalı
-app.post('/api/mesajlar/durum/:id', (req, res) => {
+// 7. İletişim Mesajı Durumu Güncelle (POST /api/mesajlar/durum/:id veya /admin/messages/:id/read) - Korunmalı
+app.all(['/api/mesajlar/durum/:id', '/api/admin/mesajlar/durum/:id', '/admin/messages/:id/read'], (req, res) => {
   if (!req.session || !req.session.isAdmin) {
     return res.status(401).json({ success: false, error: 'unauthorized', message: 'Yetkisiz erişim.' });
   }
   const { id } = req.params;
-  const { durum } = req.body;
+  const durum = req.body.durum || (req.body.isRead ? 'Okundu' : 'Okundu');
+  
   db.run("UPDATE mesajlar SET durum = ? WHERE id = ?", [durum, id], function(err) {
     if (err) return res.status(500).json({ success: false, error: err.message });
-    res.json({ success: true, message: 'Mesaj durumu güncellendi.' });
+    if (this.changes === 0) {
+      return res.status(404).json({ success: false, message: 'Mesaj bulunamadı.' });
+    }
+    console.log(`✉️ Mesaj ID ${id} durumu güncellendi: ${durum}`);
+    res.json({ success: true, message: 'Mesaj durumu güncellendi.', id: parseInt(id), durum });
   });
 });
 
-// 8. İletişim Mesajı Sil (DELETE /api/mesajlar/:id) - Korunmalı
-app.delete('/api/mesajlar/:id', (req, res) => {
+// 8. İletişim Mesajı Sil (DELETE /api/mesajlar/:id veya /admin/messages/:id) - Korunmalı
+app.delete(['/api/mesajlar/:id', '/api/admin/mesajlar/:id', '/admin/messages/:id'], (req, res) => {
   if (!req.session || !req.session.isAdmin) {
     return res.status(401).json({ success: false, error: 'unauthorized', message: 'Yetkisiz erişim.' });
   }
   const { id } = req.params;
   db.run("DELETE FROM mesajlar WHERE id = ?", [id], function(err) {
     if (err) return res.status(500).json({ success: false, error: err.message });
-    res.json({ success: true, message: 'Mesaj silindi.' });
+    if (this.changes === 0) {
+      return res.status(404).json({ success: false, message: 'Silinecek mesaj bulunamadı.' });
+    }
+    console.log(`🗑️ Mesaj ID ${id} silindi.`);
+    res.json({ success: true, message: 'Mesaj başarıyla silindi.', id: parseInt(id) });
   });
 });
 

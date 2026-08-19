@@ -1762,7 +1762,7 @@ async function loadMessages() {
       const shortMsg = item.mesaj.length > 30 ? item.mesaj.substring(0, 27) + '...' : item.mesaj;
 
       return `
-        <tr style="${isUnread ? 'background: rgba(52, 152, 219, 0.03);' : ''}">
+        <tr id="msg-row-${item.id}" style="${isUnread ? 'background: rgba(52, 152, 219, 0.03);' : ''}">
           <td><strong>#${item.id}</strong></td>
           <td>
             <div style="font-weight: 600; color: #fff;">${escapeHTML(item.ad_soyad)}</div>
@@ -1775,18 +1775,12 @@ async function loadMessages() {
             </span>
           </td>
           <td>${new Date(item.olusturulma_tarihi).toLocaleDateString('tr-TR')}</td>
-          <td><span class="badge ${item.durum === 'Okundu' ? 'badge-read' : 'badge-unread'}">${item.durum}</span></td>
+          <td><span id="msg-badge-${item.id}" class="badge ${item.durum === 'Okundu' ? 'badge-read' : 'badge-unread'}">${item.durum}</span></td>
           <td>
             <div class="actions-cell">
-              ${isUnread ? `
-                <button class="btn-action btn-action-read" onclick="markMessageRead(${item.id}, 'Okundu')">
-                  <i class="fa-regular fa-envelope-open"></i> Okundu
-                </button>
-              ` : `
-                <button class="btn-action" style="background: rgba(255,255,255,0.06); color:#bdc3c7;" onclick="markMessageRead(${item.id}, 'Okunmadı')">
-                  <i class="fa-regular fa-envelope"></i> Okunmadı
-                </button>
-              `}
+              <button id="msg-btn-${item.id}" class="btn-action ${isUnread ? 'btn-action-read' : ''}" style="${!isUnread ? 'background: rgba(255,255,255,0.06); color:#bdc3c7;' : ''}" onclick="toggleMessageStatus(${item.id})">
+                <i class="${isUnread ? 'fa-regular fa-envelope-open' : 'fa-regular fa-envelope'}"></i> ${isUnread ? 'Okundu' : 'Okunmadı'}
+              </button>
               <button class="btn-action btn-action-delete" onclick="askDelete(${item.id}, 'message')">
                 <i class="fa-regular fa-trash-can"></i> Sil
               </button>
@@ -1800,34 +1794,85 @@ async function loadMessages() {
   }
 }
 
-async function markMessageRead(id, status) {
+async function toggleMessageStatus(id) {
+  const row = document.getElementById(`msg-row-${id}`);
+  const badge = document.getElementById(`msg-badge-${id}`);
+  const btn = document.getElementById(`msg-btn-${id}`);
+  const statUnread = document.getElementById('statUnreadMessages');
+
+  if (!badge) return;
+
+  const currentStatus = badge.textContent.trim();
+  const targetStatus = currentStatus === 'Okundu' ? 'Okunmadı' : 'Okundu';
+
+  if (btn) {
+    btn.disabled = true;
+    btn.style.opacity = '0.6';
+  }
+
   try {
     const response = await fetch(`/api/mesajlar/durum/${id}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ durum: status })
+      body: JSON.stringify({ durum: targetStatus })
     });
     const result = await response.json();
-    if (result.success) {
-      showToast('Mesaj durumu güncellendi.');
-      loadMessages();
+
+    if (result && result.success) {
+      if (targetStatus === 'Okundu') {
+        badge.className = 'badge badge-read';
+        badge.textContent = 'Okundu';
+        if (btn) {
+          btn.className = 'btn-action';
+          btn.style.background = 'rgba(255,255,255,0.06)';
+          btn.style.color = '#bdc3c7';
+          btn.innerHTML = '<i class="fa-regular fa-envelope"></i> Okunmadı';
+        }
+        if (row) row.style.background = 'transparent';
+        if (statUnread) {
+          const currentCount = parseInt(statUnread.textContent) || 0;
+          statUnread.textContent = Math.max(0, currentCount - 1);
+        }
+        showToast('Mesaj durumu "Okundu" olarak güncellendi.');
+      } else {
+        badge.className = 'badge badge-unread';
+        badge.textContent = 'Okunmadı';
+        if (btn) {
+          btn.className = 'btn-action btn-action-read';
+          btn.style.background = '';
+          btn.style.color = '';
+          btn.innerHTML = '<i class="fa-regular fa-envelope-open"></i> Okundu';
+        }
+        if (row) row.style.background = 'rgba(52, 152, 219, 0.03)';
+        if (statUnread) {
+          const currentCount = parseInt(statUnread.textContent) || 0;
+          statUnread.textContent = currentCount + 1;
+        }
+        showToast('Mesaj durumu "Okunmadı" olarak güncellendi.');
+      }
+    } else {
+      showToast(result.message || 'Mesaj durumu güncellenemedi.', true);
     }
   } catch (err) {
     console.error(err);
+    showToast('Sunucu bağlantı hatası oluştu.', true);
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.style.opacity = '1';
+    }
   }
+}
+
+async function markMessageRead(id, status) {
+  return toggleMessageStatus(id);
 }
 
 async function showAndReadMessage(id, name, msg) {
   showNoteModal(msg, `${name} Tarafından Gönderilen Mesaj`);
-  try {
-    await fetch(`/api/mesajlar/durum/${id}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ durum: 'Okundu' })
-    });
-    loadMessages();
-  } catch (err) {
-    console.error(err);
+  const badge = document.getElementById(`msg-badge-${id}`);
+  if (badge && badge.textContent.trim() !== 'Okundu') {
+    toggleMessageStatus(id);
   }
 }
 
@@ -2190,8 +2235,10 @@ function closeConfirmModal() {
 
 async function handleConfirmDelete() {
   if (!currentDeleteId || !currentDeleteType) return;
-  const endpoint = currentDeleteType === 'reservation' ? `/api/rezervasyonlar/${currentDeleteId}` :
-                   currentDeleteType === 'menu' ? `/admin/urun/${currentDeleteId}` : `/api/mesajlar/${currentDeleteId}`;
+  const delId = currentDeleteId;
+  const delType = currentDeleteType;
+  const endpoint = delType === 'reservation' ? `/api/rezervasyonlar/${delId}` :
+                   delType === 'menu' ? `/admin/urun/${delId}` : `/api/mesajlar/${delId}`;
 
   try {
     const res = await fetch(endpoint, { method: 'DELETE' });
@@ -2199,9 +2246,39 @@ async function handleConfirmDelete() {
     if (result.success) {
       showToast('Kayıt başarıyla silindi.');
       closeConfirmModal();
-      if (currentDeleteType === 'reservation') loadReservations();
-      else if (currentDeleteType === 'menu') loadMenuItems(true);
-      else loadMessages();
+
+      if (delType === 'reservation') {
+        loadReservations();
+      } else if (delType === 'menu') {
+        loadMenuItems(true);
+      } else if (delType === 'message') {
+        const row = document.getElementById(`msg-row-${delId}`);
+        const badge = document.getElementById(`msg-badge-${delId}`);
+        const isUnread = badge && badge.textContent.trim() === 'Okunmadı';
+
+        if (row) {
+          row.style.transition = 'all 0.35s ease';
+          row.style.opacity = '0';
+          row.style.transform = 'translateX(30px)';
+          setTimeout(() => {
+            row.remove();
+            const tableBody = document.getElementById('messagesTableBody');
+            if (tableBody && tableBody.children.length === 0) {
+              loadMessages();
+            }
+          }, 350);
+        } else {
+          loadMessages();
+        }
+
+        if (isUnread) {
+          const statUnread = document.getElementById('statUnreadMessages');
+          if (statUnread) {
+            const currentCount = parseInt(statUnread.textContent) || 0;
+            statUnread.textContent = Math.max(0, currentCount - 1);
+          }
+        }
+      }
     } else {
       showToast(result.message || 'Silme işlemi başarısız.', true);
     }

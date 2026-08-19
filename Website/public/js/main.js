@@ -144,6 +144,21 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  function updateMobileAtmosphereIcon() {
+    const mobileBtn = document.getElementById('atmosphereToggleBtnMobile');
+    if (!mobileBtn) return;
+    const isDay = document.body.classList.contains('day-atmosphere');
+    if (isDay) {
+      mobileBtn.innerHTML = '<i class="fa-solid fa-sun" style="color:#f39c12; font-size: 0.95rem;"></i>';
+      mobileBtn.style.borderColor = 'rgba(243, 156, 18, 0.65)';
+      mobileBtn.style.boxShadow = '0 0 8px rgba(243, 156, 18, 0.3)';
+    } else {
+      mobileBtn.innerHTML = '<i class="fa-solid fa-fire" style="color:#e74c3c; font-size: 0.95rem;"></i>';
+      mobileBtn.style.borderColor = 'rgba(231, 76, 60, 0.65)';
+      mobileBtn.style.boxShadow = '0 0 8px rgba(231, 76, 60, 0.3)';
+    }
+  }
+
   function applyAtmosphere(mode) {
     const toggleBtn = document.getElementById('atmosphereToggleBtn');
     const bgVideo = document.getElementById('globalBgVideo');
@@ -175,6 +190,8 @@ document.addEventListener("DOMContentLoaded", () => {
     if (typeof updateAtmosphereBtnTranslation === 'function') {
       updateAtmosphereBtnTranslation(localStorage.getItem('language') || 'tr');
     }
+
+    updateMobileAtmosphereIcon();
 
     if (bgVideo) {
       bgVideo.style.filter = mode === 'day' ? 'contrast(100%) brightness(108%)' : 'contrast(104%) brightness(92%)';
@@ -665,11 +682,90 @@ document.addEventListener("DOMContentLoaded", () => {
   let lastSubmittedTicketData = null;
   let lastEditingReservationId = null; // Düzenleme modunda sorgudan gelen rezervasyon ID'si
 
-  // --- MOBİL DROPDOWN MENÜ ---
-  const hamburgerBtn = document.getElementById('hamburgerBtn');
-  const mainNavbar = document.getElementById('mainNavbar');
+  // --- AKTİF SAYFA LİNKİ VURGULAMA FONKSİYONU ---
+  function updateActivePageLinks() {
+    const currentPath = window.location.pathname.toLowerCase();
 
-  if (hamburgerBtn && mainNavbar) {
+    // Mobil menü linklerini kontrol et ve aktif yap
+    const mobileLinks = document.querySelectorAll('.mobile-nav-body ul li a');
+    mobileLinks.forEach(link => {
+      link.classList.remove('active');
+      const href = link.getAttribute('href');
+      if (href) {
+        const pageName = href.split('/').pop().toLowerCase();
+        const isHome = (pageName === 'index.html' || pageName === '') && (currentPath.endsWith('/') || currentPath.endsWith('/index.html') || currentPath.endsWith('/pages/'));
+        if (isHome || (pageName && currentPath.endsWith(pageName))) {
+          link.classList.add('active');
+        }
+      }
+    });
+
+    // Masaüstü navbar linklerini de senkronize et
+    const desktopLinks = document.querySelectorAll('.nav-links li a');
+    desktopLinks.forEach(link => {
+      link.classList.remove('active');
+      const href = link.getAttribute('href');
+      if (href) {
+        const pageName = href.split('/').pop().toLowerCase();
+        const isHome = (pageName === 'index.html' || pageName === '') && (currentPath.endsWith('/') || currentPath.endsWith('/index.html') || currentPath.endsWith('/pages/'));
+        if (isHome || (pageName && currentPath.endsWith(pageName))) {
+          link.classList.add('active');
+        }
+      }
+    });
+  }
+
+  // --- MOBİL NAVBAR VE OVERLAY YÖNETİMİ ---
+  function initMobileNavbar() {
+    const hamburgerBtn = document.getElementById('hamburgerBtn');
+    const mainNavbar = document.getElementById('mainNavbar');
+
+    if (!hamburgerBtn || !mainNavbar) return;
+
+    // Move mainNavbar to body root so position: fixed inset: 0 works unconditionally!
+    if (mainNavbar.parentElement !== document.body) {
+      document.body.appendChild(mainNavbar);
+    }
+
+    // Mobil menü iç yapısını 3 ana bölgeye ayırarak inşa et
+    mainNavbar.innerHTML = `
+      <div class="mobile-nav-header">
+        <div class="logo">
+          <a href="index.html" class="logo-link" title="Lezzet Mührü 1932">
+            <img src="../public/images/favicon-round.png" class="logo-img" alt="Lezzet Mührü Logo">
+          </a>
+        </div>
+        <button id="mobileCloseBtn" class="mobile-close-btn" aria-label="Menüyü Kapat">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="mobile-nav-body">
+        <ul>
+          <li><a href="index.html" data-translate="nav-home"><i class="fa-solid fa-house"></i> <span>Anasayfa</span></a></li>
+          <li><a href="menu.html" data-translate="nav-menu"><i class="fa-solid fa-utensils"></i> <span>Menü</span></a></li>
+          <li><a href="galeri.html" data-translate="nav-gallery"><i class="fa-solid fa-image"></i> <span>Galeri</span></a></li>
+          <li><a href="hakkimizda.html" data-translate="nav-about"><i class="fa-solid fa-file-lines"></i> <span>Hakkımızda</span></a></li>
+          <li><a href="rezervasyon.html" data-translate="nav-reservation"><i class="fa-solid fa-calendar-check"></i> <span>Rezervasyon</span></a></li>
+          <li><a href="iletisim.html" data-translate="nav-contact"><i class="fa-solid fa-phone"></i> <span>İletişim</span></a></li>
+        </ul>
+      </div>
+      <div class="mobile-nav-footer">
+        <div class="live-status-badge">
+          <span class="pulse-dot green"></span>
+          <span class="status-text">Şu An Açığız <small>(Kapanış 22:00)</small></span>
+        </div>
+        <button id="atmosphereToggleBtnMobile" class="atmosphere-toggle-btn" title="Atmosfer Modunu Değiştir" aria-label="Atmosfer Modu">
+          <i class="fa-solid fa-fire" style="color:#e74c3c; font-size: 0.95rem;"></i>
+        </button>
+        <div class="mobile-lang-slot"></div>
+      </div>
+    `;
+
+    // Mobil menü HTML'i oluşturulduktan hemen sonra kaydedilmiş dili ve aktif sayfa vurgusunu uygula
+    const savedLang = localStorage.getItem('language') || 'tr';
+    applyLanguage(savedLang);
+    updateActivePageLinks();
+
     // Overlay oluştur
     let navOverlay = document.querySelector('.mobile-nav-overlay');
     if (!navOverlay) {
@@ -681,19 +777,44 @@ document.addEventListener("DOMContentLoaded", () => {
     const openMenu = () => {
       mainNavbar.classList.add('active');
       navOverlay.classList.add('active');
-      hamburgerBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>';
+      document.body.classList.add('mobile-nav-open');
+      if (hamburgerBtn) hamburgerBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>';
+
+      const currentLang = localStorage.getItem('language') || 'tr';
+      applyLanguage(currentLang);
+      updateActivePageLinks();
+      placeLangSelector();
+      guncelleCanliDurum();
+      updateMobileAtmosphereIcon();
+
+      const btt = document.getElementById('backToTop') || document.querySelector('.back-to-top');
+      if (btt) {
+        btt.style.display = 'none';
+      }
     };
 
     const closeMenu = () => {
       mainNavbar.classList.remove('active');
       navOverlay.classList.remove('active');
-      hamburgerBtn.innerHTML = '<i class="fa-solid fa-bars"></i>';
+      document.body.classList.remove('mobile-nav-open');
+      if (hamburgerBtn) hamburgerBtn.innerHTML = '<i class="fa-solid fa-bars"></i>';
+
+      placeLangSelector();
+
+      const btt = document.getElementById('backToTop') || document.querySelector('.back-to-top');
+      if (btt && window.scrollY > 300) {
+        btt.style.display = 'flex';
+      }
     };
 
     hamburgerBtn.addEventListener('click', (e) => {
       e.stopPropagation();
+      e.preventDefault();
       mainNavbar.classList.contains('active') ? closeMenu() : openMenu();
     });
+
+    const closeBtn = document.getElementById('mobileCloseBtn');
+    if (closeBtn) closeBtn.addEventListener('click', closeMenu);
 
     navOverlay.addEventListener('click', closeMenu);
 
@@ -704,7 +825,19 @@ document.addEventListener("DOMContentLoaded", () => {
     mainNavbar.querySelectorAll('a').forEach(link => {
       link.addEventListener('click', closeMenu);
     });
+
+    // Mobil atmosfer butonu dinleyicisi
+    const mobileAtmoBtn = document.getElementById('atmosphereToggleBtnMobile');
+    if (mobileAtmoBtn) {
+      mobileAtmoBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const deskBtn = document.getElementById('atmosphereToggleBtn');
+        if (deskBtn) deskBtn.click();
+      });
+    }
   }
+
+  initMobileNavbar();
 
 
   if (reservationForm) {
@@ -822,6 +955,24 @@ document.addEventListener("DOMContentLoaded", () => {
         submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Restorana İletiliyor...';
       }
 
+      // --- EXPRESS BACKEND API POST (YENİ) VEYA PUT (DÜZENLEME) ---
+      const isLocalHost3000 = window.location.origin.includes(':3000');
+      const baseUrl = isLocalHost3000 ? '' : 'http://localhost:3000';
+
+      const editingId = lastEditingReservationId;
+      const apiUrl = editingId
+        ? `${baseUrl}/api/rezervasyon/${editingId}`
+        : `${baseUrl}/api/rezervasyon`;
+      const apiMethod = editingId ? 'PUT' : 'POST';
+
+      const restoreSubmitBtn = () => {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          const btnText = (localStorage.getItem('language') || 'tr') === 'en' ? 'Make Reservation' : 'Rezervasyon Yap';
+          submitBtn.innerHTML = `<i class="fa-solid fa-calendar-plus"></i> <span data-translate="res-form-submit-new">${btnText}</span>`;
+        }
+      };
+
       const renderTicket = (data) => {
         const ticketContainer = document.getElementById('resTicketContainer');
         const areaClean = data.area || data.konum || areaVal || 'Geleneksel Odun Ateşi Katı';
@@ -829,56 +980,42 @@ document.addEventListener("DOMContentLoaded", () => {
           ? areaClean
           : `${areaClean} Bölgesi`;
 
+        const resId = data.id || data._id || editingId;
+
         const ticketData = {
+          id: resId,
           masaNo: data.masaNo || String(Math.floor(Math.random() * 15) + 1).padStart(2, '0'),
           konum: `(${konumText})`,
           area: areaClean,
           name: data.name || nameVal,
           phone: data.phone || phoneVal,
-          dateTime: `${data.date || dateVal} • ${data.time || timeVal}`,
-          guests: `${data.guests || guestsVal} Kişilik Masa`,
-          notes: data.notes || notesVal
+          date: data.date || dateVal,
+          time: data.time || timeVal,
+          guests: data.guests || guestsVal,
+          notes: data.notes || notesVal,
+          durum: data.durum || 'Beklemede'
         };
 
-        // Yeni rezervasyonda durumu beklemede olarak sıfırla
-        const cardTicketStatus = document.getElementById('cardTicketStatus');
-        if (cardTicketStatus) {
-          cardTicketStatus.innerHTML = '<span class="pulse-dot-amber"></span> ⏳ Restoran Onayı Bekliyor';
-          cardTicketStatus.className = 'vintage-status-pill';
+        // Bilet verilerini hem düzenleme hem de PDF indirme için sakla
+        lastSubmittedTicketData = ticketData;
+        if (resId) {
+          lastEditingReservationId = resId;
         }
 
-        // Yeni rezervasyon için düzenle butonunu göster
+        // Bilet düzenleme butonunu göster ve ID'yi bağla
         const btnEditReservation = document.getElementById('btnEditReservation');
         if (btnEditReservation) {
           btnEditReservation.style.display = 'inline-block';
+          if (resId) {
+            btnEditReservation.dataset.editId = resId;
+          }
         }
 
-        setTimeout(() => {
-          displayTicketData(ticketData);
-          if (ticketContainer) {
-            ticketContainer.style.display = 'block';
-            yumusakKaydir(ticketContainer);
-          }
-        }, 1000);
-      };
-
-      // --- EXPRESS BACKEND API POST (YENİ) VEYA PUT (DÜZENLEME) ---
-      const isLocalHost3000 = window.location.origin.includes(':3000');
-      const baseUrl = isLocalHost3000 ? '' : 'http://localhost:3000';
-
-      // Eğer düzenleme modundaysa PUT, değilse POST
-      const editingId = lastEditingReservationId;
-      const apiUrl = editingId
-        ? `${baseUrl}/api/rezervasyon/${editingId}`
-        : `${baseUrl}/api/rezervasyon`;
-      const apiMethod = editingId ? 'PUT' : 'POST';
-
-      // Düzenleme modunu sıfırla (API çağrısından önce)
-      lastEditingReservationId = null;
-
-      // Submit butonunu eski haline getirme fonksiyonu
-      const restoreSubmitBtn = () => {
-        if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = originalBtnHtml; }
+        displayTicketData(ticketData);
+        if (ticketContainer) {
+          ticketContainer.style.display = 'block';
+          yumusakKaydir(ticketContainer);
+        }
       };
 
       fetch(apiUrl, {
@@ -906,13 +1043,13 @@ document.addEventListener("DOMContentLoaded", () => {
         } else {
           const msg = (result && result.message) ? result.message : (editingId ? 'Rezervasyon güncellenemedi.' : 'Rezervasyon gönderilemedi.');
           alertGoster(resFormAlert, 'error', `<i class="fa-solid fa-triangle-exclamation"></i> <span>${msg}</span>`);
-          renderTicket({});
+          renderTicket({ name: nameVal, phone: phoneVal, date: dateVal, time: timeVal, guests: guestsVal, area: areaVal, notes: notesVal });
         }
       })
       .catch(err => {
         restoreSubmitBtn();
         alertGoster(resFormAlert, 'error', '<i class="fa-solid fa-triangle-exclamation"></i> <span>İşlem sırasında bir hata oluştu.</span>');
-        renderTicket({});
+        renderTicket({ name: nameVal, phone: phoneVal, date: dateVal, time: timeVal, guests: guestsVal, area: areaVal, notes: notesVal });
       });
     });
 
@@ -929,6 +1066,15 @@ document.addEventListener("DOMContentLoaded", () => {
         if (reservationForm) {
           reservationForm.style.display = 'block';
           hatalariTemizle();
+
+          // Sıfırdan rezervasyon sekmesine tıklanınca düzenleme modunu ve buton metnini sıfırla
+          lastEditingReservationId = null;
+          lastSubmittedTicketData = null;
+          const submitBtn = reservationForm.querySelector('button[type="submit"]');
+          if (submitBtn) {
+            const btnText = (localStorage.getItem('language') || 'tr') === 'en' ? 'Make Reservation' : 'Rezervasyon Yap';
+            submitBtn.innerHTML = `<i class="fa-solid fa-calendar-plus"></i> <span data-translate="res-form-submit-new">${btnText}</span>`;
+          }
         }
         if (reservationQueryForm) reservationQueryForm.style.display = 'none';
         const ticketContainer = document.getElementById('resTicketContainer');
@@ -1146,14 +1292,21 @@ document.addEventListener("DOMContentLoaded", () => {
       const cardTicketNotes = document.getElementById('cardTicketNotes');
       const cardTicketNotesRow = document.getElementById('cardTicketNotesRow');
       const cardTicketWaBtn = document.getElementById('cardTicketWaBtn');
+      const cardTicketStatus = document.getElementById('cardTicketStatus');
 
-      if (cardTableNumber) cardTableNumber.innerHTML = `Masa No: ${data.masaNo} <small>${data.konum}</small>`;
+      const areaClean = data.area || data.konum || 'Geleneksel Odun Ateşi Katı';
+      const konumText = areaClean.includes('Katı') || areaClean.includes('Tarafı') || areaClean.includes('Yanı') || areaClean.includes('Salon') || areaClean.includes('Bölgesi')
+        ? areaClean
+        : `${areaClean} Bölgesi`;
+      const masaNoStr = data.masaNo || '07';
+
+      if (cardTableNumber) cardTableNumber.innerHTML = `Masa No: ${masaNoStr} <small>(${konumText})</small>`;
       if (cardTicketName) cardTicketName.textContent = data.name || 'Girilmedi';
       if (cardTicketPhone) cardTicketPhone.textContent = data.phone || '---';
-      if (cardTicketDate) cardTicketDate.textContent = data.date || 'Tarih Seçiniz';
-      if (cardTicketTime) cardTicketTime.textContent = data.time || 'Saat Seçiniz';
-      if (cardTicketGuests) cardTicketGuests.textContent = data.guests || '-- Kişilik Masa';
-    if (cardTicketArea) cardTicketArea.textContent = data.area || 'Belirtilmedi';
+      if (cardTicketDate) cardTicketDate.textContent = data.date || data.tarih || 'Tarih Seçiniz';
+      if (cardTicketTime) cardTicketTime.textContent = data.time || data.saat || 'Saat Seçiniz';
+      if (cardTicketGuests) cardTicketGuests.textContent = data.guests ? (String(data.guests).includes('Kişilik') ? data.guests : `${data.guests} Kişilik Masa`) : '-- Kişilik Masa';
+      if (cardTicketArea) cardTicketArea.textContent = areaClean;
 
       if (cardTicketNotes && cardTicketNotesRow) {
         if (data.notes) {
@@ -1164,18 +1317,73 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       }
 
+      if (cardTicketStatus) {
+        if (data.durum === 'Onaylandı') {
+          cardTicketStatus.innerHTML = '<span class="pulse-dot-green"></span> 🟢 Rezervasyon Onaylandı';
+          cardTicketStatus.className = 'vintage-status-pill approved';
+        } else if (data.durum === 'İptal Edildi') {
+          cardTicketStatus.innerHTML = '<span class="pulse-dot-red"></span> 🔴 Rezervasyon İptal Edildi';
+          cardTicketStatus.className = 'vintage-status-pill cancelled';
+        } else {
+          cardTicketStatus.innerHTML = '<span class="pulse-dot-amber"></span> ⏳ Restoran Onayı Bekliyor';
+          cardTicketStatus.className = 'vintage-status-pill';
+        }
+      }
+
       if (cardTicketWaBtn) {
-        cardTicketWaBtn.href = `https://wa.me/902325137567?text=Merhaba,%20Masa%20No:%20${data.masaNo}%20${encodeURIComponent(data.konum)}%20rezervasyonum%20hakkinda%20bilgi%20almak%20istiyorum.`;
+        cardTicketWaBtn.href = `https://wa.me/902325137567?text=Merhaba,%20Masa%20No:%20${masaNoStr}%20${encodeURIComponent('(' + konumText + ')')}%20rezervasyonum%20hakkinda%20bilgi%20almak%20istiyorum.`;
       }
     }
+
+    // --- BİLETİ KAPATMA / YENİ SORGU KONTROLÜ ---
+    const resetAndCloseTicket = () => {
+      const ticketContainer = document.getElementById('resTicketContainer');
+      if (ticketContainer) ticketContainer.style.display = 'none';
+
+      lastEditingReservationId = null;
+      lastSubmittedTicketData = null;
+
+      if (reservationForm) {
+        reservationForm.reset();
+        reservationForm.style.display = 'block';
+        const submitBtn = reservationForm.querySelector('button[type="submit"]');
+        if (submitBtn) {
+          const btnText = (localStorage.getItem('language') || 'tr') === 'en' ? 'Make Reservation' : 'Rezervasyon Yap';
+          submitBtn.innerHTML = `<i class="fa-solid fa-calendar-check"></i> ${btnText}`;
+        }
+      }
+
+      if (reservationQueryForm) {
+        reservationQueryForm.reset();
+        reservationQueryForm.style.display = 'none';
+      }
+
+      const toggleNewResBtn = document.getElementById('toggleNewResBtn');
+      const toggleQueryResBtn = document.getElementById('toggleQueryResBtn');
+      if (toggleNewResBtn) toggleNewResBtn.classList.add('active');
+      if (toggleQueryResBtn) toggleQueryResBtn.classList.remove('active');
+
+      const resFormAlert = document.getElementById('resFormAlert');
+      if (resFormAlert) resFormAlert.style.display = 'none';
+      const resQueryAlert = document.getElementById('resQueryAlert');
+      if (resQueryAlert) resQueryAlert.style.display = 'none';
+
+      hatalariTemizle();
+    };
+
+    const btnCloseTicket = document.getElementById('btnCloseTicket');
+    if (btnCloseTicket) btnCloseTicket.addEventListener('click', resetAndCloseTicket);
+
+    const btnCloseTicketBottom = document.getElementById('btnCloseTicketBottom');
+    if (btnCloseTicketBottom) btnCloseTicketBottom.addEventListener('click', resetAndCloseTicket);
 
     const btnEditReservation = document.getElementById('btnEditReservation');
     if (btnEditReservation) {
       btnEditReservation.addEventListener('click', () => {
-        // Sorgu modundan geliyorsa düzenleme ID'sini kaydet
-        const editId = btnEditReservation.dataset.editId;
+        // Sorgu modundan veya biletten geliyorsa düzenleme ID'sini kaydet
+        const editId = btnEditReservation.dataset.editId || (lastSubmittedTicketData ? lastSubmittedTicketData.id : null);
         if (editId) {
-          lastEditingReservationId = parseInt(editId);
+          lastEditingReservationId = parseInt(editId, 10);
         }
 
         const ticketContainer = document.getElementById('resTicketContainer');
@@ -1216,7 +1424,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Submit butonunu güncelleme modu olarak işaretle (görsel ipucu)
         const submitBtn = reservationForm ? reservationForm.querySelector('button[type="submit"]') : null;
-        if (submitBtn && lastEditingReservationId) {
+        if (submitBtn) {
           submitBtn.innerHTML = '<i class="fa-solid fa-pen-to-square"></i> Rezervasyonu Güncelle';
         }
 
@@ -1723,7 +1931,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const langSelector = selectorInstance || document.getElementById('langSelector');
     if (!langSelector) return;
 
+    const isMobile = window.innerWidth <= 991;
+    const mobileFooter = document.querySelector('.mobile-nav-footer');
+    const mobileSlot = mobileFooter ? (mobileFooter.querySelector('.mobile-lang-slot') || mobileFooter) : null;
     const statusWrapper = document.querySelector('.header-status-wrapper');
+
     langSelector.classList.remove('open');
     
     // Temizleme: Eski boş veya aktif nav-item kapsayıcılarını temizleyelim
@@ -1733,7 +1945,9 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-    if (statusWrapper) {
+    if (isMobile && mobileSlot) {
+      mobileSlot.appendChild(langSelector);
+    } else if (statusWrapper) {
       const statusBadge = statusWrapper.querySelector('.live-status-badge');
       if (statusBadge) {
         statusBadge.insertAdjacentElement('afterend', langSelector);
@@ -1833,6 +2047,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Sayfadaki statik metinleri çevir
     translatePage(lang);
+    updateStatusBadgeTranslation(lang);
+    updateAtmosphereBtnTranslation(lang);
   }
 
   function translatePage(lang) {
@@ -1847,7 +2063,10 @@ document.addEventListener("DOMContentLoaded", () => {
       const key = el.getAttribute('data-translate');
       if (window.translations[lang] && window.translations[lang][key] !== undefined) {
         const val = window.translations[lang][key];
-        if (val.includes('\n')) {
+        const spanChild = el.querySelector('span');
+        if (spanChild && !spanChild.classList.contains('badge-count')) {
+          spanChild.textContent = val;
+        } else if (val.includes('\n')) {
           el.innerHTML = val.replace(/\n/g, '<br>');
         } else {
           // Metin düğümünü (Text Node) bozmadan değiştirme
@@ -1907,8 +2126,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const liveStatusBadges = document.querySelectorAll('.live-status-badge');
     liveStatusBadges.forEach(badge => {
       const isClosed = badge.classList.contains('status-closed');
-      const statusTextSpan = badge.querySelector('.status-text');
-      if (!statusTextSpan) return;
+      let statusTextSpan = badge.querySelector('.status-text');
+      if (!statusTextSpan) {
+        badge.innerHTML = `<span class="pulse-dot green"></span><span class="status-text">Şu An Açığız</span>`;
+        statusTextSpan = badge.querySelector('.status-text');
+      }
 
       const now = new Date();
       const day = now.getDay();
@@ -1947,6 +2169,12 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
   }
+
+  // Browser geri/ileri gezintisinde dil durumunu koruma
+  window.addEventListener('pageshow', () => {
+    const savedLang = localStorage.getItem('language') || 'tr';
+    applyLanguage(savedLang);
+  });
 
   // Global erişim için fonksiyonları pencere kapsamına atayalım (E.g. translations dictionary tarafından çağrılabilir)
   window.initLanguageSystem = initLanguageSystem;
