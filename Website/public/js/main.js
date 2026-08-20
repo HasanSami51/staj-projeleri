@@ -120,8 +120,8 @@ document.addEventListener("DOMContentLoaded", () => {
   // ☀️/🔥 GÜNDÜZ & MANGAL AKŞAMI ATMOSFER DEĞİŞTİRİCİ SİSTEMİ
   // ==========================================
   function initAtmosphereSystem() {
-    const statusWrapper = document.querySelector('.header-status-wrapper') || document.querySelector('.logo');
-    if (!statusWrapper) return;
+    const topBarRight = document.querySelector('.top-bar-right') || document.querySelector('.header-status-wrapper') || document.querySelector('.logo');
+    if (!topBarRight) return;
 
     let toggleBtn = document.getElementById('atmosphereToggleBtn');
     if (!toggleBtn) {
@@ -130,7 +130,7 @@ document.addEventListener("DOMContentLoaded", () => {
       toggleBtn.className = 'atmosphere-toggle-btn';
       toggleBtn.setAttribute('title', 'Atmosfer Modunu Değiştir (Sabah Sefası / Mangal Akşamı)');
       toggleBtn.innerHTML = `<i class="fa-solid fa-fire" style="color:#e74c3c;"></i> <span>Mangal Akşamı</span>`;
-      statusWrapper.appendChild(toggleBtn);
+      topBarRight.appendChild(toggleBtn);
     }
 
     const savedMode = localStorage.getItem('atmosphereMode') || 'night';
@@ -219,8 +219,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
   initAtmosphereSystem();
 
-  // --- STICKY NAVBAR SCROLL DİNLEYİCİSİ ---
+  // --- STICKY NAVBAR SCROLL DİNLEYİCİSİ VE KATEGORİ BARI DİNAMİK HİZALAMA SENKRONİZASYONU ---
   const mainHeader = document.querySelector('.main-header');
+  const filterButtonsWrapper = document.querySelector('.filter-buttons-wrapper');
+
+  function syncFilterBarStickyTop() {
+    if (mainHeader && filterButtonsWrapper) {
+      const headerHeight = mainHeader.offsetHeight || 96;
+      filterButtonsWrapper.style.top = `${headerHeight}px`;
+    }
+  }
+
   if (mainHeader) {
     const handleScroll = () => {
       if (window.scrollY > 20) {
@@ -228,8 +237,10 @@ document.addEventListener("DOMContentLoaded", () => {
       } else {
         mainHeader.classList.remove('scrolled');
       }
+      syncFilterBarStickyTop();
     };
     window.addEventListener('scroll', handleScroll);
+    window.addEventListener('resize', syncFilterBarStickyTop);
     handleScroll();
   }
 
@@ -255,8 +266,10 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // --- CANLI "ŞU AN AÇIĞIZ / KAPALIYIZ" DİNAMİK SAAT VE GÜN SİSTEMİ ---
-  const liveStatusBadges = document.querySelectorAll('.live-status-badge');
-  if (liveStatusBadges.length > 0) {
+  function guncelleCanliDurum() {
+    const liveStatusBadges = document.querySelectorAll('.live-status-badge');
+    if (liveStatusBadges.length === 0) return;
+
     const now = new Date();
     const day = now.getDay(); // 0 = Pazar, 1 = Pazartesi, ..., 5 = Cuma, 6 = Cumartesi
     const currentHour = now.getHours();
@@ -278,7 +291,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const closeMinutes = closeHour * 60;
     const isOpenNow = isTodayOpen && (currentTotalMinutes >= openMinutes && currentTotalMinutes < closeMinutes);
-    const timeRangeText = isTodayOpen ? `10:00 - ${closeHour}:00` : 'Pazar Kapalı';
 
     liveStatusBadges.forEach(badge => {
       if (isOpenNow) {
@@ -300,6 +312,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const activeLang = localStorage.getItem('language') || 'tr';
     updateStatusBadgeTranslation(activeLang);
   }
+
+  guncelleCanliDurum();
 
   // 1. Ekranı Yumuşak Kaydırma (Smooth Scroll)
   function yumusakKaydir(hedef, offset = 90) {
@@ -645,6 +659,10 @@ document.addEventListener("DOMContentLoaded", () => {
         btn.classList.add("active");
         aktifKategori = btn.dataset.kategori;
         menuyuFiltrele();
+
+        // Butonun kendisini yatay barda merkeze getir
+        btn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+
         // Mobilde veya derindeyken kategori değiştiğinde kullanıcıyı listenin en başına çıkarıyoruz
         const target = document.querySelector(".menu-section") || document.getElementById("menu-grid");
         if (target) {
@@ -750,14 +768,29 @@ document.addEventListener("DOMContentLoaded", () => {
         </ul>
       </div>
       <div class="mobile-nav-footer">
-        <div class="live-status-badge">
-          <span class="pulse-dot green"></span>
-          <span class="status-text">Şu An Açığız <small>(Kapanış 22:00)</small></span>
+        <!-- 1. Satır: İletişim & Sosyal -->
+        <div class="mobile-footer-row-1">
+          <div class="mobile-location-info">
+            <span class="m-loc"><i class="fa-solid fa-location-dot"></i><span data-translate="header-location">Gaziantep, Şahinbey</span></span>
+            <a href="tel:02325137567" class="m-phone"><i class="fa-solid fa-phone"></i><span>0 232 513 75 67</span></a>
+          </div>
+          <div class="mobile-social-icons">
+            <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer" class="m-social-link instagram" title="Instagram"><i class="fa-brands fa-instagram"></i></a>
+            <a href="https://wa.me/902325137567" target="_blank" rel="noopener noreferrer" class="m-social-link whatsapp" title="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+          </div>
         </div>
-        <button id="atmosphereToggleBtnMobile" class="atmosphere-toggle-btn" title="Atmosfer Modunu Değiştir" aria-label="Atmosfer Modu">
-          <i class="fa-solid fa-fire" style="color:#e74c3c; font-size: 0.95rem;"></i>
-        </button>
-        <div class="mobile-lang-slot"></div>
+
+        <!-- 2. Satır: Durum & Dil & Tema -->
+        <div class="mobile-footer-row-2">
+          <div class="live-status-badge">
+            <span class="pulse-dot green"></span>
+            <span class="status-text">Şu An Açığız <small>(Kapanış 22:00)</small></span>
+          </div>
+          <div class="mobile-lang-slot"></div>
+          <button id="atmosphereToggleBtnMobile" class="atmosphere-toggle-btn" title="Atmosfer Modunu Değiştir" aria-label="Atmosfer Modu">
+            <i class="fa-solid fa-fire" style="color:#e74c3c; font-size: 0.95rem;"></i>
+          </button>
+        </div>
       </div>
     `;
 
@@ -1035,21 +1068,25 @@ document.addEventListener("DOMContentLoaded", () => {
       .then(result => {
         restoreSubmitBtn();
         if (result && result.success && result.data) {
-          const successMsg = editingId
-            ? '<i class="fa-solid fa-circle-check"></i> <span>Rezervasyonunuz başarıyla güncellendi!</span>'
-            : '<i class="fa-solid fa-circle-check"></i> <span>Rezervasyon talebiniz alındı.</span>';
-          alertGoster(resFormAlert, 'success', successMsg);
-          renderTicket(result.data);
+          // Bilet modalı DOĞRUDAN AÇILMASIN. Şık bilgilendirme modalı gösterilsin.
+          openSuccessModal();
+
+          // Formu sıfırla ve düzenleme modunu sonlandır
+          if (reservationForm) reservationForm.reset();
+          lastEditingReservationId = null;
+          lastSubmittedTicketData = null;
+          hatalariTemizle();
+
+          const ticketContainer = document.getElementById('resTicketContainer');
+          if (ticketContainer) ticketContainer.style.display = 'none';
         } else {
           const msg = (result && result.message) ? result.message : (editingId ? 'Rezervasyon güncellenemedi.' : 'Rezervasyon gönderilemedi.');
           alertGoster(resFormAlert, 'error', `<i class="fa-solid fa-triangle-exclamation"></i> <span>${msg}</span>`);
-          renderTicket({ name: nameVal, phone: phoneVal, date: dateVal, time: timeVal, guests: guestsVal, area: areaVal, notes: notesVal });
         }
       })
       .catch(err => {
         restoreSubmitBtn();
         alertGoster(resFormAlert, 'error', '<i class="fa-solid fa-triangle-exclamation"></i> <span>İşlem sırasında bir hata oluştu.</span>');
-        renderTicket({ name: nameVal, phone: phoneVal, date: dateVal, time: timeVal, guests: guestsVal, area: areaVal, notes: notesVal });
       });
     });
 
@@ -1087,7 +1124,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (reservationForm) reservationForm.style.display = 'none';
         if (reservationQueryForm) {
           reservationQueryForm.style.display = 'block';
-          const queryPhoneInput = document.getElementById('queryPhone');
+          const queryPhoneInput = document.getElementById('search_token_x99') || document.getElementById('queryPhone');
           if (queryPhoneInput) queryPhoneInput.value = '';
           if (resQueryAlert) resQueryAlert.style.display = 'none';
         }
@@ -1099,7 +1136,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (reservationQueryForm) {
       reservationQueryForm.addEventListener('submit', (e) => {
         e.preventDefault();
-        const queryPhoneInput = document.getElementById('queryPhone');
+        const queryPhoneInput = document.getElementById('search_token_x99') || document.getElementById('queryPhone');
         if (!queryPhoneInput) return;
 
         const phoneVal = queryPhoneInput.value.trim();
@@ -1343,6 +1380,21 @@ document.addEventListener("DOMContentLoaded", () => {
       lastEditingReservationId = null;
       lastSubmittedTicketData = null;
 
+      // Sorgu telefon alanını temizle
+      const queryPhoneInput = document.getElementById('search_token_x99') || document.getElementById('queryPhone');
+      if (queryPhoneInput) queryPhoneInput.value = '';
+
+      if (reservationQueryForm) {
+        reservationQueryForm.reset();
+        reservationQueryForm.style.display = 'none';
+      }
+
+      // Sekmeyi ve formu varsayılan "Masa Rezervasyonu" moduna getir
+      const toggleNewResBtn = document.getElementById('toggleNewResBtn');
+      const toggleQueryResBtn = document.getElementById('toggleQueryResBtn');
+      if (toggleNewResBtn) toggleNewResBtn.classList.add('active');
+      if (toggleQueryResBtn) toggleQueryResBtn.classList.remove('active');
+
       if (reservationForm) {
         reservationForm.reset();
         reservationForm.style.display = 'block';
@@ -1353,22 +1405,16 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       }
 
-      if (reservationQueryForm) {
-        reservationQueryForm.reset();
-        reservationQueryForm.style.display = 'none';
-      }
-
-      const toggleNewResBtn = document.getElementById('toggleNewResBtn');
-      const toggleQueryResBtn = document.getElementById('toggleQueryResBtn');
-      if (toggleNewResBtn) toggleNewResBtn.classList.add('active');
-      if (toggleQueryResBtn) toggleQueryResBtn.classList.remove('active');
-
       const resFormAlert = document.getElementById('resFormAlert');
       if (resFormAlert) resFormAlert.style.display = 'none';
       const resQueryAlert = document.getElementById('resQueryAlert');
       if (resQueryAlert) resQueryAlert.style.display = 'none';
 
       hatalariTemizle();
+
+      if (reservationForm) {
+        yumusakKaydir(reservationForm);
+      }
     };
 
     const btnCloseTicket = document.getElementById('btnCloseTicket');
@@ -1376,6 +1422,70 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const btnCloseTicketBottom = document.getElementById('btnCloseTicketBottom');
     if (btnCloseTicketBottom) btnCloseTicketBottom.addEventListener('click', resetAndCloseTicket);
+
+    // --- REZERVASYON BAŞARILI BİLGİLENDİRME MODALI YÖNETİMİ ---
+    const openSuccessModal = () => {
+      const modal = document.getElementById('resSuccessModal');
+      if (modal) {
+        modal.classList.add('active', 'show');
+        modal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+      }
+    };
+
+    const closeSuccessModal = () => {
+      const modal = document.getElementById('resSuccessModal');
+      if (modal) {
+        modal.classList.remove('active', 'show');
+        modal.style.display = 'none';
+      }
+      document.body.style.overflow = 'auto';
+
+      if (reservationForm) {
+        reservationForm.reset();
+        lastEditingReservationId = null;
+        lastSubmittedTicketData = null;
+        const submitBtn = reservationForm.querySelector('button[type="submit"]');
+        if (submitBtn) {
+          const btnText = (localStorage.getItem('language') || 'tr') === 'en' ? 'Make Reservation' : 'Rezervasyon Yap';
+          submitBtn.innerHTML = `<i class="fa-solid fa-calendar-plus"></i> <span data-translate="res-form-submit-new">${btnText}</span>`;
+        }
+      }
+      hatalariTemizle();
+    };
+
+    // Sayfa ilk yüklendiğinde modalın kesinlikle gizli olduğundan emin ol
+    const resSuccessModal = document.getElementById('resSuccessModal');
+    if (resSuccessModal) {
+      resSuccessModal.classList.remove('active', 'show');
+      resSuccessModal.style.display = 'none';
+
+      resSuccessModal.addEventListener('click', (e) => {
+        if (e.target === resSuccessModal || e.target.classList.contains('custom-modal-overlay')) {
+          closeSuccessModal();
+        }
+      });
+    }
+
+    const btnCloseSuccessModal = document.getElementById('btnCloseSuccessModal');
+    if (btnCloseSuccessModal) btnCloseSuccessModal.addEventListener('click', closeSuccessModal);
+
+    const btnCloseSuccessModalTop = document.getElementById('btnCloseSuccessModalTop');
+    if (btnCloseSuccessModalTop) btnCloseSuccessModalTop.addEventListener('click', closeSuccessModal);
+
+    // KLAVYEDEN ESC TUŞU İLE KAPATMA
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        const modal = document.getElementById('resSuccessModal');
+        if (modal && (modal.classList.contains('active') || modal.classList.contains('show') || modal.style.display === 'flex')) {
+          closeSuccessModal();
+        }
+        const ticketContainer = document.getElementById('resTicketContainer');
+        if (ticketContainer && ticketContainer.style.display === 'block') {
+          resetAndCloseTicket();
+        }
+      }
+    });
 
     const btnEditReservation = document.getElementById('btnEditReservation');
     if (btnEditReservation) {
@@ -1947,11 +2057,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (isMobile && mobileSlot) {
       mobileSlot.appendChild(langSelector);
-    } else if (statusWrapper) {
-      const statusBadge = statusWrapper.querySelector('.live-status-badge');
-      if (statusBadge) {
-        statusBadge.insertAdjacentElement('afterend', langSelector);
-      } else {
+    } else {
+      const topBarRight = document.querySelector('.top-bar-right');
+      if (topBarRight) {
+        topBarRight.appendChild(langSelector);
+      } else if (statusWrapper) {
         statusWrapper.appendChild(langSelector);
       }
     }
@@ -2066,7 +2176,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const spanChild = el.querySelector('span');
         if (spanChild && !spanChild.classList.contains('badge-count')) {
           spanChild.textContent = val;
-        } else if (val.includes('\n')) {
+        } else if (val.includes('<') || val.includes('\n')) {
           el.innerHTML = val.replace(/\n/g, '<br>');
         } else {
           // Metin düğümünü (Text Node) bozmadan değiştirme

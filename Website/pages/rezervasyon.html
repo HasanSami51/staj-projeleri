@@ -26,7 +26,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <link rel="stylesheet" href="../public/css/style.css?v=290">
+  <link rel="stylesheet" href="../public/css/style.css?v=530">
   <!-- PDF İndirme Kütüphaneleri -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -35,14 +35,31 @@
     <video id="globalBgVideo" autoplay loop muted playsinline class="global-bg-video">
         <source src="../public/images/video.mp4" type="video/mp4">
         <source src="../public/images/bg-video.mp4" type="video/mp4">
-        <source src="public/images/video.mp4" type="video/mp4">
     </video>
        <header class="main-header">
     <div class="top-bar">
       <div class="container top-bar-container">
         <div class="header-status-wrapper">
-          <div class="live-status-badge"></div>
-          <!-- atmosphereToggleBtn ve langSelector buraya JS tarafından yerleştirilecek -->
+          <div class="top-bar-left">
+            <div class="header-location-badge">
+              <i class="fa-solid fa-location-dot"></i>
+              <span data-translate="header-location">Gaziantep, Şahinbey</span>
+            </div>
+            <span class="header-v-divider">|</span>
+            <a href="tel:02325137567" class="header-phone-link" title="Bizi Arayın">
+              <i class="fa-solid fa-phone"></i>
+              <span>0 232 513 75 67</span>
+            </a>
+            <span class="header-v-divider">|</span>
+            <div class="live-status-badge"></div>
+          </div>
+          <div class="top-bar-right">
+            <div class="top-bar-socials">
+              <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer" class="top-bar-social-link instagram" title="Instagram"><i class="fa-brands fa-instagram"></i></a>
+              <a href="https://wa.me/902325137567" target="_blank" rel="noopener noreferrer" class="top-bar-social-link whatsapp" title="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+            </div>
+            <span class="header-v-divider">|</span>
+          </div>
         </div>
       </div>
     </div>
@@ -106,7 +123,7 @@
                       </button>
                     </div>
 
-                    <form id="reservationForm" class="reservation-form" novalidate>
+                    <form id="reservationForm" class="reservation-form" autocomplete="off" novalidate>
                       <div id="resFormAlert" class="form-alert" style="display: none;">
                         <i class="fa-solid fa-circle-check"></i>
                         <span>Rezervasyon talebiniz alındı! Teyit için en kısa sürede sizi arayacağız.</span>
@@ -117,7 +134,7 @@
                           <label for="resName"><span data-translate="res-form-name-label">Adınız Soyadınız</span> <span class="required-star">*</span></label>
                           <div class="input-icon-wrapper">
                             <i class="fa-solid fa-user input-icon"></i>
-                            <input type="text" id="resName" name="name" placeholder="Adınızı ve soyadınızı giriniz" required minlength="3" maxlength="50" title="Lütfen en az 3 karakterden oluşan adınızı giriniz." data-translate-placeholder="res-form-name-ph">
+                            <input type="text" id="resName" name="name" autocomplete="off" placeholder="Adınızı ve soyadınızı giriniz" required minlength="3" maxlength="50" title="Lütfen en az 3 karakterden oluşan adınızı giriniz." data-translate-placeholder="res-form-name-ph">
                           </div>
                         </div>
 
@@ -125,7 +142,7 @@
                           <label for="resPhone"><span data-translate="res-form-phone-label">Telefon Numaranız</span> <span class="required-star">*</span></label>
                           <div class="input-icon-wrapper">
                             <i class="fa-solid fa-phone input-icon"></i>
-                            <input type="tel" id="resPhone" name="phone" placeholder="05XX XXX XX XX" required pattern="05[0-9]{9}" title="Lütfen 05 ile başlayan 11 haneli cep telefonunuzu giriniz." data-translate-placeholder="res-form-phone-ph">
+                            <input type="tel" id="resPhone" name="phone" autocomplete="off" placeholder="05XX XXX XX XX" required pattern="05[0-9]{9}" title="Lütfen 05 ile başlayan 11 haneli cep telefonunuzu giriniz." data-translate-placeholder="res-form-phone-ph">
                           </div>
                         </div>
 
@@ -133,7 +150,7 @@
                           <label for="resDate"><span data-translate="res-form-date-label">Rezervasyon Tarihi</span> <span class="required-star">*</span></label>
                           <div class="input-icon-wrapper">
                             <i class="fa-solid fa-calendar-days input-icon"></i>
-                            <input type="text" id="resDate" name="date" placeholder="Tarih Seçiniz" readonly required class="custom-picker-input" data-translate-placeholder="res-form-date-ph">
+                            <input type="text" id="resDate" name="date" autocomplete="off" placeholder="Tarih Seçiniz" readonly required class="custom-picker-input" data-translate-placeholder="res-form-date-ph">
                             <input type="date" id="hiddenNativeDate" class="hidden-picker-element">
                           </div>
                         </div>
@@ -142,7 +159,7 @@
                           <label for="resTime"><span data-translate="res-form-time-label">Saat</span> <span class="required-star">*</span></label>
                           <div class="input-icon-wrapper">
                             <i class="fa-solid fa-clock input-icon"></i>
-                            <input type="text" id="resTime" name="time" placeholder="Saat Seçiniz" readonly required class="custom-picker-input" data-translate-placeholder="res-form-time-ph">
+                            <input type="text" id="resTime" name="time" autocomplete="off" placeholder="Saat Seçiniz" readonly required class="custom-picker-input" data-translate-placeholder="res-form-time-ph">
                             <input type="time" id="hiddenNativeTime" min="10:00" max="22:00" step="900" class="hidden-picker-element">
                           </div>
                         </div>
@@ -151,7 +168,7 @@
                           <label for="resGuests"><span data-translate="res-form-guests-label">Kişi Sayısı</span> <span class="required-star">*</span></label>
                           <div class="input-icon-wrapper">
                             <i class="fa-solid fa-user-group input-icon"></i>
-                            <input type="number" id="resGuests" name="guests" placeholder="Kişi sayısını belirtiniz (1-10)" required min="1" max="10" title="Tek seferde en fazla 10 kişilik rezervasyon yapılabilir." data-translate-placeholder="res-form-guests-ph">
+                            <input type="number" id="resGuests" name="guests" autocomplete="off" placeholder="Kişi sayısını belirtiniz (1-10)" required min="1" max="10" title="Tek seferde en fazla 10 kişilik rezervasyon yapılabilir." data-translate-placeholder="res-form-guests-ph">
                           </div>
                         </div>
 
@@ -188,14 +205,14 @@
                     </form>
 
                     <!-- Rezervasyon Sorgulama Formu -->
-                    <form id="reservationQueryForm" class="reservation-form" style="display: none;" novalidate>
+                    <form id="reservationQueryForm" class="reservation-form" style="display: none;" autocomplete="off" novalidate>
                       <div id="resQueryAlert" class="form-alert" style="display: none;"></div>
                       
                       <div class="form-group full-width" style="max-width: 500px; margin: 0 auto 2rem auto;">
-                        <label for="queryPhone" data-translate="res-query-phone-label">Kayıtlı Telefon Numaranız</label>
+                        <label for="search_token_x99" data-translate="res-query-phone-label">Kayıtlı Telefon Numaranız</label>
                         <div class="input-icon-wrapper">
                           <i class="fa-solid fa-phone input-icon"></i>
-                          <input type="tel" id="queryPhone" name="phone" placeholder="05XX XXX XX XX" required pattern="05[0-9]{9}" data-translate-placeholder="res-form-phone-ph">
+                          <input type="text" id="search_token_x99" name="search_token_x99" placeholder="05XX XXX XX XX" required pattern="05[0-9]{9}" autocomplete="new-password" autocorrect="off" autocapitalize="off" spellcheck="false" readonly onfocus="this.removeAttribute('readonly');" data-translate-placeholder="res-form-phone-ph">
                         </div>
                       </div>
 
@@ -243,14 +260,14 @@
 
                           <div class="res-ticket-notice vintage-notice">
                             <i class="fa-solid fa-scroll"></i>
-                            <p data-translate="ticket-notice-text">⚠️ Lütfen rezervasyon bilgilerinizin doğru olduğundan emin olunuz. İptal ve değişiklik talepleriniz için lütfen restoranımız ile iletişime geçiniz.</p>
+                            <p data-translate="ticket-notice-text">Lütfen rezervasyon bilgilerinizin doğru olduğundan emin olunuz. İptal talepleriniz için lütfen restoranımız ile iletişime geçiniz.</p>
                           </div>
 
                           <div class="res-ticket-actions">
                             <button type="button" class="btn-ticket-action vintage-btn" id="btnDownloadPdf" onclick="downloadTicketPDF()"><i class="fa-solid fa-file-pdf"></i> <span data-translate="ticket-btn-save">PDF Olarak İndir</span></button>
                             <a href="https://wa.me/902325137567?text=Merhaba,%20Masa%20No:%2007%20rezervasyonum%20hakkinda%20bilgi%20almak%20istiyorum." target="_blank" class="btn-ticket-action btn-wa vintage-btn-wa" id="cardTicketWaBtn"><i class="fa-brands fa-whatsapp"></i> <span data-translate="ticket-btn-wa">WhatsApp ile Masanı Teyit Et</span></a>
                             <button type="button" class="btn-ticket-action vintage-btn-edit" id="btnEditReservation" data-translate="ticket-edit-btn"><i class="fa-solid fa-pen-to-square"></i> Bilgileri Düzenle</button>
-                            <button type="button" class="btn-ticket-action vintage-btn-close" id="btnCloseTicketBottom" data-translate="ticket-btn-close"><i class="fa-solid fa-arrow-left"></i> Kapat / Yeni Sorgu</button>
+                            <button type="button" class="btn-ticket-action vintage-btn-close" id="btnCloseTicketBottom" data-translate="ticket-btn-close"><i class="fa-solid fa-xmark"></i> Kapat</button>
                           </div>
                        </div>
                      </div>
@@ -258,6 +275,23 @@
             </div>
         </section>
     </main>
+
+    <!-- REZERVASYON BAŞARILI BİLGİLENDİRME MODALI -->
+    <div id="resSuccessModal" class="custom-modal-overlay" style="display: none;">
+      <div class="custom-modal-card">
+        <button type="button" class="custom-modal-close" id="btnCloseSuccessModalTop" aria-label="Kapat"><i class="fa-solid fa-xmark"></i></button>
+        <div class="custom-modal-icon">
+          <i class="fa-solid fa-circle-check"></i>
+        </div>
+        <h3 class="custom-modal-title" data-translate="modal-success-title">Talebiniz Restorana İletildi!</h3>
+        <p class="custom-modal-desc" data-translate="modal-success-desc">
+          Rezervasyon talebiniz başarıyla alınmıştır. Rezervasyon detaylarını üst menüdeki <strong>"Rezervasyon Bul"</strong> alanından telefon numaranızla sorgulayarak biletinizi görüntüleyebilirsiniz.
+        </p>
+        <div class="custom-modal-actions">
+          <button type="button" class="btn-primary custom-modal-btn" id="btnCloseSuccessModal" data-translate="modal-success-btn">Tamam</button>
+        </div>
+      </div>
+    </div>
 
 
 

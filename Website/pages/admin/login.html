@@ -257,11 +257,11 @@
         <div id="loginAlert" class="alert alert-danger"></div>
       </div>
 
-      <form id="loginForm">
+      <form id="loginForm" autocomplete="off">
         <div class="form-group">
           <label for="username">Kullanıcı Adı:</label>
           <div class="input-wrapper">
-            <input type="text" id="username" autocomplete="username" placeholder="Kullanıcı adınızı girin" required>
+            <input type="text" id="username" name="username" autocomplete="off" placeholder="Kullanıcı adınızı girin" required>
             <i class="fa-solid fa-user"></i>
           </div>
         </div>
@@ -269,7 +269,7 @@
         <div class="form-group">
           <label for="password">Şifre:</label>
           <div class="input-wrapper">
-            <input type="password" id="password" autocomplete="current-password" placeholder="Şifrenizi girin" required>
+            <input type="password" id="password" name="password" autocomplete="off" placeholder="Şifrenizi girin" required>
             <i class="fa-solid fa-lock"></i>
           </div>
         </div>

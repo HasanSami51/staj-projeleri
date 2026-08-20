@@ -56,7 +56,7 @@ body.no-scroll {
 } 
 html, body {
   max-width: 100% !important;
-  overflow-x: hidden !important;
+  overflow-x: clip !important;
 }
 
 /* 🔥 [2'uygula] CANLI ODUN ATEŞİ KÖZ & KIVILCIM ANIMASYONU CANVAS STİLİ */
@@ -161,14 +161,10 @@ header nav a.active {
   border-bottom: 1px solid rgba(212, 175, 55, 0.4) !important;
 }
 
-/* Hero içeren sayfalarda (index.html) header resmin üzerine binsin (sıfır beyaz boşluk) */
+/* Tüm sayfalarda header resmin/videonun üzerine binsin (birebir sıfır siyah boşluk) */
 main.main-content {
   margin-top: 0 !important;
-}
-
-/* Hero içermeyen diğer sayfalarda (menu, rezervasyon vb.) içerikler header altında kalmasın */
-main.main-content:not(:has(.hero-wrapper)):not(:has(.hero-section)) {
-  padding-top: 85px;
+  padding-top: 0 !important;
 }
 
 .main-footer {
@@ -2915,17 +2911,47 @@ user-select: none !important;
   }
 }
 
-/* Normal Category Filter Bar Styling - Sticky globally for better UX */
+/* Normal Category Filter Bar Styling - Sticky globally with clean transparent background */
 .filter-buttons-wrapper {
   position: sticky !important;
-  top: 85px !important; /* Pinned below the fixed desktop header */
-  z-index: 9999 !important;
-  margin-bottom: 10px !important;
+  top: 96px; /* Dynamically calculated by JS to match exact header height */
+  z-index: 990 !important;
+  margin-bottom: 15px !important;
   width: 100% !important;
-  background: #120b07 !important; /* Solid opaque color matching the site theme */
-  border-bottom: 1.5px solid rgba(212, 175, 55, 0.3) !important;
-  padding: 10px 0 !important;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4) !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border-top: none !important;
+  border-bottom: none !important;
+  padding: 6px 0 !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+}
+
+.filter-buttons {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  justify-content: center !important;
+  align-items: center !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  -webkit-overflow-scrolling: touch !important;
+  gap: 10px !important;
+  padding: 8px 15px !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.filter-buttons::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
 }
 
 #menu-grid {
@@ -3439,6 +3465,126 @@ user-select: none !important;
   color: #ffffff !important;
   box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2) !important;
   transform: translateY(-2px) !important;
+}
+
+/* ==========================================
+   REZERVASYON BAŞARILI BİLGİLENDİRME MODALI
+   ========================================== */
+.custom-modal-overlay {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  height: 100dvh !important;
+  background: rgba(10, 6, 4, 0.85) !important;
+  backdrop-filter: blur(6px) !important;
+  -webkit-backdrop-filter: blur(6px) !important;
+  z-index: 99999 !important;
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 20px !important;
+  box-sizing: border-box !important;
+  transition: opacity 0.3s ease, visibility 0.3s ease !important;
+}
+
+.custom-modal-overlay.active,
+.custom-modal-overlay.show {
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  animation: fadeIn 0.3s ease !important;
+}
+
+.custom-modal-card {
+  background: #1e120a !important;
+  border: 2px solid rgba(212, 175, 55, 0.6) !important;
+  border-radius: 16px !important;
+  padding: 35px 30px !important;
+  max-width: 480px !important;
+  width: 100% !important;
+  text-align: center !important;
+  position: relative !important;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), inset 0 0 20px rgba(212, 175, 55, 0.08) !important;
+  animation: modalScaleUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  color: #fdfbf7 !important;
+}
+
+@keyframes modalScaleUp {
+  from {
+    opacity: 0;
+    transform: scale(0.88);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.custom-modal-close {
+  position: absolute !important;
+  top: 14px !important;
+  right: 14px !important;
+  width: 32px !important;
+  height: 32px !important;
+  border-radius: 50% !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  border: 1px solid rgba(212, 175, 55, 0.35) !important;
+  color: #d4af37 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 1.05rem !important;
+  cursor: pointer !important;
+  transition: all 0.25s ease !important;
+}
+
+.custom-modal-close:hover {
+  background: rgba(231, 76, 60, 0.85) !important;
+  border-color: #e74c3c !important;
+  color: #ffffff !important;
+}
+
+.custom-modal-icon {
+  font-size: 3.2rem !important;
+  color: #2ecc71 !important;
+  margin-bottom: 15px !important;
+  filter: drop-shadow(0 0 10px rgba(46, 204, 113, 0.4)) !important;
+}
+
+.custom-modal-title {
+  font-family: Georgia, 'Times New Roman', serif !important;
+  font-size: 1.45rem !important;
+  color: #f1c40f !important;
+  margin-bottom: 14px !important;
+}
+
+.custom-modal-desc {
+  font-size: 0.96rem !important;
+  line-height: 1.6 !important;
+  color: #e0d0c0 !important;
+  margin-bottom: 24px !important;
+}
+
+.custom-modal-desc strong {
+  color: #f1c40f !important;
+}
+
+.custom-modal-actions {
+  display: flex !important;
+  justify-content: center !important;
+}
+
+.custom-modal-btn {
+  padding: 12px 36px !important;
+  font-size: 1.02rem !important;
+  border-radius: 25px !important;
+  font-weight: 600 !important;
 }
 
 .vintage-ticket-top {
@@ -4695,10 +4841,10 @@ body {
   min-width: 100% !important;
   min-height: 100% !important;
   z-index: -1 !important;
-  transform: translate(-50%, -50%) scale(1.2) !important; /* Yıldız ve ızgarayı ekran dışına itmek için 1.2x ölçekleme */
+  transform: translate(-50%, -50%) scale(1.2) !important;
   object-fit: cover !important;
   pointer-events: none !important;
-  filter: brightness(0.85) contrast(1.05) !important; /* Canlı ve göz yormayan doğal filtreler */
+  filter: brightness(0.85) contrast(1.05) !important;
   image-rendering: -webkit-optimize-contrast !important;
   image-rendering: high-quality !important;
   -webkit-backface-visibility: hidden !important;
@@ -5619,7 +5765,7 @@ form, button, input, select, textarea, a, .btn-primary, .btn-secondary,
   transition: all 0.3s ease !important;
   box-shadow: 0 3px 12px rgba(0, 0, 0, 0.4) !important;
   user-select: none !important;
-  margin-left: 10px !important;
+  margin: 0 !important;
 }
 
 .atmosphere-toggle-btn:hover {
@@ -5681,6 +5827,11 @@ body.day-atmosphere .trust-bar-section {
    📱 MOBİL RESPONSIVE & SIKILIŞTIRMA OVERRIDES (FOTO 1 & 2 DÜZELTMESİ)
    ========================================== */
 @media (max-width: 992px) {
+  /* Masaüstü üst barı mobilde tamamen gizle */
+  .top-bar {
+    display: none !important;
+  }
+
   /* Sayfa genelinde yatay kaydırma çubuğunu kesinlikle engelle */
   html, body {
     max-width: 100% !important;
@@ -5702,14 +5853,18 @@ body.day-atmosphere .trust-bar-section {
   /* 🍔 MENÜ FİLTRE BUTONLARI KAYDIRILABİLİR VE STICKY (SABİT) YAPMA */
   .filter-buttons-wrapper {
     position: sticky !important;
-    top: 68px !important; /* Fixed header'ın tam altına yapışır */
-    z-index: 9999 !important; /* Yemek kartlarının üzerinde yüzer, header'ın altındadır */
+    top: 65px !important; /* Fixed mobile header'ın tam altına yapışır */
+    z-index: 900 !important;
     width: 100% !important;
-    overflow: hidden !important;
+    overflow: visible !important;
     background: transparent !important;
+    background-color: transparent !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border-top: none !important;
     border-bottom: none !important;
-    padding: 2px 0 !important;
-    margin-bottom: 20px !important;
+    padding: 4px 0 !important;
+    margin-bottom: 15px !important;
     box-shadow: none !important;
   }
 
@@ -6066,7 +6221,7 @@ body.day-atmosphere .trust-bar-section {
   }
 }
 
-/* ☀️🔥 HER İKİ TEMADA DA KATEGORİ BARI TAMAMEN ŞEFFAF — OVERLAY YOK */
+/* ☀️🔥 KATEGORİ BARI YAPIŞKAN VE 100% ŞEFFAF (ARKA PLAN ŞERİDİ YOK) */
 body .filter-buttons-wrapper,
 html body .filter-buttons-wrapper,
 .menu-section .filter-buttons-wrapper,
@@ -6074,6 +6229,7 @@ body.day-atmosphere .filter-buttons-wrapper,
 body.day-atmosphere .menu-section .filter-buttons-wrapper {
   background: transparent !important;
   background-color: transparent !important;
+  border-top: none !important;
   border-bottom: none !important;
   box-shadow: none !important;
   backdrop-filter: none !important;
@@ -6412,11 +6568,11 @@ body.day-atmosphere .menu-section .filter-buttons-wrapper {
   border-bottom-color: rgba(212, 175, 55, 0.28) !important;
 }
 
-/* ── TOP BAR ── */
+/* ── TOP BAR ENRICHED LAYOUT ── */
 .top-bar {
   background: rgba(22, 11, 4, 0.96) !important;
-  border-bottom: 1px solid rgba(212, 175, 55, 0.25) !important;
-  padding: 8px 0 6px 0 !important;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.22) !important;
+  padding: 6px 0 !important;
   display: block !important;
   width: 100% !important;
   position: relative !important;
@@ -6424,44 +6580,126 @@ body.day-atmosphere .menu-section .filter-buttons-wrapper {
 }
 
 .top-bar .top-bar-container {
-  width: 100% !important;
   max-width: 100% !important;
+  width: 100% !important;
   margin: 0 !important;
-  padding: 0 16px !important;
+  padding: 0 30px !important;
   box-sizing: border-box !important;
-  display: block !important;
 }
 
 .top-bar .header-status-wrapper {
   display: flex !important;
   align-items: center !important;
+  justify-content: space-between !important;
+  width: 100% !important;
+  flex-wrap: nowrap !important;
+}
+
+.top-bar-left {
+  display: flex !important;
+  align-items: center !important;
   justify-content: flex-start !important;
   gap: 12px !important;
-  width: 100% !important;
 }
 
-/* Push lang selector and theme toggler to the far right by pushing status badge to left */
-.top-bar .live-status-badge {
-  margin-left: 0 !important;
-  margin-right: auto !important;
+.top-bar-right {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 10px !important;
+  margin-left: auto !important;
 }
 
-.top-bar .lang-selector-container {
+.top-bar .lang-selector-container,
+.top-bar .atmosphere-toggle-btn {
+  margin: 0 !important;
   position: relative !important;
+}
+
+.header-location-badge {
   display: inline-flex !important;
   align-items: center !important;
+  gap: 6px !important;
+  font-size: 0.78rem !important;
+  color: #e5d8c5 !important;
+  font-weight: 500 !important;
+  white-space: nowrap !important;
+}
+
+.header-location-badge i {
+  color: #f39c12 !important;
+  font-size: 0.85rem !important;
+}
+
+.header-phone-link {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  font-size: 0.78rem !important;
+  color: #e5d8c5 !important;
+  text-decoration: none !important;
+  font-weight: 500 !important;
+  transition: all 0.25s ease !important;
+  white-space: nowrap !important;
+}
+
+.header-phone-link i {
+  color: #2ecc71 !important;
+  font-size: 0.82rem !important;
+}
+
+.header-phone-link:hover {
+  color: #f1c40f !important;
+  text-shadow: 0 0 8px rgba(241, 196, 15, 0.4) !important;
+}
+
+.header-v-divider {
+  color: rgba(212, 175, 55, 0.35) !important;
+  font-size: 0.8rem !important;
+  user-select: none !important;
+}
+
+.top-bar-socials {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+
+.top-bar-social-link {
+  width: 28px !important;
+  height: 28px !important;
+  border-radius: 50% !important;
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(212, 175, 55, 0.25) !important;
+  color: #d4af37 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 0.88rem !important;
+  text-decoration: none !important;
+  transition: all 0.25s ease !important;
+}
+
+.top-bar-social-link.instagram:hover {
+  background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888) !important;
+  border-color: transparent !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 10px rgba(225, 48, 108, 0.5) !important;
+  transform: translateY(-2px) !important;
+}
+
+.top-bar-social-link.whatsapp:hover {
+  background: #25d366 !important;
+  border-color: #25d366 !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 10px rgba(37, 211, 102, 0.5) !important;
+  transform: translateY(-2px) !important;
+}
+
+.top-bar .live-status-badge {
   margin-left: 0 !important;
+  margin-right: 0 !important;
 }
-
-.top-bar .atmosphere-toggle-btn {
-  margin-left: 10px !important;
-  position: relative !important;
-  right: auto !important;
-  top: auto !important;
-  transform: none !important;
-}
-
-.top-bar .header-divider { display: none !important; }
 
 /* ── LIVE STATUS BADGE ── */
 .top-bar .live-status-badge {
@@ -6481,27 +6719,45 @@ body.day-atmosphere .menu-section .filter-buttons-wrapper {
 }
 
 .top-bar .live-status-badge.status-closed {
-  background: rgba(231, 76, 60, 0.12) !important;
-  border: 1px solid rgba(231, 76, 60, 0.35) !important;
-  color: #e74c3c !important;
+  background: rgba(239, 68, 68, 0.14) !important;
+  border: 1px solid rgba(239, 68, 68, 0.45) !important;
+  color: #ef4444 !important;
 }
 
-.top-bar .live-status-badge .pulse-dot,
-.top-bar .live-status-badge .pulse-dot.green {
+.top-bar .live-status-badge .pulse-dot.green,
+.top-bar .live-status-badge.status-open .pulse-dot {
   width: 8px !important;
   height: 8px !important;
   border-radius: 50% !important;
   background: #2ecc71 !important;
   display: inline-block !important;
   box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.8) !important;
-  animation: nbPulse 1.8s ease-in-out infinite !important;
+  animation: nbPulseGreen 1.8s ease-in-out infinite !important;
   flex-shrink: 0 !important;
 }
 
-@keyframes nbPulse {
+.top-bar .live-status-badge .pulse-dot.red,
+.top-bar .live-status-badge.status-closed .pulse-dot {
+  width: 8px !important;
+  height: 8px !important;
+  border-radius: 50% !important;
+  background: #ef4444 !important;
+  display: inline-block !important;
+  box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.8) !important;
+  animation: nbPulseRed 1.8s ease-in-out infinite !important;
+  flex-shrink: 0 !important;
+}
+
+@keyframes nbPulseGreen {
   0%   { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.75); transform: scale(0.9); }
   50%  { box-shadow: 0 0 0 6px rgba(46, 204, 113, 0); transform: scale(1.15); }
   100% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0); transform: scale(0.9); }
+}
+
+@keyframes nbPulseRed {
+  0%   { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.75); transform: scale(0.9); }
+  50%  { box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); transform: scale(1.15); }
+  100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); transform: scale(0.9); }
 }
 
 /* ── BUTTONS (THEME / LANG) ── */
@@ -6599,8 +6855,8 @@ body.day-atmosphere .top-bar .lang-toggle-btn {
   list-style: none !important;
   margin: 0 !important;
   padding: 0 !important;
-  gap: 1.8rem !important;
-  padding-right: 110px !important;
+  gap: 2.2rem !important;
+  padding-right: 35px !important;
 }
 
 .navbar-right ul {
@@ -6610,8 +6866,8 @@ body.day-atmosphere .top-bar .lang-toggle-btn {
   list-style: none !important;
   margin: 0 !important;
   padding: 0 !important;
-  gap: 1.8rem !important;
-  padding-left: 110px !important;
+  gap: 2.2rem !important;
+  padding-left: 35px !important;
 }
 .navbar-left, .navbar-right {
   display: block !important;
@@ -6897,7 +7153,7 @@ main.main-content:not(:has(.hero-wrapper)):not(:has(.hero-section)) {
     box-shadow: 0 2px 8px rgba(0,0,0,0.4) !important;
   }
 
-  /* 3. Full Screen 3-Region Mobile Menu Overlay */
+  /* 3. Full Screen 3-Region Mobile Menu Overlay (Strict 100dvh, 0 Scrollbar) */
   .mobile-navbar {
     position: fixed !important;
     top: 0 !important;
@@ -6907,12 +7163,14 @@ main.main-content:not(:has(.hero-wrapper)):not(:has(.hero-section)) {
     width: 100vw !important;
     height: 100vh !important;
     height: 100dvh !important;
+    max-height: 100dvh !important;
     background: #14110e !important;
     z-index: 10000 !important;
     display: none !important;
     flex-direction: column !important;
     justify-content: space-between !important;
-    padding: 16px 14px !important;
+    padding: 12px 14px !important;
+    box-sizing: border-box !important;
     overflow: hidden !important;
     scrollbar-width: none !important;
     -ms-overflow-style: none !important;
@@ -6946,31 +7204,32 @@ main.main-content:not(:has(.hero-wrapper)):not(:has(.hero-section)) {
     align-items: center !important;
     justify-content: space-between !important;
     width: 100% !important;
-    padding-bottom: 8px !important;
+    padding-bottom: 6px !important;
     border-bottom: 1px solid rgba(212, 175, 55, 0.2) !important;
     margin-bottom: 0 !important;
+    flex-shrink: 0 !important;
   }
 
   .mobile-nav-header .logo-img {
-    width: 48px !important;
-    height: 48px !important;
+    width: 44px !important;
+    height: 44px !important;
   }
 
   .mobile-close-btn {
-    width: 40px !important;
-    height: 40px !important;
+    width: 36px !important;
+    height: 36px !important;
     border-radius: 10px !important;
     border: 1.5px solid rgba(241, 196, 15, 0.7) !important;
     background: rgba(30, 18, 10, 0.9) !important;
     color: #f1c40f !important;
-    font-size: 1.2rem !important;
+    font-size: 1.1rem !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
     cursor: pointer !important;
   }
 
-  /* Region 2: Body (Single Column Card Buttons) */
+  /* Region 2: Body (Equally Spaced 6 Single Column Card Buttons) */
   .mobile-nav-body {
     flex: 1 1 auto !important;
     display: flex !important;
@@ -6988,36 +7247,34 @@ main.main-content:not(:has(.hero-wrapper)):not(:has(.hero-section)) {
     display: flex !important;
     flex-direction: column !important;
     justify-content: space-evenly !important;
-    gap: 8px !important;
+    gap: 5px !important;
     list-style: none !important;
     margin: 0 !important;
     padding: 0 !important;
     width: 100% !important;
-    flex: 1 !important;
     height: 100% !important;
   }
 
   .mobile-nav-body ul li {
-    display: block !important;
-    width: 100% !important;
-    flex: 1 !important;
     display: flex !important;
     align-items: center !important;
+    width: 100% !important;
+    flex: 1 !important;
   }
 
   .mobile-nav-body ul li a {
     display: flex !important;
     align-items: center !important;
     justify-content: flex-start !important;
-    gap: 14px !important;
+    gap: 12px !important;
     width: 100% !important;
     height: 100% !important;
-    padding: 13px 18px !important;
+    padding: 9px 14px !important;
     background: rgba(22, 12, 7, 0.9) !important;
     border: 1px solid rgba(212, 175, 55, 0.25) !important;
     border-radius: 10px !important;
     color: #fdfbf7 !important;
-    font-size: 1.05rem !important;
+    font-size: 0.98rem !important;
     font-weight: 600 !important;
     text-decoration: none !important;
     box-sizing: border-box !important;
@@ -7025,9 +7282,9 @@ main.main-content:not(:has(.hero-wrapper)):not(:has(.hero-section)) {
   }
 
   .mobile-nav-body ul li a i {
-    font-size: 1.18rem !important;
+    font-size: 1.1rem !important;
     color: #f1c40f !important;
-    width: 22px !important;
+    width: 20px !important;
     text-align: center !important;
     transition: transform 0.2s ease !important;
   }
@@ -7048,7 +7305,7 @@ main.main-content:not(:has(.hero-wrapper)):not(:has(.hero-section)) {
 
   .mobile-nav-body ul li a.active i {
     color: #f1c40f !important;
-    transform: scale(1.12) !important;
+    transform: scale(1.1) !important;
     filter: drop-shadow(0 0 4px rgba(241, 196, 15, 0.5)) !important;
   }
 
@@ -7057,38 +7314,156 @@ main.main-content:not(:has(.hero-wrapper)):not(:has(.hero-section)) {
     font-weight: 700 !important;
   }
 
-  /* Region 3: Footer Toolbar */
+  /* Region 3: Footer Toolbar (Hamburger Menü Alt Kısım) */
   .mobile-nav-footer {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
+    flex-shrink: 0 !important;
+    padding: 8px 10px 8px 10px !important;
+    border-top: 1.5px solid rgba(212, 175, 55, 0.25) !important;
+    box-sizing: border-box !important;
+    gap: 6px !important;
+    overflow: visible !important;
+    position: relative !important;
+    z-index: 10005 !important;
+    background: rgba(18, 11, 7, 0.98) !important;
+    border-radius: 12px !important;
+    margin-top: 4px !important;
+  }
+
+  /* 1. Satır: İletişim & Sosyal */
+  .mobile-footer-row-1 {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    width: 100% !important;
+    padding: 0 2px 5px 2px !important;
+    border-bottom: 1px dashed rgba(212, 175, 55, 0.22) !important;
+    gap: 6px !important;
+  }
+
+  .mobile-location-info {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    justify-content: center !important;
+    gap: 4px !important;
+    font-size: 0.74rem !important;
+    color: #e5d8c5 !important;
+    text-align: left !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .mobile-location-info .m-loc,
+  .mobile-location-info .m-phone {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 8px !important;
+    color: #e5d8c5 !important;
+    text-decoration: none !important;
+    font-weight: 500 !important;
+    white-space: nowrap !important;
+    text-align: left !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    outline: none !important;
+  }
+
+  .mobile-location-info .m-loc i,
+  .mobile-location-info .m-phone i {
+    width: 18px !important;
+    min-width: 18px !important;
+    max-width: 18px !important;
+    height: 18px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    flex-shrink: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .mobile-location-info .m-loc span,
+  .mobile-location-info .m-phone span {
+    margin: 0 !important;
+    padding: 0 !important;
+    display: inline-block !important;
+    text-align: left !important;
+  }
+
+  .mobile-location-info .m-loc i { color: #f39c12 !important; font-size: 0.85rem !important; }
+  .mobile-location-info .m-phone i { color: #2ecc71 !important; font-size: 0.85rem !important; }
+
+  .mobile-social-icons {
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    margin-left: auto !important;
+    flex-shrink: 0 !important;
+  }
+
+  .m-social-link {
+    width: 26px !important;
+    height: 26px !important;
+    border-radius: 50% !important;
+    background: rgba(255, 255, 255, 0.06) !important;
+    border: 1px solid rgba(212, 175, 55, 0.3) !important;
+    color: #d4af37 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 0.8rem !important;
+    text-decoration: none !important;
+  }
+
+  .m-social-link.instagram { color: #e1306c !important; }
+  .m-social-link.whatsapp { color: #25d366 !important; }
+
+  /* 2. Satır: Durum & Dil & Tema (TEK SATIRDA 3 ÖĞE KESİNTİSİZ) */
+  .mobile-footer-row-2 {
     display: flex !important;
     flex-direction: row !important;
     align-items: center !important;
     justify-content: space-between !important;
     width: 100% !important;
-    margin-top: 0 !important;
-    padding: 8px 8px 4px 8px !important;
-    border-top: 1px solid rgba(212, 175, 55, 0.2) !important;
-    box-sizing: border-box !important;
     flex-wrap: nowrap !important;
     gap: 4px !important;
-    overflow: visible !important;
-    position: relative !important;
-    z-index: 10005 !important;
+    box-sizing: border-box !important;
+    padding-top: 1px !important;
   }
 
   .mobile-nav-footer .live-status-badge {
-    font-size: 0.67rem !important;
-    padding: 4px 6px !important;
-    border-radius: 14px !important;
+    font-size: 0.65rem !important;
+    padding: 3px 6px !important;
+    border-radius: 12px !important;
     white-space: nowrap !important;
     margin: 0 !important;
-    flex-shrink: 1 !important;
+    flex: 1 1 auto !important;
     display: inline-flex !important;
     align-items: center !important;
     gap: 3px !important;
-    background: rgba(18, 12, 8, 0.9) !important;
-    border: 1px solid rgba(46, 204, 113, 0.4) !important;
-    color: #2ecc71 !important;
     overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  .mobile-nav-footer .live-status-badge.status-open {
+    background: rgba(18, 12, 8, 0.9) !important;
+    border: 1px solid rgba(46, 204, 113, 0.45) !important;
+    color: #2ecc71 !important;
+  }
+
+  .mobile-nav-footer .live-status-badge.status-closed {
+    background: rgba(25, 10, 10, 0.9) !important;
+    border: 1px solid rgba(239, 68, 68, 0.45) !important;
+    color: #ef4444 !important;
   }
 
   .mobile-nav-footer .live-status-badge small {
@@ -7098,7 +7473,7 @@ main.main-content:not(:has(.hero-wrapper)):not(:has(.hero-section)) {
     margin-left: 2px !important;
   }
 
-  /* Compact round Tema button in the middle */
+  /* Compact round Tema button on right */
   .mobile-nav-footer .atmosphere-toggle-btn {
     width: 26px !important;
     height: 26px !important;
@@ -7206,4 +7581,569 @@ main.main-content:not(:has(.hero-wrapper)):not(:has(.hero-section)) {
     padding: 0.7rem 1.2rem !important;
     font-size: 0.88rem !important;
   }
+}
+
+/* ==========================================
+   📱 MOBİL RESPONSIVE OPTİMİZASYONLARI
+   ========================================== */
+@media (max-width: 768px) {
+  /* ── 1. GENEL MOBİL TİPOGRAFİ VE BAŞLIK KÜÇÜLTME ── */
+  .section-title,
+  h2.section-title,
+  .about-title,
+  .values-section .section-title h2,
+  .team-section .section-title h2 {
+    font-size: 1.35rem !important; /* ~22px */
+    line-height: 1.25 !important;
+    margin-bottom: 6px !important;
+  }
+
+  .section-subtitle,
+  p.section-subtitle {
+    font-size: 0.9rem !important; /* ~14px */
+    line-height: 1.3 !important;
+    margin-bottom: 16px !important;
+  }
+
+  /* ── 2. MENÜ SAYFASI: TEK KOLONA DÖNÜŞ (1 Satırda 1 Yemek Alt Alta) ── */
+  #menu-grid,
+  .menu-section .dishes-grid {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+    width: 100% !important;
+    margin: 0 !important;
+  }
+
+  .menu-section .dish-card,
+  #menu-grid .dish-card {
+    position: relative !important;
+    padding: 0 !important;
+    border-radius: 12px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-start !important;
+    align-items: stretch !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+    background: rgba(22, 12, 7, 0.95) !important;
+    border: 1px solid rgba(212, 175, 55, 0.3) !important;
+  }
+
+  .menu-section .dish-card img,
+  .menu-section .dish-card .dish-img,
+  #menu-grid .dish-card img,
+  #menu-grid .dish-card .dish-img {
+    width: 100% !important;
+    height: 180px !important;
+    aspect-ratio: auto !important;
+    object-fit: cover !important;
+    border-radius: 12px 12px 0 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    flex-shrink: 0 !important;
+  }
+
+  .menu-section .dish-card .card-badges,
+  #menu-grid .dish-card .card-badges {
+    position: absolute !important;
+    top: 10px !important;
+    left: 10px !important;
+    z-index: 10 !important;
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 6px !important;
+  }
+
+  .menu-section .dish-card .card-badges .badge,
+  #menu-grid .dish-card .card-badges .badge {
+    font-size: 0.72rem !important;
+    padding: 3px 8px !important;
+    border-radius: 6px !important;
+    background: rgba(18, 11, 7, 0.88) !important;
+    backdrop-filter: blur(4px) !important;
+    -webkit-backdrop-filter: blur(4px) !important;
+    border: 1px solid rgba(212, 175, 55, 0.4) !important;
+    color: #f1c40f !important;
+  }
+
+  .menu-section .dish-card .dish-info,
+  #menu-grid .dish-card .dish-info {
+    padding: 12px 14px 14px 14px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 4px !important;
+    flex: 1 1 auto !important;
+  }
+
+  .menu-section .dish-card .dish-info h3,
+  #menu-grid .dish-card .dish-info h3 {
+    font-size: 1.05rem !important;
+    line-height: 1.25 !important;
+    margin: 0 0 4px 0 !important;
+    display: block !important;
+    -webkit-line-clamp: none !important;
+    overflow: visible !important;
+  }
+
+  .menu-section .dish-card .dish-info p,
+  #menu-grid .dish-card .dish-info p {
+    font-size: 0.85rem !important;
+    line-height: 1.35 !important;
+    margin: 0 0 8px 0 !important;
+    display: block !important;
+    -webkit-line-clamp: none !important;
+    overflow: visible !important;
+    opacity: 0.9 !important;
+  }
+
+  .menu-section .dish-card .dish-price,
+  #menu-grid .dish-card .dish-price {
+    font-size: 1.1rem !important;
+    font-weight: 700 !important;
+    color: #f1c40f !important;
+  }
+
+  /* ── 3. ANASAYFA ÖNE ÇIKAN LEZZETLER (TEK KOLON ALT ALTA) ── */
+  .featured-dishes .dishes-grid,
+  .dishes-grid {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+    width: 100% !important;
+    margin: 0 !important;
+  }
+
+  .featured-dishes .dish-card {
+    position: relative !important;
+    padding: 0 !important;
+    border-radius: 12px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-start !important;
+    align-items: stretch !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+    background: rgba(22, 12, 7, 0.95) !important;
+    border: 1px solid rgba(212, 175, 55, 0.3) !important;
+  }
+
+  .featured-dishes .dish-card img,
+  .featured-dishes .dish-card .dish-img {
+    width: 100% !important;
+    height: 200px !important;
+    aspect-ratio: auto !important;
+    object-fit: cover !important;
+    border-radius: 12px 12px 0 0 !important;
+    flex-shrink: 0 !important;
+  }
+
+  .featured-dishes .dish-card .card-badges {
+    position: absolute !important;
+    top: 8px !important;
+    left: 8px !important;
+    z-index: 10 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 3px !important;
+    opacity: 0.9 !important;
+    color: #e5d8c5 !important;
+  }
+
+  .dish-price {
+    font-size: 1.15rem !important;
+    font-weight: 700 !important;
+    color: #f1c40f !important;
+  }
+
+  /* ── 4. ANASAYFA ÖZELLİK ROZETİ (TRUST BAR) ── */
+  .trust-bar {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
+  }
+
+  .trust-item {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 10px !important;
+    padding: 10px 12px !important;
+    text-align: left !important;
+  }
+
+  .trust-item i {
+    font-size: 1.3rem !important;
+    flex-shrink: 0 !important;
+  }
+
+  .trust-item div {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    justify-content: center !important;
+    text-align: left !important;
+  }
+
+  .trust-item strong {
+    font-size: 0.82rem !important;
+    line-height: 1.2 !important;
+    text-align: left !important;
+    white-space: normal !important;
+    display: block !important;
+  }
+
+  .trust-item span {
+    font-size: 0.68rem !important;
+    line-height: 1.2 !important;
+    text-align: left !important;
+    opacity: 0.85 !important;
+    display: block !important;
+  }
+
+  /* ── 5. HAKKIMIZDA - VAZGEÇİLMEZ İLKELERİMİZ (TEK KOLON) ── */
+  .value-card {
+    width: 100% !important;
+    height: auto !important;
+    padding: 18px 16px !important;
+    border-radius: 12px !important;
+    text-align: center !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    box-sizing: border-box !important;
+    background: rgba(22, 12, 7, 0.95) !important;
+    border: 1px solid rgba(212, 175, 55, 0.3) !important;
+  }
+
+  .value-icon {
+    width: 36px !important;
+    height: 36px !important;
+    font-size: 1.1rem !important;
+    margin: 0 auto 8px auto !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  .value-card h3 {
+    font-size: 1.05rem !important;
+    font-weight: 700 !important;
+    line-height: 1.2 !important;
+    margin-bottom: 6px !important;
+    color: #f1c40f !important;
+  }
+
+  .value-card p {
+    font-size: 0.85rem !important;
+    line-height: 1.4 !important;
+    opacity: 0.9 !important;
+    margin: 0 !important;
+    color: #e5d8c5 !important;
+  }
+
+  /* ── 6. HAKKIMIZDA - MUTFAKTAKİ USTALARIMIZ (TEK KOLON & SADE RENKLER) ── */
+  .team-card,
+  .chef-card {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    padding: 12px !important;
+    border-radius: 12px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-start !important;
+    align-items: center !important;
+    box-sizing: border-box !important;
+    background: rgba(18, 11, 7, 0.95) !important;
+    border: 1px solid rgba(212, 175, 55, 0.25) !important;
+  }
+
+  .team-img-wrapper,
+  .chef-card .team-img-wrapper {
+    width: 100% !important;
+    height: auto !important;
+    margin: 0 0 10px 0 !important;
+    flex-shrink: 0 !important;
+  }
+
+  .team-img-wrapper img,
+  .chef-card img {
+    width: 100% !important;
+    height: 220px !important;
+    aspect-ratio: auto !important;
+    object-fit: cover !important;
+    border-radius: 8px !important;
+    display: block !important;
+  }
+
+  .team-info,
+  .chef-info {
+    padding: 6px 4px 4px 4px !important;
+    margin: 0 !important;
+    text-align: center !important;
+    width: 100% !important;
+  }
+
+  .team-info h3,
+  .chef-info h3 {
+    font-size: 1.1rem !important;
+    font-weight: 700 !important;
+    color: #d4af37 !important;
+    line-height: 1.2 !important;
+    margin: 0 0 4px 0 !important;
+  }
+
+  .team-info .team-role,
+  .chef-info .chef-role {
+    font-size: 0.9rem !important;
+    font-weight: 500 !important;
+    color: #e0e0e0 !important;
+    margin: 0 0 6px 0 !important;
+  }
+
+  .team-info p,
+  .chef-info p {
+    font-size: 0.85rem !important;
+    line-height: 1.4 !important;
+    color: #cccccc !important;
+    margin: 0 !important;
+    opacity: 0.9 !important;
+  }
+}
+
+/* ==========================================
+   🛠️ SPESİFİK DÜZELTMELER & RESPONSIVE HİZALAMA
+   ========================================== */
+
+/* ── 1. ALT SAYFALAR HERO / BAŞLIK KÖKTEN ÇÖZÜM (140px Top Padding) ── */
+.hero-section {
+  padding-top: 110px !important;
+}
+
+.menu-hero,
+.gallery-hero,
+.gallery-section,
+.about-hero,
+.about-section,
+.reservation-hero,
+.reservation-section,
+.contact-hero,
+.contact-section,
+.page-header,
+.subpage-hero {
+  padding-top: 140px !important;
+  padding-bottom: 30px !important;
+}
+
+@media (max-width: 768px) {
+  /* Anasayfa Hero */
+  .hero-section {
+    background-size: cover !important;
+    background-position: center center !important;
+    padding-top: 110px !important;
+  }
+
+  /* Alt Sayfalar Hero Kapsayıcısı Top Padding (Navbar Kesmesini Kökten Önleme) */
+  .menu-hero,
+  .gallery-hero,
+  .gallery-section,
+  .about-hero,
+  .about-section,
+  .reservation-hero,
+  .reservation-section,
+  .contact-hero,
+  .contact-section,
+  .page-header,
+  .subpage-hero {
+    padding-top: 140px !important;
+    padding-bottom: 30px !important;
+  }
+
+  .hero-tag-badge {
+    white-space: nowrap !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 6px !important;
+    font-size: 0.75rem !important; /* 12px */
+    padding: 5px 12px !important;
+    border-radius: 20px !important;
+    margin: 0 auto 12px auto !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  /* ── 2. MENÜ SAYFASI: PDF İNDİR KARTI TAŞMA DÜZELTMESİ ── */
+  .services-banner {
+    grid-template-columns: 1fr !important;
+    gap: 14px !important;
+    width: 100% !important;
+  }
+
+  .service-box {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    margin: 0 auto !important;
+    padding: 14px 16px !important;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 10px !important;
+    overflow: hidden !important;
+  }
+
+  .service-box i {
+    font-size: 1.5rem !important;
+    flex-shrink: 0 !important;
+  }
+
+  .service-box div {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+  }
+
+  .service-box strong {
+    font-size: 0.9rem !important;
+    line-height: 1.25 !important;
+    display: block !important;
+  }
+
+  .service-box span {
+    font-size: 0.75rem !important;
+    line-height: 1.25 !important;
+    display: block !important;
+  }
+
+  .btn-service-action {
+    padding: 7px 14px !important;
+    font-size: 0.8rem !important;
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
+    border-radius: 20px !important;
+  }
+
+  /* ── 3. GALERİ SAYFASI: INSTAGRAM VE MASA REZERVE ET KARTLARI TAM ORTALAMA ── */
+  .instagram-banner,
+  .cta-banner {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    margin: 0 auto !important;
+    padding: 24px 16px !important;
+    gap: 14px !important;
+  }
+
+  .instagram-icon-box {
+    margin: 0 auto !important;
+  }
+
+  .instagram-text,
+  .cta-content {
+    text-align: center !important;
+    width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  .instagram-text h3,
+  .cta-content h2 {
+    text-align: center !important;
+    margin-bottom: 6px !important;
+  }
+
+  .instagram-text p,
+  .cta-content p {
+    text-align: center !important;
+    margin: 0 auto !important;
+  }
+
+  .cta-badge {
+    margin: 0 auto 10px auto !important;
+    display: inline-block !important;
+    text-align: center !important;
+  }
+
+  .cta-action {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    width: 100% !important;
+    margin-top: 4px !important;
+  }
+
+  .btn-instagram,
+  .btn-cta-primary {
+    margin: 0 auto !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: auto !important;
+    min-width: 200px !important;
+    padding: 10px 22px !important;
+  }
+}
+
+/* ==========================================
+   💎 İLETİŞİM BİLGİLERİ KARTI (ESKİ TASARIMA DÖNÜŞ & SADECE FONT KÜÇÜLTME)
+   ========================================== */
+.contact-info-card h3 {
+  font-size: 1.25rem !important;
+  margin-bottom: 6px !important;
+}
+
+.contact-info-card .info-desc {
+  font-size: 0.85rem !important;
+  line-height: 1.4 !important;
+  margin-bottom: 16px !important;
+}
+
+.contact-detail-list {
+  gap: 10px !important;
+  margin-bottom: 16px !important;
+}
+
+.contact-detail-list li {
+  gap: 12px !important;
+  margin-bottom: 8px !important;
+}
+
+.contact-detail-list .icon-box {
+  width: 36px !important;
+  height: 36px !important;
+  font-size: 0.95rem !important;
+}
+
+.contact-detail-list .text-box strong {
+  font-size: 0.80rem !important;
+}
+
+.contact-detail-list .text-box span,
+.contact-detail-list .text-box a {
+  font-size: 0.85rem !important;
+  line-height: 1.3 !important;
+}
+
+.location-features .feature-badge {
+  font-size: 0.72rem !important;
+  padding: 4px 10px !important;
 }

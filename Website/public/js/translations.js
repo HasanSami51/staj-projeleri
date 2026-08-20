@@ -9,6 +9,7 @@ window.translations = {
     
     "status-open": "Şu An Açığız",
     "status-closed": "Şu An Kapalıyız",
+    "header-location": "Gaziantep, Şahinbey",
     "mode-night": "Mangal Akşamı",
     "mode-day": "Sabah Sefası",
     "brand-sub": "1932'den Beri",
@@ -33,7 +34,7 @@ window.translations = {
     "hero-btn-menu": "Menümüzü İnceleyin",
     "hero-btn-res": "Rezervasyon Yap",
     
-    "index-trust-1-title": "%100 Taze Yerel Etler",
+    "index-trust-1-title": "%100 Taze<br>Yerel Etler",
     "index-trust-1-desc": "Günlük yöresel tedarik",
     "index-trust-2-title": "Meşe Odunu Ateşi",
     "index-trust-2-desc": "Geleneksel taş fırın",
@@ -219,9 +220,13 @@ window.translations = {
     "ticket-alert-success": "Rezervasyon talebiniz başarıyla alınmıştır. Aşağıdaki bilet ile durumunuzu sorgulayabilirsiniz.",
     "ticket-status-label": "DURUM",
     "ticket-edit-btn": "Bilgileri Düzenle",
-    "ticket-notice-text": "⚠️ Lütfen rezervasyon bilgilerinizin doğru olduğundan emin olunuz. İptal ve değişiklik talepleriniz için lütfen restoranımız ile iletişime geçiniz.",
+    "ticket-btn-close": "Kapat",
+    "ticket-notice-text": "Lütfen rezervasyon bilgilerinizin doğru olduğundan emin olunuz. İptal talepleriniz için lütfen restoranımız ile iletişime geçiniz.",
     "ticket-btn-save": "PDF Olarak İndir",
     "ticket-btn-wa": "WhatsApp ile Masanı Teyit Et",
+    "modal-success-title": "Talebiniz Restorana İletildi!",
+    "modal-success-desc": "Rezervasyon talebiniz başarıyla alınmıştır. Rezervasyon detaylarını üst menüdeki <strong>'Rezervasyon Bul'</strong> alanından telefon numaranızla sorgulayarak biletinizi görüntüleyebilirsiniz.",
+    "modal-success-btn": "Tamam",
 
     // Galeri Sayfası (galeri.html)
     "gallery-hero-title": "Mutfağımızdan Görsel Esintiler",
@@ -396,6 +401,7 @@ window.translations = {
 
     "status-open": "We Are Open",
     "status-closed": "We Are Closed",
+    "header-location": "Gaziantep, Sahinbey",
     "mode-night": "Barbecue Evening",
     "mode-day": "Morning Delight",
     "brand-sub": "Since 1932",
@@ -420,7 +426,7 @@ window.translations = {
     "hero-btn-menu": "View Our Menu",
     "hero-btn-res": "Book Table",
 
-    "index-trust-1-title": "100% Fresh Local Meat",
+    "index-trust-1-title": "100% Fresh<br>Local Meats",
     "index-trust-1-desc": "Daily local supply",
     "index-trust-2-title": "Oak Wood Fire",
     "index-trust-2-desc": "Traditional stone oven",
@@ -606,9 +612,13 @@ window.translations = {
     "ticket-alert-success": "Your reservation request has been received. You can query your status using the ticket below.",
     "ticket-status-label": "STATUS",
     "ticket-edit-btn": "Edit Details",
-    "ticket-notice-text": "⚠️ Please ensure your reservation information is correct. For cancellation and modification requests, please contact our restaurant.",
+    "ticket-btn-close": "Close",
+    "ticket-notice-text": "Please ensure your reservation information is correct. For cancellation requests, please contact our restaurant.",
     "ticket-btn-save": "Download as PDF",
     "ticket-btn-wa": "Confirm Table via WhatsApp",
+    "modal-success-title": "Your Request Has Been Sent to the Restaurant!",
+    "modal-success-desc": "Your reservation request has been successfully received. You can view your ticket details by querying your phone number in the <strong>'Find Reservation'</strong> section.",
+    "modal-success-btn": "OK",
 
     // Galeri Sayfası (galeri.html)
     "gallery-hero-title": "Visual Delights from Our Kitchen",

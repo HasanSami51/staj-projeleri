@@ -28,9 +28,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="preload" as="image" href="../public/images/mercimek-corbasi.jpg" fetchpriority="high">
-    <link rel="preload" as="image" href="../public/images/patlican-corbasi.jpg" fetchpriority="high">
-    <link rel="stylesheet" href="../public/css/style.css?v=290">
+    <link rel="preload" as="image" href="../public/images/mercimek-corbasi.webp" fetchpriority="high">
+    <link rel="preload" as="image" href="../public/images/patlican-corbasi.webp" fetchpriority="high">
+    <link rel="stylesheet" href="../public/css/style.css?v=530">
 
     <!-- Structured Data JSON-LD Schema -->
     <script type="application/ld+json">
@@ -58,8 +58,26 @@
     <div class="top-bar">
       <div class="container top-bar-container">
         <div class="header-status-wrapper">
-          <div class="live-status-badge"></div>
-          <!-- atmosphereToggleBtn ve langSelector buraya JS tarafından yerleştirilecek -->
+          <div class="top-bar-left">
+            <div class="header-location-badge">
+              <i class="fa-solid fa-location-dot"></i>
+              <span data-translate="header-location">Gaziantep, Şahinbey</span>
+            </div>
+            <span class="header-v-divider">|</span>
+            <a href="tel:02325137567" class="header-phone-link" title="Bizi Arayın">
+              <i class="fa-solid fa-phone"></i>
+              <span>0 232 513 75 67</span>
+            </a>
+            <span class="header-v-divider">|</span>
+            <div class="live-status-badge"></div>
+          </div>
+          <div class="top-bar-right">
+            <div class="top-bar-socials">
+              <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer" class="top-bar-social-link instagram" title="Instagram"><i class="fa-brands fa-instagram"></i></a>
+              <a href="https://wa.me/902325137567" target="_blank" rel="noopener noreferrer" class="top-bar-social-link whatsapp" title="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+            </div>
+            <span class="header-v-divider">|</span>
+          </div>
         </div>
       </div>
     </div>
@@ -114,7 +132,7 @@
             <p>Geleneksel Gaziantep Mutfak Mirası • Asırlık Yemek Menüsü</p>
         </div>
 
-        <section class="menu-hero" style="text-align: center; padding: 40px 0 20px 0;">
+        <section class="menu-hero text-center">
             <div class="container">
                 <h1 style="color: var(--primary-kiremit); margin-bottom: 10px;" data-translate="menu-title">Lezzet Mührü Menü</h1>
                 <p style="color: var(--color-text-muted); font-size: 1.2rem;" data-translate="menu-subtitle">1932'den beri değişmeyen tarifler, usta ellerden sofranıza</p>
