@@ -30,7 +30,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="preload" as="image" href="../public/images/mercimek-corbasi.webp" fetchpriority="high">
     <link rel="preload" as="image" href="../public/images/patlican-corbasi.webp" fetchpriority="high">
-    <link rel="stylesheet" href="../public/css/style.css?v=530">
+    <link rel="stylesheet" href="../public/css/style.css?v=690">
+    <!-- PDF İndirme Kütüphaneleri (Dinamik Menü PDF Üretimi) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
     <!-- Structured Data JSON-LD Schema -->
     <script type="application/ld+json">
@@ -190,7 +193,7 @@
           <strong data-translate="menu-serv-1-title">Dijital Menü PDF</strong>
           <span data-translate="menu-serv-1-desc">Telefonunuza indirmek için tıklayın</span>
         </div>
-        <a href="../public/pdf/Lezzet_Muhru_1932_Menu.pdf" download="Lezzet_Muhru_1932_Dijital_Menu.pdf" target="_blank" class="btn-service-action" data-translate="menu-serv-1-btn">PDF İndir</a>
+        <button type="button" id="btnDownloadMenuPdf" onclick="generateDynamicMenuPDF()" class="btn-service-action" data-translate="menu-serv-1-btn"><i class="fa-solid fa-file-pdf"></i> PDF İndir</button>
       </div>
       <div class="service-box">
         <i class="fa-solid fa-phone-volume"></i>
@@ -225,6 +228,7 @@
           <li><a href="rezervasyon.html" data-translate="nav-reservation">Rezervasyon</a></li>
           <li><a href="hakkimizda.html" data-translate="nav-about">Hakkımızda</a></li>
           <li><a href="galeri.html" data-translate="nav-gallery">Galeri</a></li>
+          <li><a href="iletisim.html" data-translate="nav-contact">İletişim</a></li>
         </ul>
       </div>
 

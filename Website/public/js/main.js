@@ -1124,7 +1124,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (reservationForm) reservationForm.style.display = 'none';
         if (reservationQueryForm) {
           reservationQueryForm.style.display = 'block';
-          const queryPhoneInput = document.getElementById('search_token_x99') || document.getElementById('queryPhone');
+          const queryPhoneInput = document.getElementById('res_query_key') || document.getElementById('search_token_x99') || document.getElementById('queryPhone');
           if (queryPhoneInput) queryPhoneInput.value = '';
           if (resQueryAlert) resQueryAlert.style.display = 'none';
         }
@@ -1136,7 +1136,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (reservationQueryForm) {
       reservationQueryForm.addEventListener('submit', (e) => {
         e.preventDefault();
-        const queryPhoneInput = document.getElementById('search_token_x99') || document.getElementById('queryPhone');
+        const queryPhoneInput = document.getElementById('res_query_key') || document.getElementById('search_token_x99') || document.getElementById('queryPhone');
         if (!queryPhoneInput) return;
 
         const phoneVal = queryPhoneInput.value.trim();
@@ -1381,7 +1381,7 @@ document.addEventListener("DOMContentLoaded", () => {
       lastSubmittedTicketData = null;
 
       // Sorgu telefon alanını temizle
-      const queryPhoneInput = document.getElementById('search_token_x99') || document.getElementById('queryPhone');
+      const queryPhoneInput = document.getElementById('res_query_key') || document.getElementById('search_token_x99') || document.getElementById('queryPhone');
       if (queryPhoneInput) queryPhoneInput.value = '';
 
       if (reservationQueryForm) {
@@ -2368,6 +2368,190 @@ window.downloadTicketPDF = async function() {
   } finally {
     // Aksiyon butonlarını geri göster
     if (actionsDiv) actionsDiv.style.display = '';
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = originalHTML;
+    }
+  }
+};
+
+// 🖨️ DİNAMİK VERİTABANI/JSON DESTEKLİ MENÜ PDF ÜRETİCİ (Lüks Kurumsal Tema + Sayfa Bölünme Korumalı)
+window.generateDynamicMenuPDF = async function() {
+  const btn = document.getElementById('btnDownloadMenuPdf');
+  let originalHTML = '';
+  if (btn) {
+    originalHTML = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> <span>PDF Hazırlanıyor...</span>`;
+  }
+
+  try {
+    // 1. En güncel yemekler listesini temin et
+    let items = window.yemekler || [];
+    if (!items || items.length === 0) {
+      try {
+        const isLocalHost3000 = window.location.origin.includes(':3000');
+        const apiUrl = isLocalHost3000 ? '/api/menu' : 'http://localhost:3000/api/menu';
+        const res = await fetch(apiUrl);
+        if (res.ok) {
+          const json = await res.json();
+          if (json && json.success && Array.isArray(json.data)) {
+            items = json.data;
+            window.yemekler = items;
+          }
+        }
+      } catch (e) {
+        console.warn('Backend API erişilemedi, fallback menü kullanılıyor:', e);
+      }
+    }
+
+    if (!items || items.length === 0) {
+      const localSaved = localStorage.getItem('menuItems');
+      if (localSaved) {
+        try { items = JSON.parse(localSaved); } catch(e){}
+      }
+    }
+
+    const totalLezzetCount = items && items.length > 0 ? items.length : 43;
+
+    // Kategori tanımlamaları (Sayfa 1 ve Sayfa 2 için gruplama)
+    const page1Categories = [
+      { key: 'corba', title: 'ÇORBALAR & BAŞLANGIÇLAR' },
+      { key: 'kebap', title: 'KEBAPLAR & IZGARALAR' },
+      { key: 'pide', title: 'PİDELER & LAHMACUNLAR' }
+    ];
+
+    const page2Categories = [
+      { key: 'zeytinyagli', title: 'ZEYTİNYAĞLILAR & SALATALAR' },
+      { key: 'tatli', title: 'BAKLAVALAR & TATLILAR' },
+      { key: 'icecek', title: 'GELENEKSEL İÇECEKLER' }
+    ];
+
+    // Yardımcı Kategori Bloğu Üretici
+    function buildCategoryBlockHtml(catList) {
+      let html = '';
+      catList.forEach(cat => {
+        const catItems = items.filter(y => y.kategori === cat.key);
+        if (catItems.length > 0) {
+          let itemsHtml = '';
+          catItems.forEach(item => {
+            itemsHtml += `
+              <div style="background-color: #ffffff !important; border: 1px solid #dfd7ce !important; border-radius: 6px; padding: 7px 9px; display: flex; flex-direction: column; justify-content: space-between; box-sizing: border-box; page-break-inside: avoid; break-inside: avoid;">
+                <div>
+                  <div style="color: #1a1614 !important; font-weight: 700; font-size: 12px; margin-bottom: 2px; font-family: sans-serif;">${item.ad}</div>
+                  <div style="color: #4a4440 !important; font-size: 9.5px; line-height: 1.25; font-family: sans-serif; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">${item.aciklama || ''}</div>
+                </div>
+                <div style="color: #8c581e !important; font-weight: 800; font-size: 11.5px; margin-top: 4px; font-family: sans-serif;">${item.fiyat} TL</div>
+              </div>
+            `;
+          });
+
+          html += `
+            <div style="margin-bottom: 9px; page-break-inside: avoid; break-inside: avoid;">
+              <div style="background: #1e1815; color: #d4af37; font-weight: 800; font-size: 11px; padding: 5px 10px; border-radius: 4px; margin-bottom: 6px; font-family: sans-serif; letter-spacing: 0.5px; border-left: 4px solid #d4af37;">
+                ${cat.title} (${catItems.length})
+              </div>
+              <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px;">
+                ${itemsHtml}
+              </div>
+            </div>
+          `;
+        }
+      });
+      return html;
+    }
+
+    const page1Html = buildCategoryBlockHtml(page1Categories);
+    const page2Html = buildCategoryBlockHtml(page2Categories);
+
+    // SAYFA 1 DOKÜMANI
+    const p1Container = document.createElement('div');
+    p1Container.style.position = 'fixed';
+    p1Container.style.left = '-9999px';
+    p1Container.style.top = '0';
+    p1Container.style.width = '790px';
+    p1Container.style.height = '1115px'; // Tam A4 Oranı
+    p1Container.style.background = '#ffffff';
+    p1Container.style.padding = '20px';
+    p1Container.style.boxSizing = 'border-box';
+    p1Container.style.color = '#1a1614';
+    p1Container.style.zIndex = '-9999';
+
+    p1Container.innerHTML = `
+      <div style="border: 1.5px solid #d4af37 !important; border-bottom: 1.5px solid #d4af37 !important; padding: 16px 16px 20px 16px !important; border-radius: 8px; background: #ffffff !important; height: 1075px !important; box-sizing: border-box !important; display: flex; flex-direction: column; justify-content: space-between;">
+        <div>
+          <div style="text-align: center; border-bottom: 2px solid #d4af37; padding-bottom: 8px; margin-bottom: 10px;">
+            <h1 style="font-family: 'Playfair Display', serif, sans-serif; color: #1e1815; margin: 0; font-size: 24px; font-weight: 900; letter-spacing: 1px;">LEZZET MÜHRÜ 1932</h1>
+            <p style="font-family: sans-serif; color: #8c581e; margin: 4px 0 0 0; font-size: 11.5px; font-weight: 600;">Gaziantep Mutfak Mirası • Asırlık Yemek Menüsü (${totalLezzetCount} Lezzet)</p>
+          </div>
+          ${page1Html}
+        </div>
+        <div style="text-align: center; border-top: 1px solid #e5ded7; padding-top: 8px; margin-top: 6px; font-family: sans-serif; font-size: 9.5px; color: #777777;">
+          Sayfa 1 / 2 • Akkent Mahallesi, Kemalpaşa Caddesi, No:77, Şahinbey / Gaziantep • Tel: 0 232 513 75 67
+        </div>
+      </div>
+    `;
+
+    // SAYFA 2 DOKÜMANI
+    const p2Container = document.createElement('div');
+    p2Container.style.position = 'fixed';
+    p2Container.style.left = '-9999px';
+    p2Container.style.top = '0';
+    p2Container.style.width = '790px';
+    p2Container.style.height = '1115px'; // Tam A4 Oranı
+    p2Container.style.background = '#ffffff';
+    p2Container.style.padding = '20px';
+    p2Container.style.boxSizing = 'border-box';
+    p2Container.style.color = '#1a1614';
+    p2Container.style.zIndex = '-9999';
+
+    p2Container.innerHTML = `
+      <div style="border: 1.5px solid #d4af37 !important; border-bottom: 1.5px solid #d4af37 !important; padding: 16px 16px 20px 16px !important; border-radius: 8px; background: #ffffff !important; height: 1075px !important; box-sizing: border-box !important; display: flex; flex-direction: column; justify-content: space-between;">
+        <div>
+          <div style="text-align: center; border-bottom: 2px solid #d4af37; padding-bottom: 8px; margin-bottom: 10px;">
+            <h1 style="font-family: 'Playfair Display', serif, sans-serif; color: #1e1815; margin: 0; font-size: 22px; font-weight: 900; letter-spacing: 1px;">LEZZET MÜHRÜ 1932</h1>
+            <p style="font-family: sans-serif; color: #8c581e; margin: 3px 0 0 0; font-size: 11px; font-weight: 600;">Geleneksel Mutfak Mirası • Menü Devamı</p>
+          </div>
+          ${page2Html}
+        </div>
+        <div style="text-align: center; border-top: 1px solid #e5ded7; padding-top: 8px; margin-top: 6px; font-family: sans-serif; font-size: 9.5px; color: #777777;">
+          Sayfa 2 / 2 • www.lezzetmuhru.com • Afiyet Olsun
+        </div>
+      </div>
+    `;
+
+    document.body.appendChild(p1Container);
+    document.body.appendChild(p2Container);
+
+    // html2canvas ile 1. ve 2. Sayfayı Ayrı Ayrı Render Et
+    const canvas1 = await html2canvas(p1Container, { scale: 2, useCORS: true, logging: false, backgroundColor: '#ffffff' });
+    const canvas2 = await html2canvas(p2Container, { scale: 2, useCORS: true, logging: false, backgroundColor: '#ffffff' });
+
+    document.body.removeChild(p1Container);
+    document.body.removeChild(p2Container);
+
+    const imgData1 = canvas1.toDataURL('image/jpeg', 0.95);
+    const imgData2 = canvas2.toDataURL('image/jpeg', 0.95);
+
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({
+      orientation: 'portrait',
+      unit: 'mm',
+      format: 'a4'
+    });
+
+    // 1. Sayfa Ekle
+    pdf.addImage(imgData1, 'JPEG', 0, 0, 210, 297);
+
+    // 2. Sayfa Ekle
+    pdf.addPage();
+    pdf.addImage(imgData2, 'JPEG', 0, 0, 210, 297);
+
+    pdf.save('Lezzet_Muhru_1932_Dijital_Menu.pdf');
+  } catch (err) {
+    console.error('Dinamik PDF üretimi sırasında hata oluştu:', err);
+    alert('PDF menü oluşturulurken bir hata oluştu. Lütfen tekrar deneyiniz.');
+  } finally {
     if (btn) {
       btn.disabled = false;
       btn.innerHTML = originalHTML;

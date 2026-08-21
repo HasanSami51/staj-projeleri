@@ -4844,7 +4844,7 @@ body {
   transform: translate(-50%, -50%) scale(1.2) !important;
   object-fit: cover !important;
   pointer-events: none !important;
-  filter: brightness(0.85) contrast(1.05) !important;
+  filter:blur(100px) brightness(1) contrast(1.05) !important;
   image-rendering: -webkit-optimize-contrast !important;
   image-rendering: high-quality !important;
   -webkit-backface-visibility: hidden !important;
@@ -7926,11 +7926,7 @@ main.main-content:not(:has(.hero-wrapper)):not(:has(.hero-section)) {
    🛠️ SPESİFİK DÜZELTMELER & RESPONSIVE HİZALAMA
    ========================================== */
 
-/* ── 1. ALT SAYFALAR HERO / BAŞLIK KÖKTEN ÇÖZÜM (140px Top Padding) ── */
-.hero-section {
-  padding-top: 110px !important;
-}
-
+/* ── 1. ALT SAYFALAR HERO / BAŞLIK TOP PADDING MAKSİMUM SIFIRLAMA (Anasayfa Hariç) ── */
 .menu-hero,
 .gallery-hero,
 .gallery-section,
@@ -7942,8 +7938,44 @@ main.main-content:not(:has(.hero-wrapper)):not(:has(.hero-section)) {
 .contact-section,
 .page-header,
 .subpage-hero {
-  padding-top: 140px !important;
-  padding-bottom: 30px !important;
+  padding-top: 10px !important;
+  padding-bottom: 5px !important;
+  margin-top: 0 !important;
+}
+
+.menu-hero .container,
+.gallery-section .container,
+.about-hero .container,
+.reservation-section .container,
+.contact-section .container {
+  padding-top: 0 !important;
+  margin-top: 0 !important;
+}
+
+.menu-hero .section-title,
+.gallery-section .section-title,
+.about-hero .section-title,
+.reservation-section .section-title,
+.contact-section .section-title,
+.menu-hero h1,
+.gallery-section h2,
+.about-hero h2,
+.reservation-section h2,
+.contact-section h2 {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
+/* ── ANASAYFA HERO MASAÜSTÜ / BÜYÜK MONİTÖR EŞİTLENMESİ (Fotoğraf 3 & 4 Düzeltmesi) ── */
+@media (min-width: 769px) {
+  .hero-section {
+    padding-top: 75px !important;
+    padding-bottom: 25px !important;
+  }
+
+  .hero-section .hero-tag-badge {
+    margin-top: 0 !important;
+  }
 }
 
 @media (max-width: 768px) {
@@ -7951,10 +7983,9 @@ main.main-content:not(:has(.hero-wrapper)):not(:has(.hero-section)) {
   .hero-section {
     background-size: cover !important;
     background-position: center center !important;
-    padding-top: 110px !important;
   }
 
-  /* Alt Sayfalar Hero Kapsayıcısı Top Padding (Navbar Kesmesini Kökten Önleme) */
+  /* Alt Sayfalar Hero Kapsayıcısı Top Padding (Navbardan Tam 15px Altına Oturt) */
   .menu-hero,
   .gallery-hero,
   .gallery-section,
@@ -7966,8 +7997,23 @@ main.main-content:not(:has(.hero-wrapper)):not(:has(.hero-section)) {
   .contact-section,
   .page-header,
   .subpage-hero {
-    padding-top: 140px !important;
-    padding-bottom: 30px !important;
+    padding-top: 0px !important;
+    padding-bottom: 2px !important;
+    margin-top: -25px !important;
+  }
+
+  .menu-hero .section-title,
+  .gallery-section .section-title,
+  .about-hero .section-title,
+  .reservation-section .section-title,
+  .contact-section .section-title,
+  .menu-hero h1,
+  .gallery-section h2,
+  .about-hero h2,
+  .reservation-section h2,
+  .contact-section h2 {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
   }
 
   .hero-tag-badge {
