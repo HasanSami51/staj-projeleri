@@ -159,4 +159,29 @@ Sunucu varsayılan olarak `http://localhost:3000` portunda yayın yapmaktadır.
 * **Atmosfer & Dil Yönetimi (`public/js/translations.js`):**
   Tüm metinler `data-translate` niteliği ile işaretlenmiş olup sayfa yenilenmeden Türkçe / İngilizce geçişi sağlar. Seçim verisi tarayıcı hafızasındaki `localStorage` üzerinde kaydedilir.
 
+---
+
+## 🎨 4. CSS Responsive Mimarisi ve Görsel Kadrajlama Kuralları (`style.css`)
+
+### 4.1 Breakpoint Kırılım Standartları
+* **320px - 360px Ultra Mobil:**
+  - `.live-status-badge`: `flex: 0 0 auto; width: fit-content; max-width: max-content; margin-right: auto;`
+  - `.main-footer .footer-container`: `display: flex; flex-direction: column; text-align: left;`
+* **320px - 600px Mobil:**
+  - `.services-banner`: `display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px;`
+  - `.table-responsive`: `overflow-x: auto; -webkit-overflow-scrolling: touch;`
+  - `.hours-table`: `min-width: 480px; white-space: nowrap;`
+* **768px Tablet (601px - 900px):**
+  - `#menu-grid, .dishes-grid`: `display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px;`
+  - `.hero-section`: `padding-top: 15px; margin-top: 0;`
+  - `.contact-wrapper`: `display: flex; flex-direction: column; gap: 25px;`
+* **1024px Ekran (901px - 1100px):**
+  - `.filter-buttons`: `display: flex; flex-wrap: nowrap; gap: 10px; justify-content: flex-start;`
+  - `.filter-btn`: `font-family: 'Inter'; font-weight: 600; letter-spacing: 0.3px; padding: 10px 18px;`
+  - `.filter-btn .badge`: `display: inline-flex; align-items: center; justify-content: center; min-width: 22px; height: 22px; border-radius: 999px;`
+
+### 4.2 Görsel Hizalama ve Beyaz Boşluk Sıfırlama
+* **Şef / Ekip Kadrajı:** `.team-card img, .team-img-wrapper img { object-position: 50% 50%; object-fit: cover; }`
+* **Resim Altı Çizgi Boşluğu Sıfırlama:** `.dish-card img { display: block; vertical-align: middle; } .dish-img-container { line-height: 0; font-size: 0; background: #1c130d; }`
+
 

@@ -313,7 +313,21 @@ document.addEventListener("DOMContentLoaded", () => {
     updateStatusBadgeTranslation(activeLang);
   }
 
+  // Sayfa yüklendiğinde ilk çalışma
   guncelleCanliDurum();
+
+  // 1. Periyodik 30 Saniyelik Canlı Zamanlayıcı Kurulumu
+  setInterval(guncelleCanliDurum, 30000);
+
+  // 2. Sekme Aktiflik Tetikleyicisi (Sekmeye geri dönüldüğünde anında güncelleme)
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') {
+      guncelleCanliDurum();
+    }
+  });
+
+  // Global erişim
+  window.guncelleCanliDurum = guncelleCanliDurum;
 
   // 1. Ekranı Yumuşak Kaydırma (Smooth Scroll)
   function yumusakKaydir(hedef, offset = 90) {
@@ -2174,7 +2188,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (window.translations[lang] && window.translations[lang][key] !== undefined) {
         const val = window.translations[lang][key];
         const spanChild = el.querySelector('span');
-        if (spanChild && !spanChild.classList.contains('badge-count')) {
+        if (spanChild && !spanChild.classList.contains('badge-count') && !spanChild.classList.contains('required-star')) {
           spanChild.textContent = val;
         } else if (val.includes('<') || val.includes('\n')) {
           el.innerHTML = val.replace(/\n/g, '<br>');
@@ -2183,7 +2197,7 @@ document.addEventListener("DOMContentLoaded", () => {
           let textNodeFound = false;
           for (let node of el.childNodes) {
             if (node.nodeType === Node.TEXT_NODE && node.nodeValue.trim() !== '') {
-              node.nodeValue = val;
+              node.nodeValue = val + ' ';
               textNodeFound = true;
               break;
             }

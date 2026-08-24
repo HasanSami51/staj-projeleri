@@ -13,7 +13,13 @@
 
 ## 🚀 Öne Çıkan Özellikler
 
-* **📱 %100 Responsive & 100vh Ekran Kilidi:** Anasayfa (`index.html`) hem dizüstü hem de 2K/4K ultra geniş monitörlerde dikey kaydırma çubuğu olmadan (`100vh`) tam ekrana kusursuz biçimde oturur.
+* **📱 %100 Responsive & 100vh Ekran Kilidi:** Anasayfa (`index.html`) hem mobil hem de 2K/4K ultra geniş monitörlerde dikey kaydırma çubuğu olmadan (`100vh`) tam ekrana kusursuz biçimde oturur.
+* **🎯 Gelişmiş Responsive Mimarisi (320px - 1024px):**
+  - **320px - 360px Ultra Mobil:** Live Status Badge (`Şu An Açığız`) compact hap genişlik kilidi (`width: fit-content`), sola hizalı mobil footer.
+  - **320px - 600px Mobil:** Yan yana 2 sütun kompakt menü alt eylem kartları (*PDF İndir & Bizi Arayın*) ve kelime kesilmesiz yatay kaydırılabilir Çalışma Saatleri tablosu (`min-width: 480px; white-space: nowrap`).
+  - **768px Tablet:** 1 satırda 2 yemek kartı düzeni (`repeat(2, 1fr)`), şef kadraj hizalaması (`object-position: 50% 50%`), Anasayfa Hero üst boşluk sıfırlaması.
+  - **1024px Ekran:** Tek satırda pürüzsüz kaydırılabilir Kategori Barı, *Inter 600* tipografi, 22px × 22px tam dairesel sayaç rozetleri ve yüksek kontrastlı renk paleti.
+* **🖼️ Kusursuz Görsel Kadrajlama:** Ekip kartlarında `object-position: 50% 50%` ile yüz kesilmesi sıfırlanmış; yemek görsellerinde resim altı beyaz şerit boşluk hatası tamamen kaldırılmıştır.
 * **📄 Canlı Dinamik PDF Menü Motoru:** Admin panelinde eklenen, silinen veya fiyatı güncellenen tüm yemekler istemci tarafındaki `html2canvas` & `jspdf` altyapısı sayesinde 2 sayfalık A4 PDF çıktısına **anında ve eksiksiz biçimde yansır**.
 * **🛡️ Sıkı Güvenlik ve Session Yönetimi:** Express-Session ve `bcryptjs` hash altyapısı ile korunan admin paneli; yetkisiz erişimleri otomatik olarak giriş sayfasına yönlendirir.
 * **👁️ Doğal Inline SVG Şifre Göster/Gizle:** Yönetici giriş sayfasında kütüphane bağımlılığı olmadan çalışan kirpikli kapalı göz / açık göz SVG geçişi.

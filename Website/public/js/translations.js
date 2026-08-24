@@ -251,6 +251,11 @@ window.translations = {
     "gallery-ig-title": "@lezzetmuhru1932 Instagram'da Bizi Takip Edin",
     "gallery-ig-desc": "Günlük taze sunumlarımızı, usta ellerden çıkan ızgara videolarımızı ve mutfak arkası özel karelerimizi kaçırmayın.",
 
+    "galeri-cta-badge": "1932'den Beri Değişmeyen Lezzet",
+    "galeri-cta-title": "Lezzetlerimizi Yakından Deneyimlemek İster Misiniz?",
+    "galeri-cta-desc": "Geleneksel meşe odunu ateşinde pişen özel ızgaralarımız ve sıcak taş fırın lezzetlerimiz için masanızı şimdiden ayırtın.",
+    "galeri-cta-btn": "Masa Rezerve Et",
+
     // İletişim Sayfası (iletisim.html)
     "contact-hero-title": "Bizimle İletişime Geçin",
     "contact-hero-desc": "Görüşleriniz bizim için değerlidir. Bize yazın veya restoranımızı ziyaret edin.",
@@ -643,6 +648,11 @@ window.translations = {
     "gallery-ig-title": "Follow Us on Instagram @lezzetmuhru1932",
     "gallery-ig-desc": "Don't miss our daily fresh presentations, grill videos from master hands, and special kitchen behind-the-scenes shots.",
 
+    "galeri-cta-badge": "Unchanging Flavor Since 1932",
+    "galeri-cta-title": "Would You Like to Experience Our Flavors Up Close?",
+    "galeri-cta-desc": "Reserve your table now for our special grills cooked over traditional oak wood fire and our warm stone-oven delicacies.",
+    "galeri-cta-btn": "Book a Table",
+
     // İletişim Sayfası (iletisim.html)
     "contact-hero-title": "Get in Touch with Us",
     "contact-hero-desc": "Your opinions are valuable to us. Write to us or visit our restaurant.",
@@ -653,11 +663,11 @@ window.translations = {
     "contact-form-title": "Send Us a Message",
     "contact-form-title-new": "Send Us a Message",
     "contact-form-subtitle": "You can fill out the form below for your feedback, suggestions, or questions.",
-    "contact-form-name": "Your Name & Surname",
+    "contact-form-name": "Full Name",
     "contact-form-name-ph": "Enter your name and surname",
-    "contact-form-email": "Your Email Address",
+    "contact-form-email": "Email Address",
     "contact-form-email-ph": "name@example.com",
-    "contact-form-subject": "Message Subject",
+    "contact-form-subject": "Subject",
     "contact-form-subject-ph": "Specify message subject",
     "contact-form-message": "Your Message",
     "contact-form-message-ph": "Write your message here...",

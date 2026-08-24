@@ -1968,11 +1968,11 @@ function filterMenuByCategory(categoryName, btnElement) {
     renderMenuRows(window.menuItems || []);
   } else {
     const filtered = (window.menuItems || []).filter(x => (x.kategoriAdi || x.kategori) === categoryName);
-    renderMenuRows(filtered, true);
+    renderMenuRows(filtered, true, categoryName);
   }
 }
 
-function renderMenuRows(items, isSingleCategory = false) {
+function renderMenuRows(items, isSingleCategory = false, categoryName = '') {
   const tableBody = document.getElementById('menuTableBody');
   if (!items || items.length === 0) {
     tableBody.innerHTML = `
@@ -1985,7 +1985,18 @@ function renderMenuRows(items, isSingleCategory = false) {
     return;
   }
 
-  if (!isSingleCategory && currentCategoryFilter === 'all') {
+  if (isSingleCategory && categoryName) {
+    // Tek kategori görünümünde kategori ara başlığı göster
+    let fullHtml = `
+      <tr class="category-divider-row">
+        <td colspan="7">
+          <i class="fa-solid fa-utensils" style="margin-right: 8px;"></i> ${escapeHTML(categoryName).toUpperCase()} (${items.length} ÜRÜN)
+        </td>
+      </tr>
+    `;
+    fullHtml += items.map(item => generateItemRowHTML(item)).join('');
+    tableBody.innerHTML = fullHtml;
+  } else if (!isSingleCategory && currentCategoryFilter === 'all') {
     const grouped = items.reduce((acc, item) => {
       const cat = item.kategoriAdi || item.kategori || 'Diğer';
       if (!acc[cat]) acc[cat] = [];
@@ -1998,7 +2009,7 @@ function renderMenuRows(items, isSingleCategory = false) {
       fullHtml += `
         <tr class="category-divider-row">
           <td colspan="7">
-            <i class="fa-solid fa-utensils" style="margin-right: 8px;"></i> ${escapeHTML(catName)} (${grouped[catName].length} Ürün)
+            <i class="fa-solid fa-utensils" style="margin-right: 8px;"></i> ${escapeHTML(catName).toUpperCase()} (${grouped[catName].length} ÜRÜN)
           </td>
         </tr>
       `;
