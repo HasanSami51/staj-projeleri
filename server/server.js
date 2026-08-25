@@ -268,10 +268,11 @@ app.post('/api/rezervasyon', (req, res) => {
     errors.push('Ad soyad en fazla 100 karakter olabilir.');
   }
 
-  // 2. Telefon (05XXXXXXXXX)
-  const phoneRegex = /^05[0-9]{9}$/;
-  if (!phone || !phoneRegex.test(phone.trim())) {
-    errors.push('Telefon numarası 05 ile başlayan 11 haneli format olmalıdır.');
+  // 2. Telefon (Yerel ve Uluslararası: 7-16 Basamak)
+  const rawPhone = String(phone || '').trim();
+  const digits = rawPhone.replace(/\D/g, '');
+  if (!rawPhone || digits.length < 7 || digits.length > 16) {
+    errors.push('Lütfen geçerli bir telefon numarası giriniz (7-16 basamak).');
   }
 
   // 3. Tarih
@@ -396,10 +397,11 @@ app.put('/api/rezervasyon/:id', (req, res) => {
     errors.push('Ad soyad en az 3 karakter olmalıdır.');
   }
 
-  // 2. Telefon (05XXXXXXXXX)
-  const phoneRegex = /^05[0-9]{9}$/;
-  if (!phoneRegex.test(phone.trim())) {
-    errors.push('Telefon numarası 05 ile başlayan 11 haneli format olmalıdır.');
+  // 2. Telefon (Yerel ve Uluslararası: 7-16 Basamak)
+  const rawPhone = String(phone || '').trim();
+  const digits = rawPhone.replace(/\D/g, '');
+  if (!rawPhone || digits.length < 7 || digits.length > 16) {
+    errors.push('Lütfen geçerli bir telefon numarası giriniz (7-16 basamak).');
   }
 
   // 3. Tarih
@@ -502,17 +504,15 @@ app.get('/api/rezervasyon-sorgula', (req, res) => {
     }
 
     const temizTel = String(telefon).trim();
+    const queryDigits = temizTel.replace(/\D/g, '');
 
-    // SQL Injection koruması: Değerler ? ile parametreli sorgulanır.
     const sql = `
       SELECT id, ad_soyad, telefon, tarih, saat, kisi_sayisi, masa_bolgesi, notlar, durum
       FROM rezervasyonlar
-      WHERE telefon = ?
       ORDER BY id DESC
-      LIMIT 1
     `;
 
-    db.get(sql, [temizTel], (err, row) => {
+    db.all(sql, [], (err, rows) => {
       if (err) {
         console.error('❌ /api/rezervasyon-sorgula veritabanı hatası:', err.message);
         return res.status(500).json({
@@ -520,6 +520,20 @@ app.get('/api/rezervasyon-sorgula', (req, res) => {
           message: 'Sorgulama sırasında bir veritabanı hatası oluştu. Lütfen tekrar deneyiniz.'
         });
       }
+
+      if (!rows || rows.length === 0) {
+        return res.status(404).json({
+          success: false,
+          message: 'Bu telefon numarasına ait aktif bir rezervasyon bulunamadı. Lütfen bilgilerinizi kontrol ediniz.'
+        });
+      }
+
+      // Eşleşen numarayı bul (tam metin veya sadece rakamlar eşleşiyorsa)
+      const row = rows.find(r => {
+        const dbTel = String(r.telefon || '').trim();
+        const dbDigits = dbTel.replace(/\D/g, '');
+        return dbTel === temizTel || (queryDigits.length >= 7 && (dbDigits.endsWith(queryDigits) || queryDigits.endsWith(dbDigits)));
+      });
 
       if (!row) {
         return res.status(404).json({

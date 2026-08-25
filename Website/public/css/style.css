@@ -2685,8 +2685,8 @@ user-select: none !important;
 
 .chef-special-badge {
   position: absolute;
-  top: -12px;
-  left: 30px;
+  top: 12px;
+  left: 25px;
   background-color: var(--primary-kiremit);
   color: #ffffff;
   padding: 4px 14px;
@@ -2695,6 +2695,7 @@ user-select: none !important;
   font-weight: 700;
   box-shadow: 0 4px 12px rgba(192, 57, 43, 0.4);
   letter-spacing: 0.4px;
+  z-index: 10;
 }
 
 .chef-special-content h3 {
@@ -2791,7 +2792,7 @@ user-select: none !important;
 
 .chef-special-card .chef-special-badge {
   position: absolute;
-  top: -12px;
+  top: 12px;
   left: 25px;
   background-color: var(--primary-kiremit);
   color: #ffffff;
@@ -2800,6 +2801,7 @@ user-select: none !important;
   font-size: 0.8rem;
   font-weight: 700;
   box-shadow: 0 4px 12px rgba(192, 57, 43, 0.3);
+  z-index: 10;
 }
 
 .chef-special-card .chef-special-content h3 {
@@ -4844,7 +4846,7 @@ body {
   transform: translate(-50%, -50%) scale(1.2) !important;
   object-fit: cover !important;
   pointer-events: none !important;
-  filter:blur(100px) brightness(1) contrast(1.05) !important;
+  filter:blur(1px) brightness(1) contrast(1.05) !important;
   image-rendering: -webkit-optimize-contrast !important;
   image-rendering: high-quality !important;
   -webkit-backface-visibility: hidden !important;
@@ -9032,5 +9034,173 @@ main.main-content:not(:has(.hero-wrapper)):not(:has(.hero-section)) {
     white-space: nowrap !important;
     display: inline-block !important;
     border-radius: 14px !important;
+  }
+}
+
+/* ==========================================
+   📌 320px – 1024px MASA VE FORM SEÇİM DROPDOWN DÜZELTMESİ
+   ========================================== */
+select,
+select option,
+#resMasaBolgesi,
+#resMasaBolgesi option {
+  background-color: #1c1815 !important;
+  color: #f1c40f !important;
+  font-weight: 600 !important;
+}
+
+@media (min-width: 320px) and (max-width: 1024px) {
+  select option,
+  #resMasaBolgesi option {
+    background-color: #1c1815 !important;
+    color: #f1c40f !important;
+    padding: 12px !important;
+    font-size: 0.95rem !important;
+  }
+}
+
+/* ============================================================
+   🖥️ 2K (2560px) & 4K (3840px) ULTRA-WIDE ÖLÇEKLEME VE HİZALAMA
+   ============================================================ */
+
+/* --- 1. 2K Ekranlar (1921px – 2559px) --- */
+@media (min-width: 1921px) {
+  html {
+    font-size: 18px !important;
+  }
+
+  .container,
+  .top-bar-container,
+  .header-container,
+  .hero-content,
+  .hero-features,
+  .main-navbar,
+  .section-padding,
+  .reservation-container,
+  .menu-container,
+  .footer-container {
+    max-width: 1600px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  .global-bg-video,
+  #globalBgVideo {
+    width: 100vw !important;
+    height: 100vh !important;
+    object-fit: cover !important;
+  }
+}
+
+/* --- 2. 4K Ekranlar (2560px – 3399px) --- */
+@media (min-width: 2560px) {
+  html {
+    font-size: 20px !important;
+  }
+
+  .container,
+  .top-bar-container,
+  .header-container,
+  .hero-content,
+  .hero-features,
+  .main-navbar,
+  .section-padding,
+  .reservation-container,
+  .menu-container,
+  .footer-container {
+    max-width: 1800px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+}
+
+/* --- 3. 8K / Ultra Dev Ekranlar (3400px+) --- */
+@media (min-width: 3400px) {
+  html {
+    font-size: 22px !important;
+  }
+
+  .container,
+  .top-bar-container,
+  .header-container,
+  .hero-content,
+  .hero-features,
+  .main-navbar,
+  .section-padding,
+  .reservation-container,
+  .menu-container,
+  .footer-container {
+    max-width: 2100px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+}
+
+/* ==========================================
+   📌 LUXURY CHEF SPECIAL BADGE REDESIGN (KİBAR & ŞIK ALTIN LÜKS MÜHÜR)
+   ========================================== */
+.chef-special-card,
+.chef-special-banner {
+  position: relative !important;
+  padding-top: 34px !important;
+  padding-bottom: 20px !important;
+}
+
+.chef-special-badge,
+.chef-special-card .chef-special-badge,
+.chef-special-banner .chef-special-badge {
+  position: absolute !important;
+  top: 10px !important;
+  left: 20px !important;
+  background: linear-gradient(135deg, rgba(243, 156, 18, 0.25) 0%, rgba(211, 84, 0, 0.35) 100%) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  color: #f1c40f !important;
+  padding: 3px 10px !important;
+  border-radius: 14px !important;
+  font-size: 0.72rem !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.2px !important;
+  white-space: nowrap !important;
+  word-break: keep-all !important;
+  max-width: max-content !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35) !important;
+  border: 1px solid rgba(241, 196, 15, 0.55) !important;
+  z-index: 25 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 5px !important;
+}
+
+@media (min-width: 320px) and (max-width: 900px) {
+  .chef-special-badge,
+  .chef-special-card .chef-special-badge,
+  .chef-special-banner .chef-special-badge {
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    font-size: 0.68rem !important;
+    padding: 3px 8px !important;
+    white-space: nowrap !important;
+  }
+}
+
+/* ============================================================
+   🏷️ 320px – 1024px KATEGORİ BARI RAHATLATMA VE HEADER ALTI HİZALAMASI
+   ============================================================ */
+@media (min-width: 320px) and (max-width: 1024px) {
+  .menu-section {
+    padding-top: 155px !important;
+    margin-top: 0 !important;
+  }
+
+  .filter-buttons-wrapper {
+    z-index: 999 !important;
+    background: rgba(22, 11, 6, 0.96) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    padding-top: 10px !important;
+    padding-bottom: 10px !important;
+    border-bottom: 1px solid rgba(243, 156, 18, 0.35) !important;
+    margin-bottom: 25px !important;
   }
 }

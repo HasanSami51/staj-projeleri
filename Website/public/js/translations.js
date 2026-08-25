@@ -578,7 +578,7 @@ window.translations = {
     "res-form-name-label": "Your Name & Surname",
     "res-form-name-ph": "Enter your name and surname",
     "res-form-phone-label": "Your Phone Number",
-    "res-form-phone-ph": "05XX XXX XX XX",
+    "res-form-phone-ph": "+1 234 567 8900 (International)",
     "res-form-date-label": "Reservation Date",
     "res-form-date-ph": "Select Date",
     "res-form-time-label": "Time",

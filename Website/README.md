@@ -13,18 +13,24 @@
 
 ## 🚀 Öne Çıkan Özellikler
 
-* **📱 %100 Responsive & 100vh Ekran Kilidi:** Anasayfa (`index.html`) hem mobil hem de 2K/4K ultra geniş monitörlerde dikey kaydırma çubuğu olmadan (`100vh`) tam ekrana kusursuz biçimde oturur.
+* **🖥️ 2K ve 4K Ultra-Wide Ekran Desteği:** 1921px+, 2560px ve 3400px+ geniş ekranlarda rem tabanlı font ölçeklemesi (`html { font-size: 18px / 20px / 22px }`) ve `max-width` güvenli alan merkezlemesi ile dev monitörlerde boşluk hissi olmadan kusursuz lüks restoran vitrini görünümü.
+* **📱 %100 Responsive & 100vh Ekran Kilidi:** Anasayfa (`index.html`) hem mobil hem de ultra geniş monitörlerde dikey kaydırma çubuğu olmadan (`100vh`) tam ekrana kusursuz biçimde oturur.
+* **🌐 Dinamik Uluslararası Telefon Doğrulaması (TR / EN):**
+  - Türkçe dilde `05` ile başlayan 11 haneli yerel numara formatı denetlenir.
+  - İngilizce dilde uluslararası standartta 7–16 basamaklı telefon numaraları ve `+` ülke kodları desteklenir.
+  - Form ve bilet sorgulama alanlarında tarayıcı otomatik tamamlama (autofill) popover'ları engellenmiştir.
 * **🎯 Gelişmiş Responsive Mimarisi (320px - 1024px):**
   - **320px - 360px Ultra Mobil:** Live Status Badge (`Şu An Açığız`) compact hap genişlik kilidi (`width: fit-content`), sola hizalı mobil footer.
   - **320px - 600px Mobil:** Yan yana 2 sütun kompakt menü alt eylem kartları (*PDF İndir & Bizi Arayın*) ve kelime kesilmesiz yatay kaydırılabilir Çalışma Saatleri tablosu (`min-width: 480px; white-space: nowrap`).
+  - **320px - 1024px Masa Seçim Dropdown:** Koyu ahşap arka plan (`#1c1815`) ve altın sarısı (`#f1c40f`) yüksek kontrastlı `<select option>` metin görünürlüğü.
   - **768px Tablet:** 1 satırda 2 yemek kartı düzeni (`repeat(2, 1fr)`), şef kadraj hizalaması (`object-position: 50% 50%`), Anasayfa Hero üst boşluk sıfırlaması.
   - **1024px Ekran:** Tek satırda pürüzsüz kaydırılabilir Kategori Barı, *Inter 600* tipografi, 22px × 22px tam dairesel sayaç rozetleri ve yüksek kontrastlı renk paleti.
-* **🖼️ Kusursuz Görsel Kadrajlama:** Ekip kartlarında `object-position: 50% 50%` ile yüz kesilmesi sıfırlanmış; yemek görsellerinde resim altı beyaz şerit boşluk hatası tamamen kaldırılmıştır.
+* **🖼️ Kusursuz Görsel Kadrajlama & Şefin Önerisi Rozetleri:** Ekip kartlarında `object-position: 50% 50%` ile yüz kesilmesi sıfırlanmış; yemek kartı rozetlerinde (`.card-badges`) `position: relative` kilitlenmesiyle taşma engellenmiştir.
 * **📄 Canlı Dinamik PDF Menü Motoru:** Admin panelinde eklenen, silinen veya fiyatı güncellenen tüm yemekler istemci tarafındaki `html2canvas` & `jspdf` altyapısı sayesinde 2 sayfalık A4 PDF çıktısına **anında ve eksiksiz biçimde yansır**.
 * **🛡️ Sıkı Güvenlik ve Session Yönetimi:** Express-Session ve `bcryptjs` hash altyapısı ile korunan admin paneli; yetkisiz erişimleri otomatik olarak giriş sayfasına yönlendirir.
 * **👁️ Doğal Inline SVG Şifre Göster/Gizle:** Yönetici giriş sayfasında kütüphane bağımlılığı olmadan çalışan kirpikli kapalı göz / açık göz SVG geçişi.
-* **🌐 Çoklu Dil & Atmosfer Modu:** Türkçe / İngilizce içerik sözlüğü ve dikey mangal ateşi / gece modu atmosfer geçişi.
-* **📅 İnteraktif Masa Rezervasyonu & Bilet İndirme:** Özel masa bölgesi seçimi (Taş Fırın Yanı, VIP Salon vb.), rezervasyon sorgulama ve dijital rezervasyon bileti indirme.
+* **🌐 Çoklu Dil & Atmosfer Modu:** Türkçe / İngilizce içerik sözlüğü, dikey mangal ateşi / gece modu atmosfer geçişi ve dinamik bilet/güncelleme modalı.
+* **📅 İnteraktif Masa Rezervasyonu & Bilet İndirme:** Özel masa bölgesi seçimi (Taş Fırın Yanı, VIP Salon vb.), esnek uluslararası rezervasyon sorgulama ve dijital rezervasyon bileti indirme.
 
 ---
 

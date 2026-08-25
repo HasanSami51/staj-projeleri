@@ -180,8 +180,21 @@ Sunucu varsayılan olarak `http://localhost:3000` portunda yayın yapmaktadır.
   - `.filter-btn`: `font-family: 'Inter'; font-weight: 600; letter-spacing: 0.3px; padding: 10px 18px;`
   - `.filter-btn .badge`: `display: inline-flex; align-items: center; justify-content: center; min-width: 22px; height: 22px; border-radius: 999px;`
 
-### 4.2 Görsel Hizalama ve Beyaz Boşluk Sıfırlama
-* **Şef / Ekip Kadrajı:** `.team-card img, .team-img-wrapper img { object-position: 50% 50%; object-fit: cover; }`
-* **Resim Altı Çizgi Boşluğu Sıfırlama:** `.dish-card img { display: block; vertical-align: middle; } .dish-img-container { line-height: 0; font-size: 0; background: #1c130d; }`
+### 4.3 2K ve 4K Ultra-Wide Ekran Mimarisi (1921px+)
+* **1921px – 2559px (2K):** `html { font-size: 18px !important; }`, Ana Kapsayıcılar: `max-width: 1600px !important; margin: 0 auto;`
+* **2560px – 3399px (4K):** `html { font-size: 20px !important; }`, Ana Kapsayıcılar: `max-width: 1800px !important; margin: 0 auto;`
+* **3400px+ (8K / Ultra):** `html { font-size: 22px !important; }`, Ana Kapsayıcılar: `max-width: 2100px !important; margin: 0 auto;`
+
+---
+
+## 🔒 5. Telefon Doğrulama & Esnek Sorgulama Algoritması
+
+1. **Uluslararası & Yerel Telefon Doğrulaması:**
+   - **TR Modu:** `05` ile başlayan 11 haneli yerel numara denetimi (`/^05\d{9}$/`).
+   - **EN Modu:** Rakam temizleme (`replace(/\D/g, '')`) ile 7 ile 16 basamak arası uluslararası numara kontrolü.
+2. **Anti-Autofill Popover Önlemi:**
+   - Telefon girdilerinde tarayıcı geçmişi açılır kutusunu engellemek için `autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false"` ve özel anti-autofill name parametreleri (`no_autofill_phone`, `no_autofill_query_phone`) uygulanmıştır.
+3. **Akıllı Backend Eşleştirmesi (`GET /api/rezervasyon-sorgula`):**
+   - Kullanıcı sorgulama yaparken numaranın başında `+`, parantez veya boşluk bulunsa dahi backend tarafında veritabanındaki kayıtlar sadece rakamlar üzerinden (`dbDigits.endsWith(queryDigits)`) esnek şekilde eşleştirilerek bilet anında döndürülür.
 
 

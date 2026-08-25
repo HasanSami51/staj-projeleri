@@ -26,7 +26,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <link rel="stylesheet" href="../public/css/style.css?v=1060">
+  <link rel="stylesheet" href="../public/css/style.css?v=1480">
   <!-- PDF İndirme Kütüphaneleri -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -142,7 +142,7 @@
                           <label for="resPhone"><span data-translate="res-form-phone-label">Telefon Numaranız</span> <span class="required-star">*</span></label>
                           <div class="input-icon-wrapper">
                             <i class="fa-solid fa-phone input-icon"></i>
-                            <input type="tel" id="resPhone" name="phone" autocomplete="off" placeholder="05XX XXX XX XX" required pattern="05[0-9]{9}" title="Lütfen 05 ile başlayan 11 haneli cep telefonunuzu giriniz." data-translate-placeholder="res-form-phone-ph">
+                            <input type="tel" id="resPhone" name="no_autofill_phone" class="form-control" placeholder="05XX XXX XX XX" required autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" data-translate-placeholder="res-form-phone-ph">
                           </div>
                         </div>
 
@@ -212,7 +212,7 @@
                         <label for="res_query_key" data-translate="res-query-phone-label">Kayıtlı Telefon Numaranız</label>
                         <div class="input-icon-wrapper">
                           <i class="fa-solid fa-phone input-icon"></i>
-                          <input type="text" id="res_query_key" name="res_query_key" placeholder="05XX XXX XX XX" required pattern="05[0-9]{9}" autocomplete="new-password" autocorrect="off" autocapitalize="off" spellcheck="false" readonly onfocus="this.removeAttribute('readonly');" data-translate-placeholder="res-form-phone-ph">
+                          <input type="tel" id="res_query_key" name="no_autofill_query_phone" class="form-control" placeholder="05XX XXX XX XX" required autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" data-translate-placeholder="res-form-phone-ph">
                         </div>
                       </div>
 

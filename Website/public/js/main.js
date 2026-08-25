@@ -225,8 +225,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function syncFilterBarStickyTop() {
     if (mainHeader && filterButtonsWrapper) {
-      const headerHeight = mainHeader.offsetHeight || 96;
-      filterButtonsWrapper.style.top = `${headerHeight}px`;
+      const headerRect = mainHeader.getBoundingClientRect();
+      const visibleHeight = Math.max(0, headerRect.bottom);
+      filterButtonsWrapper.style.top = `${visibleHeight}px`;
     }
   }
 
@@ -901,12 +902,27 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!hasError) { nameInput.focus(); hasError = true; }
       }
 
-      // 2. Telefon Numaranız (05XXXXXXXXX)
+      // 2. Telefon Numaranız (Dile Göre Dinamik Doğrulama)
       const phoneClean = phoneInput ? phoneInput.value.trim() : '';
-      const phoneRegex = /^05[0-9]{9}$/;
-      if (!phoneInput || !phoneClean || !phoneRegex.test(phoneClean)) {
-        hataGoster(phoneInput, t('err-res-phone', 'Lütfen 05 ile başlayan 11 haneli cep telefonunuzu giriniz.'));
+      const currentLang = localStorage.getItem('language') || 'tr';
+      const digitsOnly = phoneClean.replace(/\D/g, '');
+
+      if (!phoneInput || !phoneClean) {
+        const emptyMsg = currentLang === 'en' ? 'Please enter a valid international phone number.' : 'Telefon numarası 05 ile başlayan 11 haneli format olmalıdır.';
+        hataGoster(phoneInput, emptyMsg);
         if (!hasError) { phoneInput.focus(); hasError = true; }
+      } else if (currentLang === 'tr') {
+        // Türkçe: 05 ile başlayan 11 haneli yerel numara
+        if (!/^05\d{9}$/.test(digitsOnly)) {
+          hataGoster(phoneInput, 'Telefon numarası 05 ile başlayan 11 haneli format olmalıdır.');
+          if (!hasError) { phoneInput.focus(); hasError = true; }
+        }
+      } else {
+        // İngilizce: Rakam uzunluğu 7 ile 16 basamak arası uluslararası numara
+        if (digitsOnly.length < 7 || digitsOnly.length > 16) {
+          hataGoster(phoneInput, 'Please enter a valid international phone number.');
+          if (!hasError) { phoneInput.focus(); hasError = true; }
+        }
       }
 
       // 3. Rezervasyon Tarihi
@@ -1082,8 +1098,8 @@ document.addEventListener("DOMContentLoaded", () => {
       .then(result => {
         restoreSubmitBtn();
         if (result && result.success && result.data) {
-          // Bilet modalı DOĞRUDAN AÇILMASIN. Şık bilgilendirme modalı gösterilsin.
-          openSuccessModal();
+          const isUpdateMode = !!editingId;
+          openSuccessModal(isUpdateMode);
 
           // Formu sıfırla ve düzenleme modunu sonlandır
           if (reservationForm) reservationForm.reset();
@@ -1154,16 +1170,25 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!queryPhoneInput) return;
 
         const phoneVal = queryPhoneInput.value.trim();
-        const phoneRegex = /^05[0-9]{9}$/;
+        const currentLang = localStorage.getItem('language') || 'tr';
+        const digitsOnly = phoneVal.replace(/\D/g, '');
 
         if (!phoneVal) {
-          alertGoster(resQueryAlert, 'error', `<i class="fa-solid fa-triangle-exclamation"></i> <span>${t('err-query-phone-empty', 'Lütfen telefon numaranızı giriniz.')}</span>`);
+          const emptyMsg = currentLang === 'en' ? 'Please enter your phone number.' : 'Lütfen telefon numaranızı giriniz.';
+          alertGoster(resQueryAlert, 'error', `<i class="fa-solid fa-triangle-exclamation"></i> <span>${emptyMsg}</span>`);
           return;
         }
 
-        if (!phoneRegex.test(phoneVal)) {
-          alertGoster(resQueryAlert, 'error', `<i class="fa-solid fa-triangle-exclamation"></i> <span>${t('err-query-phone-invalid', 'Lütfen 05 ile başlayan 11 haneli geçerli bir telefon numarası giriniz.')}</span>`);
-          return;
+        if (currentLang === 'tr') {
+          if (!/^05\d{9}$/.test(digitsOnly)) {
+            alertGoster(resQueryAlert, 'error', `<i class="fa-solid fa-triangle-exclamation"></i> <span>Lütfen 05 ile başlayan 11 haneli geçerli bir telefon numarası giriniz.</span>`);
+            return;
+          }
+        } else {
+          if (digitsOnly.length < 7 || digitsOnly.length > 16) {
+            alertGoster(resQueryAlert, 'error', `<i class="fa-solid fa-triangle-exclamation"></i> <span>Please enter a valid international phone number.</span>`);
+            return;
+          }
         }
 
         const querySubmitBtn = reservationQueryForm.querySelector('button[type="submit"]');
@@ -1438,12 +1463,36 @@ document.addEventListener("DOMContentLoaded", () => {
     if (btnCloseTicketBottom) btnCloseTicketBottom.addEventListener('click', resetAndCloseTicket);
 
     // --- REZERVASYON BAŞARILI BİLGİLENDİRME MODALI YÖNETİMİ ---
-    const openSuccessModal = () => {
+    const openSuccessModal = (isUpdate = false) => {
       const modal = document.getElementById('resSuccessModal');
+      const currentLang = localStorage.getItem('language') || 'tr';
+
+      let successTitle = '';
+      let successText = '';
+
+      if (isUpdate) {
+        successTitle = currentLang === 'en' ? 'Reservation Updated!' : 'Rezervasyonunuz Güncellendi!';
+        successText = currentLang === 'en' 
+          ? 'Your reservation details have been updated successfully.' 
+          : 'Rezervasyon bilgileriniz başarıyla güncellenmiştir.';
+      } else {
+        successTitle = currentLang === 'en' ? 'Reservation Received!' : 'Talebiniz Restorana İletildi!';
+        successText = currentLang === 'en' 
+          ? 'Your reservation has been received successfully!' 
+          : 'Rezervasyon talebiniz başarıyla alınmıştır. Rezervasyon detaylarını üst menüdeki "Rezervasyon Bul" alanından telefon numaranızla sorgulayarak biletinizi görüntüleyebilirsiniz.';
+      }
+
       if (modal) {
+        const titleEl = modal.querySelector('.custom-modal-title') || modal.querySelector('h3');
+        const descEl = modal.querySelector('.custom-modal-desc') || modal.querySelector('p');
+        if (titleEl) titleEl.textContent = successTitle;
+        if (descEl) descEl.textContent = successText;
+
         modal.classList.add('active', 'show');
         modal.style.display = 'flex';
         document.body.style.overflow = 'hidden';
+      } else {
+        alert(successText);
       }
     };
 
